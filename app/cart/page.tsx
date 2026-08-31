@@ -123,7 +123,7 @@ export default function CartPage() {
                 </div>
                 <div className="border-t border-[#80C78D]/30 pt-2 flex justify-between items-center">
                   <span className="text-[#1A2E44]/50 text-xs">الإجمالي</span>
-                  <span className="text-lg font-black text-[#47A557]">{fmt(total)} <span className="text-xs font-medium text-[#1A2E44]/40">ر.س</span></span>
+                  <span className="text-lg font-black text-[#47A557]">{fmt(total)} <span className="text-xs font-medium text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-4 h-4 object-contain align-middle" /></span></span>
                 </div>
               </div>
               <div className="flex items-center justify-center gap-2 rounded-xl border border-[#80C78D]/40 px-4 py-3 mb-4" style={{ background: "#DCEFE8" }}>
@@ -227,7 +227,7 @@ export default function CartPage() {
             <div>
               <p className="text-[#1A2E44]/50 text-xs mb-1">إجمالي الطلب</p>
               <p className="text-3xl sm:text-4xl font-black text-[#47A557]">
-                {fmt(total)} <span className="text-sm font-medium text-[#1A2E44]/40">ر.س</span>
+                {fmt(total)} <span className="text-sm font-medium text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-5 h-5 object-contain align-middle" /></span>
               </p>
             </div>
             <div className="flex gap-5 sm:gap-6">
@@ -301,7 +301,7 @@ export default function CartPage() {
                     return (
                       <div key={product._id} className="flex justify-between items-start gap-2">
                         <p className="text-xs text-[#1A2E44]/60 leading-relaxed line-clamp-1 flex-1">{product.name} <span className="text-[#1A2E44]/30">×{qty}</span></p>
-                        <span className="text-xs font-bold text-[#1A2E44] whitespace-nowrap">{fmt(price * qty)} ر.س</span>
+                        <span className="text-xs font-bold text-[#1A2E44] whitespace-nowrap">{fmt(price * qty)} <img src="/money-icon.webp" alt="ر.س" className="inline w-3.5 h-3.5 object-contain align-middle" /></span>
                       </div>
                     );
                   })}
@@ -311,7 +311,7 @@ export default function CartPage() {
                   </div>
                   <div className="border-t border-[#80C78D]/30 pt-3 flex justify-between items-center">
                     <span className="text-sm font-bold text-[#1A2E44]/60">الإجمالي</span>
-                    <span className="text-2xl font-black text-[#47A557]">{fmt(total)} <span className="text-xs font-medium text-[#1A2E44]/40">ر.س</span></span>
+                    <span className="text-2xl font-black text-[#47A557]">{fmt(total)} <span className="text-xs font-medium text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-4 h-4 object-contain align-middle" /></span></span>
                   </div>
                 </div>
               </div>
@@ -368,7 +368,7 @@ function OrderSummaryMobile({ items, total }: { items: { product: { _id: string;
         return (
           <div key={product._id} className="flex justify-between items-center">
             <p className="text-xs text-[#1A2E44]/60 line-clamp-1 flex-1 ml-3">{product.name} <span className="text-[#1A2E44]/30">×{qty}</span></p>
-            <span className="text-xs font-bold text-[#1A2E44] whitespace-nowrap">{fmt(price * qty)} ر.س</span>
+            <span className="text-xs font-bold text-[#1A2E44] whitespace-nowrap">{fmt(price * qty)} <img src="/money-icon.webp" alt="ر.س" className="inline w-3.5 h-3.5 object-contain align-middle" /></span>
           </div>
         );
       })}
@@ -378,7 +378,7 @@ function OrderSummaryMobile({ items, total }: { items: { product: { _id: string;
       </div>
       <div className="border-t border-[#80C78D]/30 pt-2.5 flex justify-between items-center">
         <span className="text-sm font-bold text-[#1A2E44]/60">الإجمالي</span>
-        <span className="text-xl font-black text-[#47A557]">{fmt(total)} <span className="text-xs text-[#1A2E44]/40">ر.س</span></span>
+        <span className="text-xl font-black text-[#47A557]">{fmt(total)} <span className="text-xs text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-4 h-4 object-contain align-middle" /></span></span>
       </div>
     </div>
   );

@@ -89,7 +89,7 @@ export default function CheckoutPage() {
     if (coupon.trim().toUpperCase() === "SAHLNAHA10") {
       const d = Math.round(total * 0.1);
       setDiscount(d);
-      setCouponMsg(`✓ خصم 10% — وفّرت ${fmt(d)} ر.س`);
+              setCouponMsg(`✓ خصم 10% — وفّرت ${fmt(d)} ر.س`);
     } else {
       setDiscount(0);
       setCouponMsg("✗ الكود غير صحيح");
@@ -160,7 +160,7 @@ export default function CheckoutPage() {
           price: 0,
           originalPrice: 24,
           isFree: true,
-          region: (selectedAddress as SelectedAddress & { state?: string })?.state ?? "",
+          region: (selectedAddress as SelectedAddress & { state?: string })?.state ?? selectedAddress?.city ?? "",
           city: selectedAddress?.city ?? "",
         } : undefined,
       };
@@ -295,10 +295,10 @@ export default function CheckoutPage() {
           <div className="flex flex-col items-end gap-1 shrink-0">
             <p className="text-lg sm:text-3xl font-black text-[#1A2E44] leading-none">
               {fmt(finalTotal)}
-              <span className="text-xs sm:text-sm font-medium text-gray-400 mr-1">ر.س</span>
+              <span className="text-xs sm:text-sm font-medium text-gray-400 mr-1"><img src="/money-icon.webp" alt="ر.س" className="inline w-4 sm:w-5 h-4 sm:h-5 object-contain align-middle" /></span>
             </p>
             {discount > 0 && (
-              <p className="text-[9px] sm:text-[10px] text-gray-500 font-bold">وفّرت {fmt(discount)} ر.س</p>
+              <p className="text-[9px] sm:text-[10px] text-gray-500 font-bold">وفّرت {fmt(discount)} <img src="/money-icon.webp" alt="ر.س" className="inline w-3.5 h-3.5 object-contain align-middle" /></p>
             )}
             <button
               onClick={() => setCouponOpen(v => !v)}

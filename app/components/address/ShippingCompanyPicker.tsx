@@ -45,7 +45,7 @@ export default function ShippingCompanyPicker({ options, selected, onSelect }: P
 
             {/* Price — always free, 24 crossed out */}
             <div className="shrink-0 flex items-center gap-1.5">
-              <span className="text-[11px] sm:text-xs text-gray-400 line-through">24 ر.س</span>
+              <span className="text-[11px] sm:text-xs text-gray-400 line-through">24 <img src="/money-icon.webp" alt="ر.س" className="inline w-3.5 h-3.5 object-contain align-middle" /></span>
               <span className="text-[9px] sm:text-[10px] font-black text-white px-1.5 py-0.5 rounded-md" style={{ background: "#47A557" }}>مجاني</span>
             </div>
           </button>

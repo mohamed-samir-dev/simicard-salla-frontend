@@ -147,9 +147,11 @@ function FiltersContent({ filters, storageOptions, maxProductPrice, activeCount,
               key={priceVal}
               initial={{ scale: 1.1 }}
               animate={{ scale: 1 }}
-              className="text-xs font-black text-[#47A557] bg-[#47A557]/10 border border-[#47A557]/20 px-2 py-0.5 rounded-lg"
+              className="text-xs font-black text-[#47A557] bg-[#47A557]/10 border border-[#47A557]/20 px-2 py-0.5 rounded-lg flex items-center gap-1"
             >
-              {filters.maxPrice !== null ? `${fmt(filters.maxPrice)} ر.س` : "الكل"}
+              {filters.maxPrice !== null ? (
+                <>{fmt(filters.maxPrice)} <img src="/money-icon.webp" alt="ر.س" className="w-3.5 h-3.5 object-contain" /></>
+              ) : "الكل"}
             </motion.span>
           </div>
           <div className="relative h-5 flex items-center">
@@ -176,8 +178,8 @@ function FiltersContent({ filters, storageOptions, maxProductPrice, activeCount,
             />
           </div>
           <div className="flex justify-between text-[10px] text-gray-400 mt-2">
-            <span>0 ر.س</span>
-            <span>{fmt(priceMax)} ر.س</span>
+            <span>0 <img src="/money-icon.webp" alt="ر.س" className="inline w-3.5 h-3.5 object-contain align-middle" /></span>
+            <span>{fmt(priceMax)} <img src="/money-icon.webp" alt="ر.س" className="inline w-3.5 h-3.5 object-contain align-middle" /></span>
           </div>
         </div>
       </div>

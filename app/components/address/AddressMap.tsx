@@ -11,81 +11,95 @@ interface Props {
   onAddressChange: (data: Partial<AddressData> & { shippingAvailable: boolean; shippingCost: number }) => void;
 }
 
+const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!;
+
+declare global {
+  interface Window {
+    google: typeof google;
+    initGoogleMap?: () => void;
+  }
+}
+
 export default function AddressMap({ markerPos, setMarkerPos, onAddressChange }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<import("leaflet").Map | null>(null);
-  const markerRef = useRef<import("leaflet").Marker | null>(null);
-  const initializedRef = useRef(false);
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const markerRef = useRef<google.maps.Marker | null>(null);
   const [locating, setLocating] = useState(false);
   const [locError, setLocError] = useState("");
 
-  useEffect(() => {
-    if (initializedRef.current || !containerRef.current) return;
-    initializedRef.current = true;
+  // كل الـ callbacks في refs عشان الـ map listener يشوف أحدث نسخة دايماً
+  const onAddressChangeRef = useRef(onAddressChange);
+  const setMarkerPosRef = useRef(setMarkerPos);
+  useEffect(() => { onAddressChangeRef.current = onAddressChange; }, [onAddressChange]);
+  useEffect(() => { setMarkerPosRef.current = setMarkerPos; }, [setMarkerPos]);
 
-    import("leaflet").then((L) => {
-      if (!containerRef.current) return;
+  const placeMarkerRef = useRef((lat: number, lng: number) => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (markerRef.current) {
+      markerRef.current.setPosition({ lat, lng });
+    } else {
+      markerRef.current = new window.google.maps.Marker({ position: { lat, lng }, map });
+    }
+    map.panTo({ lat, lng });
+  });
 
-      // fix default icon paths
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      delete (L.Icon.Default.prototype as any)._getIconUrl;
-      L.Icon.Default.mergeOptions({
-        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-        iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  // handleLatLng كـ ref — الـ map listener بيكلمها دايماً بأحدث نسخة
+  const handleLatLngRef = useRef(async (lat: number, lng: number) => {
+    setMarkerPosRef.current({ lat, lng });
+    placeMarkerRef.current(lat, lng);
+    const parsed = await reverseGeocode(lat, lng);
+    if (parsed) {
+      const shipping = checkShipping(parsed.city, parsed.state);
+      onAddressChangeRef.current({
+        ...parsed,
+        latitude: lat,
+        longitude: lng,
+        shippingAvailable: shipping.available,
+        shippingCost: shipping.cost,
       });
+    }
+  });
 
-      const map = L.map(containerRef.current, {
-        center: [24.7136, 46.6753],
+  useEffect(() => {
+    const initMap = () => {
+      if (!containerRef.current || mapRef.current) return;
+      const map = new window.google.maps.Map(containerRef.current, {
+        center: { lat: 24.7136, lng: 46.6753 },
         zoom: 6,
         zoomControl: true,
+        streetViewControl: false,
+        mapTypeControl: false,
+        fullscreenControl: false,
       });
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 19,
-      }).addTo(map);
-
-      map.on("click", async (e) => {
-        const { lat, lng } = e.latlng;
-        setMarkerPos({ lat, lng });
-        if (markerRef.current) {
-          markerRef.current.setLatLng([lat, lng]);
-        } else {
-          markerRef.current = L.marker([lat, lng]).addTo(map);
-        }
-        const parsed = await reverseGeocode(lat, lng);
-        if (parsed) {
-          const shipping = checkShipping(parsed.city, parsed.state);
-          onAddressChange({ ...parsed, latitude: lat, longitude: lng, shippingAvailable: shipping.available, shippingCost: shipping.cost });
-        }
+      // الـ listener بيكلم الـ ref مباشرة — مش بيتأثر بأي re-render
+      map.addListener("click", (e: google.maps.MapMouseEvent) => {
+        if (!e.latLng) return;
+        handleLatLngRef.current(e.latLng.lat(), e.latLng.lng());
       });
-
-      mapInstanceRef.current = map;
-    });
-
-    return () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-        markerRef.current = null;
-        initializedRef.current = false;
-      }
+      mapRef.current = map;
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    if (window.google?.maps) {
+      initMap();
+    } else {
+      window.initGoogleMap = initMap;
+      if (!document.getElementById("google-maps-script")) {
+        const script = document.createElement("script");
+        script.id = "google-maps-script";
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${KEY}&callback=initGoogleMap&language=ar`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+      }
+    }
   }, []);
 
   // sync marker when search selects a location
   useEffect(() => {
-    if (!markerPos || !mapInstanceRef.current) return;
-    import("leaflet").then((L) => {
-      mapInstanceRef.current!.setView([markerPos.lat, markerPos.lng], 15);
-      if (markerRef.current) {
-        markerRef.current.setLatLng([markerPos.lat, markerPos.lng]);
-      } else {
-        markerRef.current = L.marker([markerPos.lat, markerPos.lng]).addTo(mapInstanceRef.current!);
-      }
-    });
+    if (!markerPos || !mapRef.current) return;
+    mapRef.current.setZoom(15);
+    placeMarkerRef.current(markerPos.lat, markerPos.lng);
   }, [markerPos]);
 
   const handleCurrentLocation = () => {
@@ -94,15 +108,8 @@ export default function AddressMap({ markerPos, setMarkerPos, onAddressChange }:
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        setMarkerPos({ lat, lng });
         setLocating(false);
-        const parsed = await reverseGeocode(lat, lng);
-        if (parsed) {
-          const shipping = checkShipping(parsed.city, parsed.state);
-          onAddressChange({ ...parsed, latitude: lat, longitude: lng, shippingAvailable: shipping.available, shippingCost: shipping.cost });
-        }
+        await handleLatLngRef.current(pos.coords.latitude, pos.coords.longitude);
       },
       () => {
         setLocError("يرجى السماح بالوصول إلى موقعك لتحديد عنوان التوصيل.");

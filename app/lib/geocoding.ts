@@ -9,22 +9,24 @@ export interface AddressData {
   postalCode: string;
 }
 
+const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!;
+
 export async function reverseGeocode(lat: number, lng: number): Promise<Omit<AddressData, "latitude" | "longitude"> | null> {
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=ar`,
-      { headers: { "User-Agent": "sahlnaha-simcard/1.0" } }
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&language=ar&key=${KEY}`
     );
     const data = await res.json();
-    if (!data || data.error) return null;
-    const a = data.address ?? {};
+    if (data.status !== "OK" || !data.results?.length) return null;
+    const components: { long_name: string; types: string[] }[] = data.results[0].address_components;
+    const get = (...types: string[]) => components.find(c => types.some(t => c.types.includes(t)))?.long_name ?? "";
     return {
-      address: data.display_name ?? "",
-      country: a.country ?? "",
-      city: a.city || a.town || a.village || a.county || "",
-      state: a.state ?? "",
-      district: a.suburb || a.neighbourhood || a.district || "",
-      postalCode: a.postcode ?? "",
+      address: data.results[0].formatted_address ?? "",
+      country: get("country"),
+      city: get("locality", "administrative_area_level_2"),
+      state: get("administrative_area_level_1"),
+      district: get("sublocality", "sublocality_level_1", "neighborhood"),
+      postalCode: get("postal_code"),
     };
   } catch {
     return null;
@@ -34,10 +36,15 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Omit<Add
 export async function searchAddress(query: string): Promise<{ display_name: string; lat: string; lon: string }[]> {
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=5&accept-language=ar&countrycodes=sa`,
-      { headers: { "User-Agent": "sahlnaha-simcard/1.0" } }
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&language=ar&region=SA&key=${KEY}`
     );
-    return await res.json();
+    const data = await res.json();
+    if (data.status !== "OK") return [];
+    return data.results.slice(0, 5).map((r: { formatted_address: string; geometry: { location: { lat: number; lng: number } } }) => ({
+      display_name: r.formatted_address,
+      lat: String(r.geometry.location.lat),
+      lon: String(r.geometry.location.lng),
+    }));
   } catch {
     return [];
   }

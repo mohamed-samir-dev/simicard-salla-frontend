@@ -61,7 +61,7 @@ export default function CartItem({ product, qty, onUpdateQty, onRemove }: CartIt
           <div className="flex items-center justify-between mt-2 sm:mt-3">
             <div>
               <span className="text-sm sm:text-lg font-black text-[#47A557]">{fmt(price * qty)}</span>
-              <span className="text-[9px] text-[#1A2E44]/40 mr-0.5">ر.س</span>
+              <span className="text-[9px] text-[#1A2E44]/40 mr-0.5"><img src="/money-icon.webp" alt="ر.س" className="inline w-3.5 h-3.5 object-contain align-middle" /></span>
               {hasDiscount && (
                 <span className="text-[9px] text-[#1A2E44]/30 line-through mr-1.5">{fmt(product.originalPrice! * qty)}</span>
               )}

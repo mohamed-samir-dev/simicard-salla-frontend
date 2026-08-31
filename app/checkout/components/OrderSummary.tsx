@@ -18,7 +18,7 @@ export default function OrderSummary({ total }: OrderSummaryProps) {
         <div className="p-5 space-y-3">
           <div className="flex justify-between items-center text-xs sm:text-sm">
             <span className="text-[#1A2E44]/50">مجموع السلة</span>
-            <span className="font-bold text-[#1A2E44]">{fmt(total)} ر.س</span>
+            <span className="font-bold text-[#1A2E44]">{fmt(total)} <img src="/money-icon.webp" alt="ر.س" className="inline w-4 h-4 object-contain align-middle" /></span>
           </div>
           <div className="flex justify-between items-center text-xs sm:text-sm">
             <span className="text-[#1A2E44]/50 flex items-center gap-1.5"><Truck size={12} /> التوصيل</span>
@@ -26,7 +26,7 @@ export default function OrderSummary({ total }: OrderSummaryProps) {
           </div>
           <div className="border-t border-dashed border-[#80C78D]/40 pt-3 flex justify-between items-center">
             <span className="text-sm font-bold text-[#1A2E44]/60">الإجمالي</span>
-            <span className="text-2xl font-black text-[#47A557]">{fmt(total)} <span className="text-xs font-medium text-[#1A2E44]/40">ر.س</span></span>
+            <span className="text-2xl font-black text-[#47A557]">{fmt(total)} <span className="text-xs font-medium text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-4 h-4 object-contain align-middle" /></span></span>
           </div>
         </div>
 
@@ -40,7 +40,7 @@ export default function OrderSummary({ total }: OrderSummaryProps) {
             </div>
             <div>
               <span className="text-[#47A557] text-2xl font-black">{fmt(total)}</span>
-              <span className="text-[#1A2E44]/40 text-xs font-medium mr-1">ر.س</span>
+              <span className="text-[#1A2E44]/40 text-xs font-medium mr-1"><img src="/money-icon.webp" alt="ر.س" className="inline w-4 h-4 object-contain align-middle" /></span>
             </div>
           </div>
           <p className="text-[#1A2E44]/50 text-[11px] mt-2 relative">دفع كامل بالبطاقة الائتمانية</p>
