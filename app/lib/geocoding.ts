@@ -7,6 +7,13 @@ export interface AddressData {
   state: string;
   district: string;
   postalCode: string;
+  // Extended fields
+  formattedAddress?: string;
+  placeId?: string;
+  street?: string;
+  buildingNumber?: string;
+  additionalNumber?: string;
+  plusCode?: string;
 }
 
 const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!;
@@ -25,11 +32,14 @@ async function reverseGeocodeGoogle(lat: number, lng: number): Promise<Omit<Addr
     if (!city && !state) return null;
     return {
       address: data.results[0].formatted_address ?? "",
+      formattedAddress: data.results[0].formatted_address ?? "",
       country: get("country"),
       city,
       state,
       district: get("sublocality", "sublocality_level_1", "neighborhood"),
       postalCode: get("postal_code"),
+      street: get("route"),
+      buildingNumber: get("street_number"),
     };
   } catch {
     return null;

@@ -2,7 +2,15 @@
 
 import { useState, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { Truck, MapPin, AlertCircle, Save, PenLine, CheckCircle2, Loader2 } from "lucide-react";
+import {
+  Truck,
+  MapPin,
+  AlertCircle,
+  Save,
+  PenLine,
+  CheckCircle2,
+  Loader2,
+} from "lucide-react";
 import { AddressData } from "../../lib/geocoding";
 import type { PendingAddr } from "./AddressMap";
 import { SAUDI_REGIONS } from "../../lib/saudiRegions";
@@ -23,6 +31,13 @@ export interface SelectedAddress extends Partial<AddressData> {
   allowCourierCall: boolean;
   shippingAvailable: boolean;
   shippingCost: number;
+  // Extended fields
+  formattedAddress?: string;
+  placeId?: string;
+  street?: string;
+  buildingNumber?: string;
+  additionalNumber?: string;
+  plusCode?: string;
 }
 
 interface Props {
@@ -42,15 +57,11 @@ const isSaudi = (country: string) => /saudi|arabia|سعودي|السعودية/i
 
 export default function AddressSection({ onChange, onShippingSelect, locked = false }: Props) {
   const [markerPos, setMarkerPos] = useState<{ lat: number; lng: number } | null>(null);
-
-  // هذا الـ ref بيتشارك مع AddressMap — بيكتب فيه مباشرة بعد كل geocode
   const pendingAddrRef = useRef<PendingAddr | null>(null);
   const [pendingAddr, setPendingAddr] = useState<PendingAddr | null>(null);
-
   const [savedAddr, setSavedAddr] = useState<PendingAddr | null>(null);
   const [building, setBuilding] = useState("");
 
-  // manual mode
   const [manualMode, setManualMode] = useState(false);
   const [manualRegion, setManualRegion] = useState("");
   const [manualCity, setManualCity] = useState("");
@@ -61,21 +72,25 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
   const [saveError, setSaveError] = useState("");
   const [geocoding, setGeocoding] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<ShippingOption | null>(null);
+  const [mapQuery, setMapQuery] = useState("");
 
-  const manualCities = SAUDI_REGIONS.find(r => r.region === manualRegion)?.cities ?? [];
+  const manualCities = SAUDI_REGIONS.find((r) => r.region === manualRegion)?.cities ?? [];
   const saved = !!savedAddr;
-  const hasAddress = !!pendingAddr?.address;
   const shortAddress = savedAddr
-    ? ([savedAddr.city || savedAddr.state, savedAddr.district].filter(Boolean).join(" - ") || savedAddr.address || "تم تحديد الموقع")
+    ? savedAddr.formattedAddress ||
+      savedAddr.address ||
+      [savedAddr.city || savedAddr.state, savedAddr.district]
+        .filter(Boolean)
+        .join(" - ") ||
+      "تم تحديد الموقع"
     : null;
 
-  // restore from localStorage
+  // restore from localStorage (map mode only if it had coordinates)
   useEffect(() => {
     try {
       const raw = localStorage.getItem("checkout_address");
       if (!raw) return;
       const p = JSON.parse(raw);
-      // فقط نرجع العنوان اليدوي — عنوان الخريطة لازم يتحدد من جديد
       if (p.savedAddr && p.manualMode) {
         setSavedAddr(p.savedAddr);
         setPendingAddr(p.savedAddr);
@@ -92,33 +107,70 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
         onShippingSelect(p.selectedCompany);
       }
     } catch { /* silent */ }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // بيتنادى من AddressMap بعد ما يكتب في pendingAddrRef — بس لتحديث الـ UI
   const handleAddressChange = (data: PendingAddr) => {
     setPendingAddr(data);
+    const label =
+      data.formattedAddress ||
+      data.address ||
+      [data.street, data.district, data.city, data.state]
+        .filter(Boolean)
+        .join("، ");
+    if (label) setMapQuery(label);
   };
 
-  const handleSearchSelect = (data: PendingAddr & { lat: number; lng: number }) => {
+  const handleSearchSelect = (
+    data: Partial<AddressData> & {
+      shippingAvailable: boolean;
+      shippingCost: number;
+      lat: number;
+      lng: number;
+      formattedAddress?: string;
+      placeId?: string;
+      street?: string;
+      buildingNumber?: string;
+      additionalNumber?: string;
+      plusCode?: string;
+    }
+  ) => {
     const { lat, lng, ...rest } = data;
     setMarkerPos({ lat, lng });
-    pendingAddrRef.current = rest;
-    setPendingAddr(rest);
+    const pending: PendingAddr = {
+      ...rest,
+      latitude: lat,
+      longitude: lng,
+    };
+    pendingAddrRef.current = pending;
+    setPendingAddr(pending);
     setSaveError("");
   };
 
   const handleSaveMap = () => {
     const addr = pendingAddrRef.current ?? pendingAddr;
-    if (!addr?.latitude) { setSaveError("يرجى تحديد موقعك على الخريطة أولاً"); return; }
-    if (geocoding) { setSaveError("جارٍ تحديد العنوان، انتظر لحظة..."); return; }
+    if (!addr?.latitude) {
+      setSaveError("يرجى تحديد موقعك على الخريطة أولاً");
+      return;
+    }
+    if (geocoding) {
+      setSaveError("جارٍ تحديد العنوان، انتظر لحظة...");
+      return;
+    }
     if (addr.country && !isSaudi(addr.country)) {
       setSaveError("نوفر الشحن داخل المملكة العربية السعودية فقط");
       return;
     }
     const finalAddr: PendingAddr = {
       ...addr,
-      address: addr.address || `${addr.latitude?.toFixed(5)}, ${addr.longitude?.toFixed(5)}`,
+      address:
+        addr.formattedAddress ||
+        addr.address ||
+        `${addr.latitude?.toFixed(5)}, ${addr.longitude?.toFixed(5)}`,
+      formattedAddress:
+        addr.formattedAddress ||
+        addr.address ||
+        `${addr.latitude?.toFixed(5)}, ${addr.longitude?.toFixed(5)}`,
       state: addr.state || "",
       city: addr.city || "",
       district: addr.district || "",
@@ -126,9 +178,16 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
     setSaveError("");
     setSavedAddr(finalAddr);
     try {
-      localStorage.setItem("checkout_address", JSON.stringify({ savedAddr: finalAddr, building, manualMode: false }));
+      localStorage.setItem(
+        "checkout_address",
+        JSON.stringify({ savedAddr: finalAddr, building, manualMode: false })
+      );
     } catch { /* silent */ }
-    onChange({ ...finalAddr, buildingDescription: building, allowCourierCall: false });
+    onChange({
+      ...finalAddr,
+      buildingDescription: building,
+      allowCourierCall: false,
+    });
   };
 
   const handleSaveManual = () => {
@@ -139,25 +198,43 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
     setManualErrors(e);
     if (Object.keys(e).length) return;
 
-    const fullAddress = [manualStreet, manualDistrict, manualCity, manualRegion, "المملكة العربية السعودية"].filter(Boolean).join("، ");
-    const data = {
+    const fullAddress = [
+      manualStreet,
+      manualDistrict,
+      manualCity,
+      manualRegion,
+      "المملكة العربية السعودية",
+    ]
+      .filter(Boolean)
+      .join("، ");
+    const data: PendingAddr = {
       address: fullAddress,
+      formattedAddress: fullAddress,
       country: "المملكة العربية السعودية",
       state: manualRegion,
       city: manualCity,
       district: manualDistrict,
+      street: manualStreet,
       shippingAvailable: true,
       shippingCost: 0,
     };
     setSavedAddr(data);
     setSaveError("");
     try {
-      localStorage.setItem("checkout_address", JSON.stringify({
-        savedAddr: data, building, manualMode: true,
-        manualRegion, manualCity, manualDistrict, manualStreet,
-      }));
+      localStorage.setItem(
+        "checkout_address",
+        JSON.stringify({
+          savedAddr: data,
+          building,
+          manualMode: true,
+          manualRegion,
+          manualCity,
+          manualDistrict,
+          manualStreet,
+        })
+      );
     } catch { /* silent */ }
-    onChange({ ...data, buildingDescription: manualDistrict, allowCourierCall: false });
+    onChange({ ...data, buildingDescription: building, allowCourierCall: false });
   };
 
   const handleEdit = () => {
@@ -179,7 +256,6 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
 
   return (
     <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-4" dir="rtl">
-
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -193,7 +269,10 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
           </div>
         </div>
         {saved && !locked && (
-          <button onClick={handleEdit} className="text-[11px] sm:text-xs font-bold text-gray-400 hover:text-[#1A2E44] transition">
+          <button
+            onClick={handleEdit}
+            className="text-[11px] sm:text-xs font-bold text-gray-400 hover:text-[#1A2E44] transition"
+          >
             تعديل
           </button>
         )}
@@ -205,13 +284,21 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
           <div className="flex gap-2">
             <button
               onClick={() => { setManualMode(false); setSaveError(""); }}
-              className={`flex-1 py-2 text-[11px] sm:text-xs font-black border transition flex items-center justify-center gap-1.5 ${!manualMode ? "bg-[#1A2E44] text-white border-[#1A2E44]" : "bg-white text-gray-400 border-gray-200 hover:border-gray-300"}`}
+              className={`flex-1 py-2 text-[11px] sm:text-xs font-black border transition flex items-center justify-center gap-1.5 ${
+                !manualMode
+                  ? "bg-[#1A2E44] text-white border-[#1A2E44]"
+                  : "bg-white text-gray-400 border-gray-200 hover:border-gray-300"
+              }`}
             >
               <MapPin size={12} /> الخريطة
             </button>
             <button
               onClick={() => { setManualMode(true); setSaveError(""); }}
-              className={`flex-1 py-2 text-[11px] sm:text-xs font-black border transition flex items-center justify-center gap-1.5 ${manualMode ? "bg-[#1A2E44] text-white border-[#1A2E44]" : "bg-white text-gray-400 border-gray-200 hover:border-gray-300"}`}
+              className={`flex-1 py-2 text-[11px] sm:text-xs font-black border transition flex items-center justify-center gap-1.5 ${
+                manualMode
+                  ? "bg-[#1A2E44] text-white border-[#1A2E44]"
+                  : "bg-white text-gray-400 border-gray-200 hover:border-gray-300"
+              }`}
             >
               <PenLine size={12} /> إدخال يدوي
             </button>
@@ -220,38 +307,41 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
           {/* MAP MODE */}
           {!manualMode && (
             <>
-              <AddressSearch onSelect={handleSearchSelect} />
-              <div className="border border-gray-100 overflow-hidden shadow-sm">
-                <AddressMap markerPos={markerPos} setMarkerPos={setMarkerPos} onAddressChange={handleAddressChange} pendingRef={pendingAddrRef} onGeocodingChange={setGeocoding} onNewClick={() => setSaveError("")} />
+              <AddressSearch onSelect={handleSearchSelect} externalQuery={mapQuery} />
+              <div className="border border-gray-100 shadow-sm overflow-hidden rounded-lg">
+                <AddressMap
+                  markerPos={markerPos}
+                  setMarkerPos={setMarkerPos}
+                  onAddressChange={handleAddressChange}
+                  pendingRef={pendingAddrRef}
+                  onGeocodingChange={setGeocoding}
+                  onNewClick={() => setSaveError("")}
+                />
               </div>
+
               {pendingAddr?.latitude && (
-                <div className={`flex items-center gap-1.5 px-3 py-2 border text-[11px] font-medium ${
-                  geocoding
-                    ? "bg-blue-50 border-blue-100 text-blue-600"
-                    : pendingAddr.country && !isSaudi(pendingAddr.country)
-                    ? "bg-red-50 border-red-100 text-red-600"
-                    : "bg-green-50 border-green-100 text-green-700"
-                }`}>
+                <div
+                  className={`flex items-center gap-1.5 px-3 py-2 border text-[11px] font-medium ${
+                    geocoding
+                      ? "bg-blue-50 border-blue-100 text-blue-600"
+                      : pendingAddr.country && !isSaudi(pendingAddr.country)
+                      ? "bg-red-50 border-red-100 text-red-600"
+                      : "bg-green-50 border-green-100 text-green-700"
+                  }`}
+                >
                   <CheckCircle2 size={12} className="shrink-0" />
                   {geocoding
                     ? "جارٍ تحديد العنوان..."
                     : pendingAddr.country && !isSaudi(pendingAddr.country)
                     ? `هذا الموقع خارج المملكة (${pendingAddr.country})`
-                    : [pendingAddr.state, pendingAddr.city, pendingAddr.district].filter(Boolean).join(" - ") || pendingAddr.address
-                  }
+                    : [pendingAddr.state, pendingAddr.city, pendingAddr.district]
+                        .filter(Boolean)
+                        .join(" - ") ||
+                      pendingAddr.formattedAddress ||
+                      pendingAddr.address}
                 </div>
               )}
-              <div>
-                <p className="text-[11px] sm:text-xs font-bold text-gray-500 mb-1">
-                  وصف المبنى / المكان <span className="font-normal text-gray-300">(اختياري)</span>
-                </p>
-                <input
-                  value={building}
-                  onChange={e => setBuilding(e.target.value)}
-                  placeholder="مثال: برج المملكة، حي النزهة..."
-                  className="w-full px-3 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-200 focus:border-[#47A557] focus:outline-none transition placeholder:text-gray-200"
-                />
-              </div>
+
             </>
           )}
 
@@ -267,38 +357,74 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
               <MField label="المنطقة" error={manualErrors.region} required>
                 <select
                   value={manualRegion}
-                  onChange={e => { setManualRegion(e.target.value); setManualCity(""); setManualErrors(p => ({ ...p, region: "" })); }}
+                  onChange={(e) => {
+                    setManualRegion(e.target.value);
+                    setManualCity("");
+                    setManualErrors((p) => ({ ...p, region: "" }));
+                  }}
                   className={sel(manualErrors.region)}
                 >
                   <option value="">اختر المنطقة</option>
-                  {SAUDI_REGIONS.map(r => <option key={r.region} value={r.region}>{r.region}</option>)}
+                  {SAUDI_REGIONS.map((r) => (
+                    <option key={r.region} value={r.region}>
+                      {r.region}
+                    </option>
+                  ))}
                 </select>
               </MField>
 
               <MField label="المدينة" error={manualErrors.city} required>
                 <select
                   value={manualCity}
-                  onChange={e => { setManualCity(e.target.value); setManualErrors(p => ({ ...p, city: "" })); }}
+                  onChange={(e) => {
+                    setManualCity(e.target.value);
+                    setManualErrors((p) => ({ ...p, city: "" }));
+                  }}
                   disabled={!manualRegion}
                   className={sel(manualErrors.city)}
                 >
                   <option value="">اختر المدينة</option>
-                  {manualCities.map(c => <option key={c} value={c}>{c}</option>)}
+                  {manualCities.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
                 </select>
               </MField>
 
               <MField label="الحي" error="">
-                <input value={manualDistrict} onChange={e => setManualDistrict(e.target.value)} placeholder="مثال: حي النزهة" className={inp("")} />
+                <input
+                  value={manualDistrict}
+                  onChange={(e) => setManualDistrict(e.target.value)}
+                  placeholder="مثال: حي النزهة"
+                  className={inp("")}
+                />
               </MField>
 
               <MField label="العنوان بالتفصيل" error={manualErrors.street} required>
                 <input
                   value={manualStreet}
-                  onChange={e => { setManualStreet(e.target.value); setManualErrors(p => ({ ...p, street: "" })); }}
+                  onChange={(e) => {
+                    setManualStreet(e.target.value);
+                    setManualErrors((p) => ({ ...p, street: "" }));
+                  }}
                   placeholder="الشارع، رقم المبنى..."
                   className={inp(manualErrors.street)}
                 />
               </MField>
+
+              <div>
+                <p className="text-[11px] sm:text-xs font-bold text-gray-500 mb-1">
+                  وصف المبنى / المكان{" "}
+                  <span className="font-normal text-gray-300">(اختياري)</span>
+                </p>
+                <input
+                  value={building}
+                  onChange={(e) => setBuilding(e.target.value)}
+                  placeholder="مثال: الدور الثالث، شقة 12، بجوار مسجد..."
+                  className={inp("")}
+                />
+              </div>
             </div>
           )}
 
@@ -314,13 +440,17 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
             className="w-full py-2.5 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1.5 hover:opacity-90 transition disabled:opacity-60"
             style={{ background: "linear-gradient(135deg,#47A557,#129928)" }}
           >
-            {geocoding && !manualMode ? <Loader2 size={12} className="animate-spin" /> : <Save size={12} />}
+            {geocoding && !manualMode ? (
+              <Loader2 size={12} className="animate-spin" />
+            ) : (
+              <Save size={12} />
+            )}
             {geocoding && !manualMode ? "جارٍ تحديد العنوان..." : "حفظ العنوان"}
           </button>
         </>
       )}
 
-      {/* Shipping — تظهر فقط بعد حفظ عنوان سعودي */}
+      {/* Shipping */}
       <div className="space-y-2 pt-1">
         <div className="border-t border-gray-100" />
         <div className="flex items-center justify-between pb-1">
@@ -350,21 +480,26 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
         </div>
 
         {!saved && (
-          <p className="text-[11px] sm:text-xs text-gray-400">أكمل تحديد العنوان أولاً لاختيار شركة الشحن</p>
+          <p className="text-[11px] sm:text-xs text-gray-400">
+            أكمل تحديد العنوان أولاً لاختيار شركة الشحن
+          </p>
         )}
 
         {saved && !selectedCompany && (
           <ShippingCompanyPicker
             options={SHIPPING_COMPANIES}
             selected={null}
-            onSelect={opt => {
+            onSelect={(opt) => {
               setSelectedCompany(opt);
               onShippingSelect(opt);
               try {
                 const raw = localStorage.getItem("checkout_address");
                 if (raw) {
                   const p = JSON.parse(raw);
-                  localStorage.setItem("checkout_address", JSON.stringify({ ...p, selectedCompany: opt }));
+                  localStorage.setItem(
+                    "checkout_address",
+                    JSON.stringify({ ...p, selectedCompany: opt })
+                  );
                 }
               } catch { /* silent */ }
             }}
@@ -378,16 +513,34 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
                 src={selectedCompany.logo}
                 alt={selectedCompany.companyName}
                 className="object-contain w-full h-full p-1"
-                onError={e => { (e.target as HTMLImageElement).style.display = "none"; }}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                }}
               />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs sm:text-sm font-bold text-[#1A2E44]">{selectedCompany.companyName}</p>
-              <p className="text-[10px] sm:text-[11px] text-gray-400 mt-0.5">{selectedCompany.workDays}</p>
+              <p className="text-xs sm:text-sm font-bold text-[#1A2E44]">
+                {selectedCompany.companyName}
+              </p>
+              <p className="text-[10px] sm:text-[11px] text-gray-400 mt-0.5">
+                {selectedCompany.workDays}
+              </p>
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
-              <span className="text-[11px] sm:text-xs text-gray-400 line-through">24 <img src="/money-icon.webp" alt="ر.س" className="inline w-6 h-6 object-contain align-middle" /></span>
-              <span className="text-[9px] sm:text-[10px] font-black text-white px-1.5 py-0.5 rounded-md" style={{ background: "#47A557" }}>مجاني</span>
+              <span className="text-[11px] sm:text-xs text-gray-400 line-through">
+                24{" "}
+                <img
+                  src="/money-icon.webp"
+                  alt="ر.س"
+                  className="inline w-6 h-6 object-contain align-middle"
+                />
+              </span>
+              <span
+                className="text-[9px] sm:text-[10px] font-black text-white px-1.5 py-0.5 rounded-md"
+                style={{ background: "#47A557" }}
+              >
+                مجاني
+              </span>
             </div>
           </div>
         )}
@@ -397,17 +550,33 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
 }
 
 function sel(error?: string) {
-  return `w-full px-3 py-2 sm:py-2.5 text-xs sm:text-sm border focus:outline-none transition bg-white ${error ? "border-red-300 bg-red-50" : "border-gray-200 focus:border-[#47A557]"}`;
+  return `w-full px-3 py-2 sm:py-2.5 text-xs sm:text-sm border focus:outline-none transition bg-white ${
+    error ? "border-red-300 bg-red-50" : "border-gray-200 focus:border-[#47A557]"
+  }`;
 }
 function inp(error?: string) {
-  return `w-full px-3 py-2 sm:py-2.5 text-xs sm:text-sm border focus:outline-none transition placeholder:text-gray-200 ${error ? "border-red-300 bg-red-50" : "border-gray-200 focus:border-[#47A557]"}`;
+  return `w-full px-3 py-2 sm:py-2.5 text-xs sm:text-sm border focus:outline-none transition placeholder:text-gray-200 ${
+    error ? "border-red-300 bg-red-50" : "border-gray-200 focus:border-[#47A557]"
+  }`;
 }
-function MField({ label, error, required, children }: { label: string; error: string; required?: boolean; children: React.ReactNode }) {
+function MField({
+  label,
+  error,
+  required,
+  children,
+}: {
+  label: string;
+  error: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <div>
       <label className="text-[11px] sm:text-xs font-bold text-gray-500 mb-1 flex items-center gap-1">
         {label} {required && <span className="text-red-400">*</span>}
-        {error && <span className="text-red-500 mr-auto text-[10px] sm:text-[11px]">⚠ {error}</span>}
+        {error && (
+          <span className="text-red-500 mr-auto text-[10px] sm:text-[11px]">⚠ {error}</span>
+        )}
       </label>
       {children}
     </div>

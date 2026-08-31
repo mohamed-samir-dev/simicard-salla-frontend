@@ -136,7 +136,7 @@ export default function Navbar() {
             <Link href="/" className="flex items-center gap-3 group">
               {logo ? (
                 <Image src={logo} alt={nameAr || "logo"} width={180} height={72}
-                  className="object-contain h-14 w-auto lg:h-16 sm:scale-100 scale-125 origin-right" unoptimized />
+                  className="object-contain h-8 w-auto sm:h-12 lg:h-16" unoptimized />
               ) : (
                 <div className="w-11 h-11 rounded-2xl border-2 border-[#47A557] flex items-center justify-center shrink-0">
                   <Wifi className="w-5 h-5 text-[#47A557]" />

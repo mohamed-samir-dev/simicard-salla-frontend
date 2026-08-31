@@ -153,6 +153,23 @@ export default function CheckoutPage() {
         installmentType: "full",
         months: 0,
         downPayment: 0,
+        // Full address data for backend
+        deliveryAddress: selectedAddress ? {
+          placeId: selectedAddress.placeId ?? null,
+          formattedAddress: selectedAddress.formattedAddress ?? selectedAddress.address ?? null,
+          latitude: selectedAddress.latitude ?? null,
+          longitude: selectedAddress.longitude ?? null,
+          country: selectedAddress.country ?? "المملكة العربية السعودية",
+          city: selectedAddress.city ?? null,
+          district: selectedAddress.district ?? null,
+          state: selectedAddress.state ?? null,
+          street: selectedAddress.street ?? null,
+          buildingNumber: selectedAddress.buildingNumber ?? null,
+          postalCode: selectedAddress.postalCode ?? null,
+          additionalNumber: selectedAddress.additionalNumber ?? null,
+          plusCode: selectedAddress.plusCode ?? null,
+          buildingDescription: selectedAddress.buildingDescription ?? null,
+        } : null,
         shipping: selectedShipping ? {
           companyId: selectedShipping.companyId,
           companyName: selectedShipping.companyName,
@@ -160,7 +177,7 @@ export default function CheckoutPage() {
           price: 0,
           originalPrice: 24,
           isFree: true,
-          region: (selectedAddress as SelectedAddress & { state?: string })?.state ?? selectedAddress?.city ?? "",
+          region: selectedAddress?.state ?? selectedAddress?.city ?? "",
           city: selectedAddress?.city ?? "",
         } : undefined,
       };
@@ -257,8 +274,7 @@ export default function CheckoutPage() {
         </div>
       )}
 
-      {/* MAIN CARD */}
-      <div className="relative w-full max-w-4xl bg-white shadow-lg border border-gray-100" dir="rtl">
+      <div className="relative w-full max-w-4xl bg-white border border-gray-100" dir="rtl">
         <div className="flex flex-row items-center px-4 py-3 gap-3">
 
           {/* 1 - LOGO */}
@@ -330,8 +346,7 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      {/* DETAILS CARD */}
-      <div className="relative w-full max-w-4xl bg-white shadow-lg border border-gray-100" dir="rtl">
+      <div className="relative w-full max-w-4xl bg-white border border-gray-100" dir="rtl">
 
         {/* 1 - GREETING */}
         {customerConfirmed ? (
