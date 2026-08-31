@@ -199,7 +199,7 @@ export default function ProductCard({
               <div className="flex flex-col gap-0.5">
                 {hasDiscount && (
                   <span className="text-[11px] line-through leading-none text-gray-400">
-                    {fmt(originalPrice)} <img src="/money-icon.webp" alt="ر.س" className="inline w-5 h-5 object-contain align-middle" />
+                    {fmt(originalPrice)} <img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" />
                   </span>
                 )}
                 <div className="flex items-baseline gap-1">
@@ -209,7 +209,7 @@ export default function ProductCard({
                   >
                     {fmt(displayPrice!)}
                   </span>
-                  <img src="/money-icon.webp" alt="ر.س" className="w-5 sm:w-7 h-5 sm:h-7 object-contain mb-0.5" />
+                  <img src="/money-icon.webp" alt="ر.س" className="w-8 sm:w-10 h-8 sm:h-10 object-contain mb-0.5" />
                 </div>
               </div>
 
@@ -229,7 +229,7 @@ export default function ProductCard({
                       color: "#fca5a5",
                     }}
                   >
-                    {fmt(savings)} <img src="/money-icon.webp" alt="ر.س" className="inline w-5 h-5 object-contain align-middle" />
+                    {fmt(savings)} <img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" />
                   </div>
                 </motion.div>
               )}

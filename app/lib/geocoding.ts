@@ -11,7 +11,7 @@ export interface AddressData {
 
 const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!;
 
-export async function reverseGeocode(lat: number, lng: number): Promise<Omit<AddressData, "latitude" | "longitude"> | null> {
+async function reverseGeocodeGoogle(lat: number, lng: number): Promise<Omit<AddressData, "latitude" | "longitude"> | null> {
   try {
     const res = await fetch(
       `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&language=ar&key=${KEY}`
@@ -20,17 +20,48 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Omit<Add
     if (data.status !== "OK" || !data.results?.length) return null;
     const components: { long_name: string; types: string[] }[] = data.results[0].address_components;
     const get = (...types: string[]) => components.find(c => types.some(t => c.types.includes(t)))?.long_name ?? "";
+    const city = get("locality", "administrative_area_level_2");
+    const state = get("administrative_area_level_1");
+    if (!city && !state) return null;
     return {
       address: data.results[0].formatted_address ?? "",
       country: get("country"),
-      city: get("locality", "administrative_area_level_2"),
-      state: get("administrative_area_level_1"),
+      city,
+      state,
       district: get("sublocality", "sublocality_level_1", "neighborhood"),
       postalCode: get("postal_code"),
     };
   } catch {
     return null;
   }
+}
+
+async function reverseGeocodeNominatim(lat: number, lng: number): Promise<Omit<AddressData, "latitude" | "longitude"> | null> {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=ar`,
+      { headers: { "User-Agent": "sahlnaha-app" } }
+    );
+    const data = await res.json();
+    if (!data?.address) return null;
+    const a = data.address;
+    return {
+      address: data.display_name ?? "",
+      country: a.country ?? "",
+      city: a.city || a.town || a.village || a.county || "",
+      state: a.state || a.region || "",
+      district: a.suburb || a.neighbourhood || a.quarter || "",
+      postalCode: a.postcode ?? "",
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function reverseGeocode(lat: number, lng: number): Promise<Omit<AddressData, "latitude" | "longitude"> | null> {
+  const google = await reverseGeocodeGoogle(lat, lng);
+  if (google) return google;
+  return reverseGeocodeNominatim(lat, lng);
 }
 
 export async function searchAddress(query: string): Promise<{ display_name: string; lat: string; lon: string }[]> {

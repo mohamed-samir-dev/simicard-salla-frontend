@@ -65,10 +65,10 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
       <div className="rounded-2xl border border-[#DCEFE8] p-4 bg-[#DCEFE8]/40">
         <div className="flex items-baseline gap-3 flex-wrap">
           <span className="text-3xl sm:text-4xl font-black text-[#47A557]">{fmt(finalPrice)}</span>
-          <span className="text-sm font-bold text-gray-500"><img src="/money-icon.webp" alt="ر.س" className="inline w-5 h-5 object-contain align-middle" /></span>
+          <span className="text-sm font-bold text-gray-500"><img src="/money-icon.webp" alt="ر.س" className="inline w-6 h-6 object-contain align-middle" /></span>
           {hasDiscount && (
             <>
-              <span className="text-sm text-gray-400 line-through">{fmt(originalPrice)} <img src="/money-icon.webp" alt="ر.س" className="inline w-4 h-4 object-contain align-middle" /></span>
+              <span className="text-sm text-gray-400 line-through">{fmt(originalPrice)} <img src="/money-icon.webp" alt="ر.س" className="inline w-6 h-6 object-contain align-middle" /></span>
               <span className="text-xs font-black text-white bg-[#47A557] px-2 py-0.5 rounded-md">
                 وفّر {savingsPercent}%
               </span>
@@ -175,7 +175,7 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
             {product.installment.downPayment && (
               <div className="flex items-center justify-between">
                 <span className="text-xs text-gray-500">الدفعة الأولى</span>
-                <span className="text-base font-black text-[#47A557]">{fmt(product.installment.downPayment)} <span className="text-xs text-gray-500"><img src="/money-icon.webp" alt="ر.س" className="inline w-4 h-4 object-contain align-middle" /></span></span>
+                <span className="text-base font-black text-[#47A557]">{fmt(product.installment.downPayment)} <span className="text-xs text-gray-500"><img src="/money-icon.webp" alt="ر.س" className="inline w-6 h-6 object-contain align-middle" /></span></span>
               </div>
             )}
             {product.installment.note && (

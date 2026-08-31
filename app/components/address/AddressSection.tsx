@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { Truck, MapPin, AlertCircle, Save, PenLine, CheckCircle2 } from "lucide-react";
+import { Truck, MapPin, AlertCircle, Save, PenLine, CheckCircle2, Loader2 } from "lucide-react";
 import { AddressData } from "../../lib/geocoding";
+import type { PendingAddr } from "./AddressMap";
 import { SAUDI_REGIONS } from "../../lib/saudiRegions";
 import ShippingCompanyPicker from "./ShippingCompanyPicker";
 
@@ -42,12 +43,11 @@ const isSaudi = (country: string) => /saudi|arabia|سعودي|السعودية/i
 export default function AddressSection({ onChange, onShippingSelect, locked = false }: Props) {
   const [markerPos, setMarkerPos] = useState<{ lat: number; lng: number } | null>(null);
 
-  // pendingAddr = العنوان اللي جاي من الخريطة/البحث قبل الحفظ
-  const pendingAddrRef = useRef<(Partial<AddressData> & { shippingAvailable: boolean; shippingCost: number }) | null>(null);
-  const [pendingAddr, setPendingAddr] = useState<(Partial<AddressData> & { shippingAvailable: boolean; shippingCost: number }) | null>(null);
+  // هذا الـ ref بيتشارك مع AddressMap — بيكتب فيه مباشرة بعد كل geocode
+  const pendingAddrRef = useRef<PendingAddr | null>(null);
+  const [pendingAddr, setPendingAddr] = useState<PendingAddr | null>(null);
 
-  // savedAddr = العنوان بعد ما يضغط "حفظ"
-  const [savedAddr, setSavedAddr] = useState<(Partial<AddressData> & { shippingAvailable: boolean; shippingCost: number }) | null>(null);
+  const [savedAddr, setSavedAddr] = useState<PendingAddr | null>(null);
   const [building, setBuilding] = useState("");
 
   // manual mode
@@ -59,13 +59,14 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
   const [manualErrors, setManualErrors] = useState<Record<string, string>>({});
 
   const [saveError, setSaveError] = useState("");
+  const [geocoding, setGeocoding] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<ShippingOption | null>(null);
 
   const manualCities = SAUDI_REGIONS.find(r => r.region === manualRegion)?.cities ?? [];
   const saved = !!savedAddr;
   const hasAddress = !!pendingAddr?.address;
   const shortAddress = savedAddr
-    ? [savedAddr.state, savedAddr.city, savedAddr.district].filter(Boolean).join(" - ")
+    ? ([savedAddr.city || savedAddr.state, savedAddr.district].filter(Boolean).join(" - ") || savedAddr.address || "تم تحديد الموقع")
     : null;
 
   // restore from localStorage
@@ -74,7 +75,8 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
       const raw = localStorage.getItem("checkout_address");
       if (!raw) return;
       const p = JSON.parse(raw);
-      if (p.savedAddr) {
+      // فقط نرجع العنوان اليدوي — عنوان الخريطة لازم يتحدد من جديد
+      if (p.savedAddr && p.manualMode) {
         setSavedAddr(p.savedAddr);
         setPendingAddr(p.savedAddr);
         pendingAddrRef.current = p.savedAddr;
@@ -93,14 +95,12 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // الخريطة/البحث بيحدّث pendingAddr فقط — مش بيمس savedAddr
-  const handleAddressChange = (data: Partial<AddressData> & { shippingAvailable: boolean; shippingCost: number }) => {
-    pendingAddrRef.current = data;
+  // بيتنادى من AddressMap بعد ما يكتب في pendingAddrRef — بس لتحديث الـ UI
+  const handleAddressChange = (data: PendingAddr) => {
     setPendingAddr(data);
-    setSaveError("");
   };
 
-  const handleSearchSelect = (data: Partial<AddressData> & { shippingAvailable: boolean; shippingCost: number; lat: number; lng: number }) => {
+  const handleSearchSelect = (data: PendingAddr & { lat: number; lng: number }) => {
     const { lat, lng, ...rest } = data;
     setMarkerPos({ lat, lng });
     pendingAddrRef.current = rest;
@@ -109,18 +109,26 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
   };
 
   const handleSaveMap = () => {
-    const addr = pendingAddrRef.current;
-    if (!addr?.address) { setSaveError("يرجى تحديد موقعك على الخريطة أولاً"); return; }
+    const addr = pendingAddrRef.current ?? pendingAddr;
+    if (!addr?.latitude) { setSaveError("يرجى تحديد موقعك على الخريطة أولاً"); return; }
+    if (geocoding) { setSaveError("جارٍ تحديد العنوان، انتظر لحظة..."); return; }
     if (addr.country && !isSaudi(addr.country)) {
       setSaveError("نوفر الشحن داخل المملكة العربية السعودية فقط");
       return;
     }
+    const finalAddr: PendingAddr = {
+      ...addr,
+      address: addr.address || `${addr.latitude?.toFixed(5)}, ${addr.longitude?.toFixed(5)}`,
+      state: addr.state || "",
+      city: addr.city || "",
+      district: addr.district || "",
+    };
     setSaveError("");
-    setSavedAddr(addr);
+    setSavedAddr(finalAddr);
     try {
-      localStorage.setItem("checkout_address", JSON.stringify({ savedAddr: addr, building, manualMode: false }));
+      localStorage.setItem("checkout_address", JSON.stringify({ savedAddr: finalAddr, building, manualMode: false }));
     } catch { /* silent */ }
-    onChange({ ...addr, buildingDescription: building, allowCourierCall: false });
+    onChange({ ...finalAddr, buildingDescription: building, allowCourierCall: false });
   };
 
   const handleSaveManual = () => {
@@ -154,7 +162,17 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
 
   const handleEdit = () => {
     setSavedAddr(null);
+    setPendingAddr(null);
+    pendingAddrRef.current = null;
+    setMarkerPos(null);
     setSelectedCompany(null);
+    setManualMode(false);
+    setManualRegion("");
+    setManualCity("");
+    setManualDistrict("");
+    setManualStreet("");
+    setBuilding("");
+    setSaveError("");
     onShippingSelect(null);
     localStorage.removeItem("checkout_address");
   };
@@ -204,12 +222,23 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
             <>
               <AddressSearch onSelect={handleSearchSelect} />
               <div className="border border-gray-100 overflow-hidden shadow-sm">
-                <AddressMap markerPos={markerPos} setMarkerPos={setMarkerPos} onAddressChange={handleAddressChange} />
+                <AddressMap markerPos={markerPos} setMarkerPos={setMarkerPos} onAddressChange={handleAddressChange} pendingRef={pendingAddrRef} onGeocodingChange={setGeocoding} onNewClick={() => setSaveError("")} />
               </div>
-              {hasAddress && pendingAddr && (
-                <div className="flex items-center gap-1.5 px-3 py-2 bg-green-50 border border-green-100 text-[11px] text-green-700 font-medium">
+              {pendingAddr?.latitude && (
+                <div className={`flex items-center gap-1.5 px-3 py-2 border text-[11px] font-medium ${
+                  geocoding
+                    ? "bg-blue-50 border-blue-100 text-blue-600"
+                    : pendingAddr.country && !isSaudi(pendingAddr.country)
+                    ? "bg-red-50 border-red-100 text-red-600"
+                    : "bg-green-50 border-green-100 text-green-700"
+                }`}>
                   <CheckCircle2 size={12} className="shrink-0" />
-                  {[pendingAddr.state, pendingAddr.city, pendingAddr.district].filter(Boolean).join(" - ")}
+                  {geocoding
+                    ? "جارٍ تحديد العنوان..."
+                    : pendingAddr.country && !isSaudi(pendingAddr.country)
+                    ? `هذا الموقع خارج المملكة (${pendingAddr.country})`
+                    : [pendingAddr.state, pendingAddr.city, pendingAddr.district].filter(Boolean).join(" - ") || pendingAddr.address
+                  }
                 </div>
               )}
               <div>
@@ -281,10 +310,12 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
 
           <button
             onClick={manualMode ? handleSaveManual : handleSaveMap}
-            className="w-full py-2.5 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1.5 hover:opacity-90 transition"
+            disabled={geocoding && !manualMode}
+            className="w-full py-2.5 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1.5 hover:opacity-90 transition disabled:opacity-60"
             style={{ background: "linear-gradient(135deg,#47A557,#129928)" }}
           >
-            <Save size={12} /> حفظ العنوان
+            {geocoding && !manualMode ? <Loader2 size={12} className="animate-spin" /> : <Save size={12} />}
+            {geocoding && !manualMode ? "جارٍ تحديد العنوان..." : "حفظ العنوان"}
           </button>
         </>
       )}
@@ -355,7 +386,7 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
               <p className="text-[10px] sm:text-[11px] text-gray-400 mt-0.5">{selectedCompany.workDays}</p>
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
-              <span className="text-[11px] sm:text-xs text-gray-400 line-through">24 <img src="/money-icon.webp" alt="ر.س" className="inline w-3.5 h-3.5 object-contain align-middle" /></span>
+              <span className="text-[11px] sm:text-xs text-gray-400 line-through">24 <img src="/money-icon.webp" alt="ر.س" className="inline w-6 h-6 object-contain align-middle" /></span>
               <span className="text-[9px] sm:text-[10px] font-black text-white px-1.5 py-0.5 rounded-md" style={{ background: "#47A557" }}>مجاني</span>
             </div>
           </div>

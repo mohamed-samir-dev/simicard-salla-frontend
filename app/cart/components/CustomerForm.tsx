@@ -100,7 +100,7 @@ export default function CustomerForm({ initialData, total, onSubmit }: CustomerF
                 </div>
                 <div className="border-t border-[#80C78D]/30 pt-2 flex justify-between items-center">
                   <span className="text-[#1A2E44]/50 text-xs">الإجمالي</span>
-                  <span className="text-lg font-black text-[#47A557]">{fmt(total)} <span className="text-xs font-medium text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-4 h-4 object-contain align-middle" /></span></span>
+                  <span className="text-lg font-black text-[#47A557]">{fmt(total)} <span className="text-xs font-medium text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" /></span></span>
                 </div>
               </div>
               <div className="flex items-center justify-center gap-2 rounded-xl border border-[#80C78D]/40 px-4 py-3 mb-4" style={{ background: "#DCEFE8" }}>

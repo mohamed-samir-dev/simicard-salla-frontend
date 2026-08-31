@@ -130,7 +130,7 @@ export default function ProductPageClient({ id }: { id: string }) {
             <p className="text-xs text-gray-400 truncate flex-1 ml-3">{product.name}</p>
             <div className="flex items-baseline gap-1">
               <span className="text-xl font-black text-[#47A557]">{finalPrice.toLocaleString("en-US")}</span>
-              <span className="text-xs text-gray-400"><img src="/money-icon.webp" alt="ر.س" className="inline w-4 h-4 object-contain align-middle" /></span>
+              <span className="text-xs text-gray-400"><img src="/money-icon.webp" alt="ر.س" className="inline w-6 h-6 object-contain align-middle" /></span>
             </div>
           </div>
           <motion.button

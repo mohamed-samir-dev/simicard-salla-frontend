@@ -295,10 +295,10 @@ export default function CheckoutPage() {
           <div className="flex flex-col items-end gap-1 shrink-0">
             <p className="text-lg sm:text-3xl font-black text-[#1A2E44] leading-none">
               {fmt(finalTotal)}
-              <span className="text-xs sm:text-sm font-medium text-gray-400 mr-1"><img src="/money-icon.webp" alt="ر.س" className="inline w-4 sm:w-5 h-4 sm:h-5 object-contain align-middle" /></span>
+              <span className="text-xs sm:text-sm font-medium text-gray-400 mr-1"><img src="/money-icon.webp" alt="ر.س" className="inline w-6 sm:w-7 h-6 sm:h-7 object-contain align-middle" /></span>
             </p>
             {discount > 0 && (
-              <p className="text-[9px] sm:text-[10px] text-gray-500 font-bold">وفّرت {fmt(discount)} <img src="/money-icon.webp" alt="ر.س" className="inline w-3.5 h-3.5 object-contain align-middle" /></p>
+              <p className="text-[9px] sm:text-[10px] text-gray-500 font-bold">وفّرت {fmt(discount)} <img src="/money-icon.webp" alt="ر.س" className="inline w-6 h-6 object-contain align-middle" /></p>
             )}
             <button
               onClick={() => setCouponOpen(v => !v)}

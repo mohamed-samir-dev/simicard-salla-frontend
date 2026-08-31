@@ -5,10 +5,15 @@ import { Locate, Loader2 } from "lucide-react";
 import { reverseGeocode, AddressData } from "../../lib/geocoding";
 import { checkShipping } from "../../lib/shippingZones";
 
+export type PendingAddr = Partial<AddressData> & { shippingAvailable: boolean; shippingCost: number };
+
 interface Props {
   markerPos: { lat: number; lng: number } | null;
   setMarkerPos: (pos: { lat: number; lng: number }) => void;
-  onAddressChange: (data: Partial<AddressData> & { shippingAvailable: boolean; shippingCost: number }) => void;
+  onAddressChange: (data: PendingAddr) => void;
+  pendingRef: React.MutableRefObject<PendingAddr | null>;
+  onGeocodingChange?: (loading: boolean) => void;
+  onNewClick?: () => void;
 }
 
 const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!;
@@ -20,20 +25,14 @@ declare global {
   }
 }
 
-export default function AddressMap({ markerPos, setMarkerPos, onAddressChange }: Props) {
+export default function AddressMap({ markerPos, setMarkerPos, onAddressChange, pendingRef, onGeocodingChange, onNewClick }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const markerRef = useRef<google.maps.Marker | null>(null);
   const [locating, setLocating] = useState(false);
   const [locError, setLocError] = useState("");
 
-  // كل الـ callbacks في refs عشان الـ map listener يشوف أحدث نسخة دايماً
-  const onAddressChangeRef = useRef(onAddressChange);
-  const setMarkerPosRef = useRef(setMarkerPos);
-  useEffect(() => { onAddressChangeRef.current = onAddressChange; }, [onAddressChange]);
-  useEffect(() => { setMarkerPosRef.current = setMarkerPos; }, [setMarkerPos]);
-
-  const placeMarkerRef = useRef((lat: number, lng: number) => {
+  const placeMarker = (lat: number, lng: number) => {
     const map = mapRef.current;
     if (!map) return;
     if (markerRef.current) {
@@ -42,23 +41,39 @@ export default function AddressMap({ markerPos, setMarkerPos, onAddressChange }:
       markerRef.current = new window.google.maps.Marker({ position: { lat, lng }, map });
     }
     map.panTo({ lat, lng });
+  };
+
+  const propsRef = useRef({ setMarkerPos, onAddressChange, pendingRef, onGeocodingChange, onNewClick });
+  useEffect(() => {
+    propsRef.current = { setMarkerPos, onAddressChange, pendingRef, onGeocodingChange, onNewClick };
   });
 
-  // handleLatLng كـ ref — الـ map listener بيكلمها دايماً بأحدث نسخة
-  const handleLatLngRef = useRef(async (lat: number, lng: number) => {
-    setMarkerPosRef.current({ lat, lng });
-    placeMarkerRef.current(lat, lng);
-    const parsed = await reverseGeocode(lat, lng);
-    if (parsed) {
-      const shipping = checkShipping(parsed.city, parsed.state);
-      onAddressChangeRef.current({
-        ...parsed,
+  const handleLatLng = async (lat: number, lng: number) => {
+    propsRef.current.onNewClick?.();
+    propsRef.current.setMarkerPos({ lat, lng });
+    placeMarker(lat, lng);
+    propsRef.current.onGeocodingChange?.(true);
+    try {
+      const parsed = await reverseGeocode(lat, lng);
+      const shipping = parsed ? checkShipping(parsed.city, parsed.state) : { available: false, cost: 0 };
+      const data: PendingAddr = {
+        ...(parsed ?? {}),
+        address: parsed?.address || `${lat.toFixed(5)}, ${lng.toFixed(5)}`,
         latitude: lat,
         longitude: lng,
         shippingAvailable: shipping.available,
         shippingCost: shipping.cost,
-      });
+      };
+      propsRef.current.pendingRef.current = data;
+      propsRef.current.onAddressChange(data);
+    } finally {
+      propsRef.current.onGeocodingChange?.(false);
     }
+  };
+
+  const handleLatLngRef = useRef(handleLatLng);
+  useEffect(() => {
+    handleLatLngRef.current = handleLatLng;
   });
 
   useEffect(() => {
@@ -72,7 +87,6 @@ export default function AddressMap({ markerPos, setMarkerPos, onAddressChange }:
         mapTypeControl: false,
         fullscreenControl: false,
       });
-      // الـ listener بيكلم الـ ref مباشرة — مش بيتأثر بأي re-render
       map.addListener("click", (e: google.maps.MapMouseEvent) => {
         if (!e.latLng) return;
         handleLatLngRef.current(e.latLng.lat(), e.latLng.lng());
@@ -93,13 +107,14 @@ export default function AddressMap({ markerPos, setMarkerPos, onAddressChange }:
         document.head.appendChild(script);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // sync marker when search selects a location
   useEffect(() => {
     if (!markerPos || !mapRef.current) return;
     mapRef.current.setZoom(15);
-    placeMarkerRef.current(markerPos.lat, markerPos.lng);
+    placeMarker(markerPos.lat, markerPos.lng);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markerPos]);
 
   const handleCurrentLocation = () => {

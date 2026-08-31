@@ -214,7 +214,7 @@ export default function Navbar() {
                             />
                           )}
                           <span className="flex-1 text-sm text-gray-800 line-clamp-1 font-medium">{p.name}</span>
-                          <span className="text-sm font-bold text-[#47A557] shrink-0">{price.toLocaleString("en-US")} <img src="/money-icon.webp" alt="ر.س" className="inline w-4 h-4 object-contain align-middle" /></span>
+                          <span className="text-sm font-bold text-[#47A557] shrink-0">{price.toLocaleString("en-US")} <img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" /></span>
                         </Link>
                       </li>
                     );
@@ -306,7 +306,7 @@ export default function Navbar() {
                         />
                       )}
                       <span className="flex-1 text-sm text-gray-800 line-clamp-1 font-medium">{p.name}</span>
-                      <span className="text-sm font-bold text-[#47A557] shrink-0">{price.toLocaleString("en-US")} <img src="/money-icon.webp" alt="ر.س" className="inline w-4 h-4 object-contain align-middle" /></span>
+                      <span className="text-sm font-bold text-[#47A557] shrink-0">{price.toLocaleString("en-US")} <img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" /></span>
                     </Link>
                   </li>
                 );
