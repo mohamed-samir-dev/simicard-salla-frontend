@@ -30,7 +30,7 @@ export default function OrderSummary({ total }: OrderSummaryProps) {
           </div>
         </div>
 
-        {/* Pay Banner */
+        {/* Pay Banner */}
         <div className="mx-4 mb-4 rounded-2xl p-4 relative overflow-hidden border border-[#80C78D]/40" style={{ background: "linear-gradient(135deg, #DCEFE8 0%, #c8e8d4 100%)" }}>
           <div className="absolute inset-0 opacity-[0.15]" style={{ backgroundImage: "radial-gradient(circle, #47A557 1px, transparent 1px)", backgroundSize: "16px 16px" }} />
           <div className="relative flex justify-between items-center">
