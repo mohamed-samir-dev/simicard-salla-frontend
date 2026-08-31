@@ -20,15 +20,18 @@ const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!;
 
 declare global {
   interface Window {
-    google: typeof google;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    google: any;
     initGoogleMap?: () => void;
   }
 }
 
 export default function AddressMap({ markerPos, setMarkerPos, onAddressChange, pendingRef, onGeocodingChange, onNewClick }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<google.maps.Map | null>(null);
-  const markerRef = useRef<google.maps.Marker | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mapRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const markerRef = useRef<any>(null);
   const [locating, setLocating] = useState(false);
   const [locError, setLocError] = useState("");
 
@@ -87,7 +90,8 @@ export default function AddressMap({ markerPos, setMarkerPos, onAddressChange, p
         mapTypeControl: false,
         fullscreenControl: false,
       });
-      map.addListener("click", (e: google.maps.MapMouseEvent) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      map.addListener("click", (e: any) => {
         if (!e.latLng) return;
         handleLatLngRef.current(e.latLng.lat(), e.latLng.lng());
       });
