@@ -239,14 +239,14 @@ export default function CartPage() {
         {/* Summary Bar */}
         <div className="rounded-2xl p-4 sm:p-5 mb-6 sm:mb-8 relative overflow-hidden border border-[#80C78D]/40" style={{ background: "linear-gradient(135deg, #DCEFE8 0%, #c8e8d4 100%)" }}>
           <div className="absolute inset-0 opacity-[0.15]" style={{ backgroundImage: "radial-gradient(circle, #47A557 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
-          <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="relative flex flex-row items-center justify-between gap-2">
             <div>
               <p className="text-[#1A2E44]/50 text-xs mb-1">إجمالي الطلب</p>
               <p className="text-3xl sm:text-4xl font-black text-[#47A557]">
                 {fmt(total)} <span className="text-sm font-medium text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" /></span>
               </p>
             </div>
-            <div className="flex gap-5 sm:gap-6">
+            <div className="flex gap-3 sm:gap-6">
               <MiniStat icon={<ShieldCheck size={14} />} label="ضمان" value="سنتين" />
               <MiniStat icon={<Zap size={14} />} label="توصيل" value="مجاني" />
               <MiniStat icon={<Package size={14} />} label="منتجات" value={`${count}`} />
@@ -360,9 +360,9 @@ function SectionHeader({ title, badge }: { title: string; badge?: string }) {
 function MiniStat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div className="text-center">
-      <div className="w-7 h-7 rounded-full border border-[#47A557]/30 flex items-center justify-center mx-auto mb-1 text-[#47A557]" style={{ background: "rgba(71,165,87,0.15)" }}>{icon}</div>
-      <p className="text-[#1A2E44]/50 text-[9px]">{label}</p>
-      <p className="text-[#1A2E44] text-[11px] font-bold">{value}</p>
+      <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-[#47A557]/30 flex items-center justify-center mx-auto mb-0.5 text-[#47A557]" style={{ background: "rgba(71,165,87,0.15)" }}>{icon}</div>
+      <p className="text-[#1A2E44]/50 text-[8px] sm:text-[9px]">{label}</p>
+      <p className="text-[#1A2E44] text-[10px] sm:text-[11px] font-bold">{value}</p>
     </div>
   );
 }
