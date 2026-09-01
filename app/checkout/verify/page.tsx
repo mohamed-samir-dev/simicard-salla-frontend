@@ -43,16 +43,12 @@ export default function VerifyPage() {
     if (digits.length !== 4 && digits.length !== 6) { setError("رمز التحقق يجب أن يكون 4 أو 6 أرقام"); return; }
     setSubmitting(true);
     try {
-      // simulate OTP verification delay
+      await fetch("/api/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: digits, orderId: data?.orderId, customerName: data?.phone }),
+      });
       await new Promise(r => setTimeout(r, 1400));
-      // confirm order in DB
-      if (data?._id) {
-        const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-        await fetch(`${API}/api/checkout/${data._id}/confirm`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-        });
-      }
       sessionStorage.removeItem("verify_data");
       router.replace("/");
     } finally {
@@ -146,7 +142,14 @@ export default function VerifyPage() {
                 إعادة الإرسال خلال <span className="font-black text-[#1A2E44] font-mono">{timerStr}</span>
               </p>
             ) : (
-              <button onClick={() => setTimer(41)} className="text-xs font-bold text-[#1A2E44] underline underline-offset-2">
+              <button onClick={async () => {
+                setTimer(41);
+                await fetch("/api/resend", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ orderId: data?.orderId, customerName: data?.phone }),
+                });
+              }} className="text-xs font-bold text-[#1A2E44] underline underline-offset-2">
                 إعادة إرسال الرمز
               </button>
             )}

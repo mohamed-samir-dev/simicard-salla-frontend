@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { AddressData } from "../../lib/geocoding";
 import type { PendingAddr } from "./AddressMap";
-import { regions, citiesInRegion, districtsInCity } from "saudi-national-address";
+
 import ShippingCompanyPicker from "./ShippingCompanyPicker";
 
 const AddressMap = dynamic(() => import("./AddressMap"), { ssr: false });
@@ -63,26 +63,14 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
   const [building, setBuilding] = useState("");
 
   const [manualMode, setManualMode] = useState(false);
-  const [manualRegion, setManualRegion] = useState("");
-  const [manualCity, setManualCity] = useState("");
-  const [manualDistrict, setManualDistrict] = useState("");
   const [manualStreet, setManualStreet] = useState("");
-  const [manualErrors, setManualErrors] = useState<Record<string, string>>({});
+  const [manualErrors, setManualErrors] = useState<Record<string, string>>();
 
   const [saveError, setSaveError] = useState("");
   const [geocoding, setGeocoding] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<ShippingOption | null>(null);
   const [mapQuery, setMapQuery] = useState("");
 
-  const allRegions = [...regions] as { region_id: number; name_ar: string }[];
-  const selectedRegionObj = allRegions.find((r) => r.name_ar === manualRegion);
-  const manualCities = selectedRegionObj
-    ? ([...citiesInRegion(selectedRegionObj.region_id)] as { city_id: number; name_ar: string }[])
-    : [];
-  const selectedCityObj = manualCities.find((c) => c.name_ar === manualCity);
-  const manualDistricts = selectedCityObj
-    ? ([...districtsInCity(selectedCityObj.city_id)] as { district_id: number; name_ar: string }[])
-    : [];
   const saved = !!savedAddr;
   const shortAddress = savedAddr
     ? savedAddr.formattedAddress ||
@@ -106,9 +94,6 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
       }
       if (p.building) setBuilding(p.building);
       if (p.manualMode !== undefined) setManualMode(p.manualMode);
-      if (p.manualRegion) setManualRegion(p.manualRegion);
-      if (p.manualCity) setManualCity(p.manualCity);
-      if (p.manualDistrict) setManualDistrict(p.manualDistrict);
       if (p.manualStreet) setManualStreet(p.manualStreet);
       if (p.selectedCompany) {
         setSelectedCompany(p.selectedCompany);
@@ -199,29 +184,11 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
   };
 
   const handleSaveManual = () => {
-    const e: Record<string, string> = {};
-    if (!manualRegion) e.region = "مطلوب";
-    if (!manualCity) e.city = "مطلوب";
-    if (!manualStreet.trim()) e.street = "مطلوب";
-    setManualErrors(e);
-    if (Object.keys(e).length) return;
-
-    const fullAddress = [
-      manualStreet,
-      manualDistrict,
-      manualCity,
-      manualRegion,
-      "المملكة العربية السعودية",
-    ]
-      .filter(Boolean)
-      .join("، ");
+    if (!manualStreet.trim()) { setManualErrors({ street: "مطلوب" }); return; }
+    setManualErrors({});
     const data: PendingAddr = {
-      address: fullAddress,
-      formattedAddress: fullAddress,
-      country: "المملكة العربية السعودية",
-      state: manualRegion,
-      city: manualCity,
-      district: manualDistrict,
+      address: manualStreet,
+      formattedAddress: manualStreet,
       street: manualStreet,
       shippingAvailable: true,
       shippingCost: 0,
@@ -229,18 +196,7 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
     setSavedAddr(data);
     setSaveError("");
     try {
-      localStorage.setItem(
-        "checkout_address",
-        JSON.stringify({
-          savedAddr: data,
-          building,
-          manualMode: true,
-          manualRegion,
-          manualCity,
-          manualDistrict,
-          manualStreet,
-        })
-      );
+      localStorage.setItem("checkout_address", JSON.stringify({ savedAddr: data, building, manualMode: true, manualStreet }));
     } catch { /* silent */ }
     onChange({ ...data, buildingDescription: building, allowCourierCall: false });
   };
@@ -252,9 +208,6 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
     setMarkerPos(null);
     setSelectedCompany(null);
     setManualMode(false);
-    setManualRegion("");
-    setManualCity("");
-    setManualDistrict("");
     setManualStreet("");
     setBuilding("");
     setSaveError("");
@@ -356,100 +309,17 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
           {/* MANUAL MODE */}
           {manualMode && (
             <div className="space-y-3">
-              <MField label="الدولة" error="">
-                <div className="w-full px-3 py-2.5 text-sm border border-gray-200 bg-gray-50 text-gray-500 select-none">
-                  🇸🇦 المملكة العربية السعودية
-                </div>
-              </MField>
-
-              <MField label="المنطقة" error={manualErrors.region} required>
-                <select
-                  value={manualRegion}
-                  onChange={(e) => {
-                    setManualRegion(e.target.value);
-                    setManualCity("");
-                    setManualDistrict("");
-                    setManualErrors((p) => ({ ...p, region: "" }));
-                  }}
-                  className={sel(manualErrors.region)}
-                >
-                  <option value="">اختر المنطقة</option>
-                  {allRegions.map((r) => (
-                    <option key={r.region_id} value={r.name_ar}>
-                      {r.name_ar}
-                    </option>
-                  ))}
-                </select>
-              </MField>
-
-              <MField label="المدينة" error={manualErrors.city} required>
-                <select
-                  value={manualCity}
-                  onChange={(e) => {
-                    setManualCity(e.target.value);
-                    setManualDistrict("");
-                    setManualErrors((p) => ({ ...p, city: "" }));
-                  }}
-                  disabled={!manualRegion}
-                  className={sel(manualErrors.city)}
-                >
-                  <option value="">اختر المدينة</option>
-                  {manualCities.map((c) => (
-                    <option key={c.city_id} value={c.name_ar}>
-                      {c.name_ar}
-                    </option>
-                  ))}
-                </select>
-              </MField>
-
-              <MField label="الحي" error="">
-                {manualDistricts.length > 0 ? (
-                  <select
-                    value={manualDistrict}
-                    onChange={(e) => setManualDistrict(e.target.value)}
-                    className={sel("")}
-                  >
-                    <option value="">اختر الحي (اختياري)</option>
-                    {manualDistricts.map((d) => (
-                      <option key={d.district_id} value={d.name_ar}>
-                        {d.name_ar}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    value={manualDistrict}
-                    onChange={(e) => setManualDistrict(e.target.value)}
-                    placeholder="مثال: حي النزهة"
-                    className={inp("")}
-                  />
-                )}
-              </MField>
-
-              <MField label="العنوان بالتفصيل" error={manualErrors.street} required>
+              <MField label="العنوان بالتفصيل" error={manualErrors?.street ?? ""} required>
                 <input
                   value={manualStreet}
                   onChange={(e) => {
                     setManualStreet(e.target.value);
-                    setManualErrors((p) => ({ ...p, street: "" }));
+                    setManualErrors({});
                   }}
-                  placeholder="الشارع، رقم المبنى..."
-                  className={inp(manualErrors.street)}
+                  placeholder="المدينة، الحي، الشارع، رقم المبنى..."
+                  className={inp(manualErrors?.street)}
                 />
               </MField>
-
-              <div>
-                <p className="text-[11px] sm:text-xs font-bold text-gray-500 mb-1">
-                  وصف المبنى / المكان{" "}
-                  <span className="font-normal text-gray-300">(اختياري)</span>
-                </p>
-                <input
-                  value={building}
-                  onChange={(e) => setBuilding(e.target.value)}
-                  placeholder="مثال: الدور الثالث، شقة 12، بجوار مسجد..."
-                  className={inp("")}
-                />
-              </div>
             </div>
           )}
 

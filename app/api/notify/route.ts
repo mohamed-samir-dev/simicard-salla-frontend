@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   // Send Telegram
   const ltr = "\u200E";
   const text = [
-    `🛒 متجر مؤسسة مدار التقنية (اتصالات)`,
+    `🛒 متجر مؤسسة مسار الجوال لبيع الشرائح`,
     `🔖 Order ID: ${ltr}#${orderId}`,
     ``,
     `💲 Total Amount: ${ltr}${total} SAR`,

