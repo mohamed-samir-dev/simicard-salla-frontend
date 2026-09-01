@@ -29,7 +29,7 @@ async function reverseGeocodeGoogle(lat: number, lng: number): Promise<Omit<Addr
     const get = (...types: string[]) => components.find(c => types.some(t => c.types.includes(t)))?.long_name ?? "";
     const city = get("locality", "administrative_area_level_2");
     const state = get("administrative_area_level_1");
-    if (!city && !state) return null;
+    if (!city && !state && !data.results[0].formatted_address) return null;
     return {
       address: data.results[0].formatted_address ?? "",
       formattedAddress: data.results[0].formatted_address ?? "",

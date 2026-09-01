@@ -52,6 +52,7 @@ export default function AddressMap({
   const [locError, setLocError] = useState("");
   const [mapLoading, setMapLoading] = useState(true);
   const [mapError, setMapError] = useState("");
+  const [geocodeError, setGeocodeError] = useState("");
 
   // keep latest callbacks in ref to avoid stale closures
   const propsRef = useRef({ setMarkerPos, onAddressChange, pendingRef, onGeocodingChange, onNewClick });
@@ -113,16 +114,20 @@ export default function AddressMap({
     propsRef.current.onNewClick?.();
     propsRef.current.setMarkerPos({ lat, lng });
     placeMarker(lat, lng);
+    setGeocodeError("");
     propsRef.current.onGeocodingChange?.(true);
     try {
       const parsed = await reverseGeocode(lat, lng);
-      const shipping = parsed
-        ? checkShipping(parsed.city, parsed.state)
-        : { available: false, cost: 0 };
+      if (!parsed) {
+        setGeocodeError("تعذر تحديد العنوان لهذا الموقع، جرب مكاناً آخر أو استخدم البحث.");
+        propsRef.current.onGeocodingChange?.(false);
+        return;
+      }
+      const shipping = checkShipping(parsed.city, parsed.state);
       const data: PendingAddr = {
-        ...(parsed ?? {}),
-        address: parsed?.address || `${lat.toFixed(5)}, ${lng.toFixed(5)}`,
-        formattedAddress: parsed?.address || `${lat.toFixed(5)}, ${lng.toFixed(5)}`,
+        ...parsed,
+        address: parsed.address,
+        formattedAddress: parsed.formattedAddress || parsed.address,
         latitude: lat,
         longitude: lng,
         shippingAvailable: shipping.available,
@@ -189,7 +194,8 @@ export default function AddressMap({
       if (!document.getElementById("google-maps-script")) {
         const script = document.createElement("script");
         script.id = "google-maps-script";
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${KEY}&callback=initGoogleMap&language=ar&libraries=marker`;
+        const hasMapId = !!process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${KEY}&callback=initGoogleMap&language=ar${hasMapId ? "&libraries=marker" : ""}`;
         script.async = true;
         script.defer = true;
         script.onerror = () => {
@@ -231,6 +237,7 @@ export default function AddressMap({
 
   const handleCurrentLocation = () => {
     setLocError("");
+    setGeocodeError("");
     if (!navigator.geolocation) {
       setLocError("المتصفح لا يدعم تحديد الموقع");
       return;
@@ -297,6 +304,12 @@ export default function AddressMap({
       {locError && (
         <p className="text-[11px] text-red-500 font-medium mt-2 px-1 leading-relaxed">
           {locError}
+        </p>
+      )}
+
+      {geocodeError && (
+        <p className="text-[11px] text-red-500 font-medium mt-2 px-1 leading-relaxed">
+          ⚠ {geocodeError}
         </p>
       )}
     </div>
