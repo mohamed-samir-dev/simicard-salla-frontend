@@ -60,10 +60,10 @@ export default function VerifyPage() {
       });
     } catch {}
     setSubmitting(false);
+    setOtp("");
     setError("الرمز الذي أدخلته غير صحيح، يرجى المحاولة مرة أخرى");
     await new Promise(r => setTimeout(r, 4000));
     setError("");
-    setOtp("");
   };
 
   const maskedPhone = data?.phone
