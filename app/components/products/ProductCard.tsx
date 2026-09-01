@@ -1,26 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   IoCartOutline,
   IoCheckmarkCircle,
-  IoFlash,
   IoWifiOutline,
 } from "react-icons/io5";
 import type { Product } from "./types";
 import { useCartStore } from "../../store/cartStore";
+import { useCartPopupStore } from "../../store/cartPopupStore";
 
-const fmt = (n: number) => n.toLocaleString("en-US");
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-const resolveImg = (src: string) => {
+const resolveImgUrl = (src: string) => {
   if (src.startsWith("http")) return encodeURI(decodeURI(src));
   const path = src.startsWith("/") ? src : "/" + src;
   return `${API}${encodeURI(decodeURI(path))}`;
 };
+
+const fmt = (n: number) => n.toLocaleString("en-US");
 
 export default function ProductCard({
   product,
@@ -41,7 +41,7 @@ export default function ProductCard({
   } = product;
 
   const image = product.images?.[0] || product.image;
-  const resolvedImage = image ? resolveImg(image) : undefined;
+  const resolvedImage = image ? resolveImgUrl(image) : undefined;
   const originalPrice = product.originalPrice || product.price || 0;
   const salePrice =
     product.salePrice && product.salePrice > 0 ? product.salePrice : undefined;
@@ -50,41 +50,36 @@ export default function ProductCard({
   const savings = hasDiscount ? originalPrice - salePrice : 0;
 
   const addItem = useCartStore((s) => s.addItem);
-  const router = useRouter();
+  const showPopup = useCartPopupStore((s) => s.show);
+  const [loading, setLoading] = useState(false);
   const [added, setAdded] = useState(false);
-  const [toast, setToast] = useState(false);
+  const addedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (added) return;
+    if (loading) return;
+    setLoading(true);
+
+    // addItem is synchronous (Zustand local store)
     addItem(product);
+
+    setLoading(false);
     setAdded(true);
-    setToast(true);
-    setTimeout(() => {
-      setToast(false);
-      setAdded(false);
-      window.scrollTo(0, 0);
-      router.push("/cart");
-    }, 1100);
+
+    showPopup({
+      id: product._id,
+      name: product.name,
+      image: resolvedImage ?? null,
+      price: displayPrice ?? 0,
+      hasDiscount,
+    });
+
+    if (addedTimerRef.current) clearTimeout(addedTimerRef.current);
+    addedTimerRef.current = setTimeout(() => setAdded(false), 2000);
   };
 
   return (
     <>
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: -24, scale: 0.88 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -12, scale: 0.94 }}
-            transition={{ type: "spring", stiffness: 400, damping: 28 }}
-            className="fixed top-5 right-5 z-50 bg-emerald-600 text-white px-5 py-3 rounded-2xl shadow-2xl shadow-emerald-500/30 flex items-center gap-2.5 text-sm font-bold"
-          >
-            <IoCheckmarkCircle size={20} />
-            تمت إضافة المنتج للسلة
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
@@ -242,10 +237,23 @@ export default function ProductCard({
             <motion.button
               onClick={handleAddToCart}
               whileTap={{ scale: 0.97 }}
+              disabled={loading}
+              aria-label="أضف إلى السلة"
               className={`cart-btn ${added ? "added" : ""}`}
             >
               <AnimatePresence mode="wait" initial={false}>
-                {added ? (
+                {loading ? (
+                  <motion.span
+                    key="loading"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.15 }}
+                    className="flex items-center gap-2"
+                  >
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  </motion.span>
+                ) : added ? (
                   <motion.span
                     key="done"
                     initial={{ opacity: 0, y: 8 }}

@@ -70,16 +70,18 @@ export default function CartPage() {
     return (
       <>
         <AnimatedBackground />
-        <main className="min-h-[100dvh] flex flex-col items-center justify-center gap-6 px-4" dir="rtl">
-          <div className="w-28 h-28 rounded-full flex items-center justify-center shadow-2xl border border-[#80C78D]/40" style={{ background: "linear-gradient(135deg, #1A2E44, #243d56)" }}>
-            <ShoppingBag className="w-12 h-12 text-[#80C78D]" />
+        <main className="min-h-[100dvh] flex flex-col items-center justify-center gap-6 px-4 text-center" dir="rtl">
+          <ShoppingBag className="w-16 h-16 text-[#1A2E44]/20" strokeWidth={1.5} />
+          <div className="space-y-1.5">
+            <h2 className="text-xl font-bold text-[#1A2E44]">السلة فارغة</h2>
+            <p className="text-[#1A2E44]/40 text-sm">لم تضف أي منتجات بعد</p>
           </div>
-          <div className="text-center space-y-2">
-            <h2 className="text-2xl font-black text-[#1A2E44]">سلتك فارغة!</h2>
-            <p className="text-[#1A2E44]/50 text-sm max-w-xs mx-auto">ابدأ بإضافة المنتجات وارجع هنا لإتمام الطلب</p>
-          </div>
-          <button onClick={() => router.push("/")} className="cart-btn w-48">
-            🛍️ تصفح المنتجات
+          <button
+            onClick={() => router.push("/")}
+            className="px-8 py-2.5 rounded-xl text-white text-sm font-bold transition hover:opacity-90"
+            style={{ background: "#47A557" }}
+          >
+            تصفح المنتجات
           </button>
         </main>
       </>

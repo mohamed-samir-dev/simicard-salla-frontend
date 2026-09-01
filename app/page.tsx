@@ -12,7 +12,10 @@ const SITE_URL = "https://sahelnahatelecom.com";
 
 async function getCompany() {
   try {
-    const r = await fetch(`${BACKEND}/api/admin/company`, { next: { revalidate: 3600 } });
+    const r = await fetch(`${BACKEND}/api/admin/company`, {
+      next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(2000),
+    });
     return r.ok ? r.json() : {};
   } catch {
     return {};

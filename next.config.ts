@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
     };
   },
   images: {
+    qualities: [75, 80, 85, 90, 100],
     remotePatterns: [
       { hostname: "ibb.co" },
       { hostname: "i.ibb.co" },

@@ -13,9 +13,9 @@ export default function AdminNavbar({ onMenuClick }: { onMenuClick: () => void }
   useEffect(() => { fetchCompany(); }, [fetchCompany]);
 
   useEffect(() => {
-    fetch("/api/admin/orders")
+    fetch("/api/admin/orders/count")
       .then((r) => r.json())
-      .then((d) => setOrdersCount(Array.isArray(d) ? d.length : 0))
+      .then((d) => setOrdersCount(typeof d.count === "number" ? d.count : 0))
       .catch(() => {});
   }, []);
 

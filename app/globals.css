@@ -27,6 +27,53 @@ input, textarea, select {
   color: #1A2E44;
 }
 
+/* ── Custom Phone Input ── */
+.custom-phone-input {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  overflow: visible;
+  transition: border-color 0.15s;
+  background: #fff;
+  direction: ltr;
+}
+.custom-phone-input:focus-within {
+  border-color: #47A557;
+}
+.custom-phone-input.phone-error {
+  border-color: #fca5a5;
+  background: #fff5f5;
+}
+.custom-phone-input .PhoneInputCountry {
+  display: contents;
+}
+.custom-phone-input .PhoneInputInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #1A2E44;
+  background: transparent;
+  font-family: monospace;
+  min-width: 0;
+}
+.custom-phone-input .PhoneInputInput::placeholder {
+  color: #d1d5db;
+  font-family: inherit;
+}
+@media (max-width: 639px) {
+  .custom-phone-input .PhoneInputInput { font-size: 13px; padding: 8px 10px; }
+}
+
+/* country dropdown — no scrollbar */
+.country-dropdown {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.country-dropdown::-webkit-scrollbar { display: none; }
+
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -144,3 +191,5 @@ input, textarea, select {
 .animate-scroll-logos:hover {
   animation-play-state: paused;
 }
+
+

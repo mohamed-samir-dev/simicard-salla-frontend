@@ -11,11 +11,12 @@ interface CompanyStore {
   email: string;
   website: string;
   details: string;
+  fetched: boolean;
   fetchCompany: () => Promise<void>;
   setLogo: (url: string) => void;
 }
 
-export const useCompanyStore = create<CompanyStore>((set) => ({
+export const useCompanyStore = create<CompanyStore>((set, get) => ({
   logo: "",
   nameAr: "",
   nameEn: "",
@@ -24,7 +25,9 @@ export const useCompanyStore = create<CompanyStore>((set) => ({
   email: "",
   website: "",
   details: "",
+  fetched: false,
   fetchCompany: async () => {
+    if (get().fetched) return;
     try {
       const res = await fetch(`/api/company`);
       const data = await res.json();
@@ -40,10 +43,10 @@ export const useCompanyStore = create<CompanyStore>((set) => ({
         email: data.email || "",
         website: data.website || "",
         details: data.details || "",
+        fetched: true,
       });
     } catch (e) { console.error(e); }
   },
-  // keep fetchLogo as alias for backward compat
   setLogo: (url) => set({ logo: url }),
 }));
 

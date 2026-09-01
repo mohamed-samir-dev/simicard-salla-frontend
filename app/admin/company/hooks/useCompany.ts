@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useCompanyStore } from "../../../store/companyStore";
-import { API, defaultData, toFullUrl, withCacheBust } from "../constants";
+import { API, defaultData, toFullUrl } from "../constants";
 import type { CompanyData } from "../types";
 
 export function useCompany() {
@@ -15,7 +15,7 @@ export function useCompany() {
     fetch(`/api/admin/company`)
       .then((r) => r.json())
       .then((res) => {
-        const imageKeys = ["logo", "header", "footer", "stamp"];
+        const imageKeys = ["logo", "header", "footer", "stamp", "cancelStamp"];
         const merged: CompanyData = { ...defaultData };
         for (const k of Object.keys(defaultData)) {
           if (res[k] !== undefined && res[k] !== "") {
@@ -31,7 +31,7 @@ export function useCompany() {
   const handleChange = (key: string, value: string) =>
     setData((prev) => ({ ...prev, [key]: value }));
 
-  const handleImageChange = async (key: string, file: File) => {
+  const handleImageChange = async (key: string, file: File): Promise<void> => {
     const formData = new FormData();
     formData.append("image", file);
     try {
@@ -44,15 +44,14 @@ export function useCompany() {
       if (!res.ok) { toast.error(json.error || "فشل رفع الصورة"); return; }
       const fullUrl = json.url.startsWith("http") ? json.url : `${API}${json.url}`;
       handleChange(key, fullUrl);
-      if (key === "logo") { setLogo(withCacheBust(fullUrl)); }
+      if (key === "logo") { setLogo(fullUrl); }
       toast.success("تم رفع الصورة");
-    } catch (e) {
-      console.error(e);
+    } catch {
       toast.error("فشل رفع الصورة");
     }
   };
 
-  const handleImageDelete = async (key: string) => {
+  const handleImageDelete = async (key: string): Promise<void> => {
     try {
       const res = await fetch(`/api/admin/company/image/${key}`, {
         method: "DELETE",
@@ -70,12 +69,21 @@ export function useCompany() {
   const handleSave = async () => {
     setSaving(true);
     try {
+      // Only send text fields — images are managed via separate upload/delete endpoints
+      const IMAGE_KEYS = ["logo", "header", "footer", "stamp", "cancelStamp"];
+      const textPayload = Object.fromEntries(
+        Object.entries(data).filter(([k]) => !IMAGE_KEYS.includes(k))
+      );
       const res = await fetch(`/api/admin/company`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(textPayload),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}));
+        toast.error(json.error || "فشل الحفظ");
+        return;
+      }
       await fetch("/api/revalidate?tag=company", { method: "POST" });
       toast.success("تم حفظ بيانات الشركة");
     } catch {

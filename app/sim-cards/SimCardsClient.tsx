@@ -1,16 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { IoGridOutline, IoSparkles } from "react-icons/io5";
 import type { Product } from "../components/products/types";
-import { sortProducts } from "../lib/sortProducts";
 import { useProductFilters } from "../(categories)/[slug]/components/useProductFilters";
 import ProductsGrid from "../(categories)/[slug]/components/ProductsGrid";
 import AnimatedBackground from "../components/AnimatedBackground";
-
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 const OPERATORS = [
   {
@@ -51,22 +48,13 @@ const OPERATORS = [
   },
 ];
 
+interface SimCardsClientProps {
+  initialProducts: Product[];
+}
 
-
-export default function SimCardsClient() {
-  const [rawProducts, setRawProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function SimCardsClient({ initialProducts }: SimCardsClientProps) {
   const [page, setPage] = useState(1);
-
-  const { filters, filtered, activeCount } = useProductFilters(rawProducts);
-
-  useEffect(() => {
-    fetch(`${API}/api/products?category=sim-cards`)
-      .then((r) => r.json())
-      .then((data: Product[]) => setRawProducts(sortProducts(data)))
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+  const { filters, filtered } = useProductFilters(initialProducts);
 
   const [prevFilters, setPrevFilters] = useState(filters);
   if (prevFilters !== filters) { setPrevFilters(filters); if (page !== 1) setPage(1); }
@@ -87,6 +75,8 @@ export default function SimCardsClient() {
               fill
               className="object-cover object-center"
               priority
+              sizes="100vw"
+              quality={85}
             />
           </div>
 
@@ -194,19 +184,17 @@ export default function SimCardsClient() {
               </div>
               <div>
                 <h2 className="text-sm sm:text-base font-black text-white leading-tight">جميع الشرائح</h2>
-                {!loading && (
-                  <p className="text-[11px] text-white/50 flex items-center gap-1.5 mt-0.5">
-                    <span className="font-bold text-teal-400">{filtered.length}</span>
-                    <span>منتج متاح</span>
-                  </p>
-                )}
+                <p className="text-[11px] text-white/50 flex items-center gap-1.5 mt-0.5">
+                  <span className="font-bold text-teal-400">{filtered.length}</span>
+                  <span>منتج متاح</span>
+                </p>
               </div>
             </div>
           </motion.div>
 
           <ProductsGrid
             products={filtered}
-            loading={loading}
+            loading={false}
             page={page}
             onPageChange={setPage}
             emoji="📶"

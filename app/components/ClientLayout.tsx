@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import { Navbar } from "./navbar";
 import WhatsappButton from "./WhatsappButton";
+import AddToCartPopup from "./AddToCartPopup";
 
 export default function ClientLayout({ children, footer }: { children: React.ReactNode; footer: React.ReactNode }) {
   const pathname = usePathname();
@@ -15,6 +16,7 @@ export default function ClientLayout({ children, footer }: { children: React.Rea
       {children}
       {!hideChrome && footer}
       {!hideChrome && <WhatsappButton />}
+      {!hideChrome && <AddToCartPopup />}
     </>
   );
 }
