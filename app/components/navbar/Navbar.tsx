@@ -47,16 +47,16 @@ export default function Navbar() {
       }`}
     >
       <div className="w-full px-4 sm:px-6 lg:px-10">
-        <div className="flex items-center justify-between h-16 sm:h-18 lg:h-20 gap-4">
+        <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-2 sm:gap-4">
 
           {/* ── Right: Hamburger + Logo ── */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               aria-label="القائمة"
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden p-2 rounded-xl text-gray-500 hover:text-[#63D3A8] hover:bg-[#e8f9f4] transition-colors"
+              className="lg:hidden p-1.5 rounded-lg text-gray-500 hover:text-[#63D3A8] hover:bg-[#e8f9f4] transition-colors"
             >
-              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
 
             <Link href="/" className="flex items-center gap-2 shrink-0">
@@ -66,12 +66,12 @@ export default function Navbar() {
                   alt={nameAr || "logo"}
                   width={180}
                   height={72}
-                  className="object-contain h-10 w-auto sm:h-12 lg:h-14"
+                  className="object-contain h-8 w-auto sm:h-10 lg:h-14"
                   unoptimized
                 />
               ) : (
-                <div className="w-10 h-10 rounded-2xl border-2 border-[#63D3A8] flex items-center justify-center">
-                  <Wifi className="w-5 h-5 text-[#63D3A8]" />
+                <div className="w-8 h-8 rounded-xl border-2 border-[#63D3A8] flex items-center justify-center">
+                  <Wifi className="w-4 h-4 text-[#63D3A8]" />
                 </div>
               )}
             </Link>
@@ -103,34 +103,34 @@ export default function Navbar() {
           </div>
 
           {/* ── Left: Icons ── */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
 
             {/* User */}
             <Link
               href="/account"
               aria-label="حسابي"
-              className="p-2 rounded-xl text-gray-500 hover:text-[#63D3A8] hover:bg-[#e8f9f4] transition-colors"
+              className="p-1.5 rounded-lg text-gray-500 hover:text-[#63D3A8] hover:bg-[#e8f9f4] transition-colors"
             >
-              <User className="w-6 h-6 sm:w-7 sm:h-7" />
+              <User className="w-5 h-5 sm:w-6 sm:h-6" />
             </Link>
 
             {/* Cart */}
             <Link
               href="/cart"
               aria-label="السلة"
-              className="relative flex items-center gap-2 px-3 py-2 rounded-xl text-gray-500 hover:text-[#63D3A8] hover:bg-[#e8f9f4] transition-colors"
+              className="relative flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-gray-500 hover:text-[#63D3A8] hover:bg-[#e8f9f4] transition-colors"
             >
               <div className="relative">
-                <IoBagHandleOutline className="w-6 h-6 sm:w-7 sm:h-7" />
+                <IoBagHandleOutline className="w-5 h-5 sm:w-6 sm:h-6" />
                 {mounted && itemCount > 0 && (
-                  <span className="absolute -top-1.5 -left-1.5 bg-[#63D3A8] text-white text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full px-0.5">
+                  <span className="absolute -top-1 -left-1 bg-[#63D3A8] text-white text-[9px] font-bold min-w-[15px] h-[15px] flex items-center justify-center rounded-full px-0.5">
                     {itemCount}
                   </span>
                 )}
               </div>
-              <span className="flex items-center gap-0.5 text-base font-bold text-gray-800">
+              <span className="flex items-center gap-0.5 text-sm font-bold text-gray-800">
                 {mounted ? cartTotal.toLocaleString("ar-SA") : "0"}
-                <img src="/money-icon.webp" alt="ر.س" className="w-7 h-7 object-contain translate-y-0.5" />
+                <img src="/money-icon.webp" alt="ر.س" className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
               </span>
             </Link>
 

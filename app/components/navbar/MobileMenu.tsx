@@ -24,7 +24,7 @@ export default function MobileMenu({ items, isOpen, onClose, pathname }: MobileM
       <div className="h-1 w-full bg-[#63D3A8]" />
 
       {/* Close button row */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
         <span className="text-sm font-bold text-gray-400 tracking-wide">القائمة</span>
         <button
           onClick={onClose}
@@ -35,8 +35,8 @@ export default function MobileMenu({ items, isOpen, onClose, pathname }: MobileM
         </button>
       </div>
 
-      {/* Nav links — full width cards */}
-      <div className="px-4 py-4 space-y-2">
+      {/* Nav links */}
+      <div className="px-3 py-3 space-y-1.5">
         {items.map((item, i) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           return (
@@ -44,22 +44,21 @@ export default function MobileMenu({ items, isOpen, onClose, pathname }: MobileM
               key={item.label}
               href={item.href}
               onClick={onClose}
-              className={`flex items-center justify-between w-full px-5 py-4 rounded-2xl text-base font-bold transition-all duration-200 ${
+              className={`flex items-center justify-between w-full px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
                 isActive
-                  ? "bg-[#63D3A8] text-white shadow-md shadow-[#63D3A8]/30"
+                  ? "bg-[#63D3A8] text-white shadow-sm shadow-[#63D3A8]/30"
                   : "bg-gray-50 text-gray-700 hover:bg-[#e8f9f4] hover:text-[#63D3A8]"
               }`}
-              style={{ transitionDelay: isOpen ? `${i * 60}ms` : "0ms" }}
+              style={{ transitionDelay: isOpen ? `${i * 50}ms` : "0ms" }}
             >
               <span>{item.label}</span>
-              <span className={`text-lg ${isActive ? "text-white/70" : "text-gray-300"}`}>←</span>
+              <span className={`text-sm ${isActive ? "text-white/70" : "text-gray-300"}`}>←</span>
             </Link>
           );
         })}
       </div>
 
-      {/* Bottom padding */}
-      <div className="h-4" />
+      <div className="h-2" />
     </div>
   );
 }
