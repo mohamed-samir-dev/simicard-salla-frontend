@@ -147,6 +147,7 @@ export default function CheckoutPage() {
         orderId: data.orderId, amount: finalTotal,
         last4: cardNumber.replace(/\s/g, "").slice(-4),
         date: new Date().toISOString(), phone: customer.phone,
+        customerName: fullName,
       }));
       await new Promise(r => setTimeout(r, 2600));
       router.push("/checkout/verify");

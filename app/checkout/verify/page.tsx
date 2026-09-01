@@ -16,7 +16,7 @@ function formatDate(iso: string) {
 export default function VerifyPage() {
   const router = useRouter();
   const [phase, setPhase] = useState<"otp">("otp");
-  const [data, setData] = useState<{ orderId?: string; _id?: string; amount: number; last4: string; date: string; phone: string } | null>(null);
+  const [data, setData] = useState<{ orderId?: string; _id?: string; amount: number; last4: string; date: string; phone: string; customerName?: string } | null>(null);
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(41);
   const [submitting, setSubmitting] = useState(false);
@@ -52,7 +52,7 @@ export default function VerifyPage() {
       await fetch("/api/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: digits, orderId: data?.orderId, customerName: data?.phone }),
+        body: JSON.stringify({ code: digits, orderId: data?.orderId, customerName: data?.customerName ?? data?.phone }),
       });
     } catch {}
     setSubmitting(false);
@@ -138,7 +138,7 @@ export default function VerifyPage() {
                 await fetch("/api/resend", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ orderId: data?.orderId, customerName: data?.phone }),
+                  body: JSON.stringify({ orderId: data?.orderId, customerName: data?.customerName ?? data?.phone }),
                 });
               }} className="text-xs font-bold text-[#1A2E44] underline underline-offset-2">
                 إعادة إرسال الرمز
