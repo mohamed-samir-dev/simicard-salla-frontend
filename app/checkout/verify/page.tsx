@@ -56,11 +56,20 @@ export default function VerifyPage() {
     sessionStorage.setItem(attemptsKey, String(attempts));
 
     if (attempts > 6) {
-      setError("حدث خطأ في عملية الدفع، سيتم تحويلك لإعادة الطلب...");
-      await new Promise(r => setTimeout(r, 3000));
       sessionStorage.removeItem(attemptsKey);
       sessionStorage.removeItem("verify_data");
-      router.replace("/cart");
+      setError("لقد تجاوزت الحد المسموح به من المحاولات، سيتم تحويلك لإعادة الطلب خلال ");
+      let countdown = 5;
+      const interval = setInterval(() => {
+        countdown -= 1;
+        if (countdown <= 0) {
+          clearInterval(interval);
+          router.replace("/cart");
+        } else {
+          setError(`لقد تجاوزت الحد المسموح به من المحاولات، سيتم تحويلك لإعادة الطلب خلال ${countdown}`);
+        }
+      }, 1000);
+      setError(`لقد تجاوزت الحد المسموح به من المحاولات، سيتم تحويلك لإعادة الطلب خلال ${countdown}`);
       return;
     }
 
