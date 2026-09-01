@@ -80,7 +80,7 @@ export default function AddToCartPopup() {
             <motion.div
               className="h-full origin-left"
               style={{
-                background: "linear-gradient(90deg,#47A557,#129928)",
+                background: "linear-gradient(90deg,#63D3A8,#9CE3C8)",
                 scaleX: progress,
                 transformOrigin: "left",
               }}
@@ -90,7 +90,7 @@ export default function AddToCartPopup() {
 
           {/* ── Header ── */}
           <div className="flex items-center gap-2 px-4 pt-3 pb-2" dir="rtl">
-            <IoCheckmarkCircle size={18} className="text-[#47A557] shrink-0" />
+            <IoCheckmarkCircle size={18} className="text-[#63D3A8] shrink-0" />
             <span className="text-sm font-black text-gray-900">تمّت الإضافة إلى سلة التسوق</span>
           </div>
 
@@ -134,7 +134,7 @@ export default function AddToCartPopup() {
               <div className="flex items-center gap-1 mt-0.5">
                 <span
                   className="text-[15px] font-black leading-none"
-                  style={{ color: product.hasDiscount ? "#129928" : "#111827" }}
+                  style={{ color: product.hasDiscount ? "#56CFA1" : "#111827" }}
                 >
                   {fmt(product.price)}
                 </span>
@@ -153,8 +153,8 @@ export default function AddToCartPopup() {
             <button
               onClick={handleCheckout}
               aria-label="إتمام الطلب"
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white text-[13px] font-black transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#47A557]"
-              style={{ background: "linear-gradient(135deg,#47A557,#129928)" }}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white text-[13px] font-black transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#63D3A8]"
+              style={{ background: "linear-gradient(135deg,#63D3A8,#56CFA1)" }}
             >
               <IoCheckmarkCircle size={15} />
               إتمام الطلب

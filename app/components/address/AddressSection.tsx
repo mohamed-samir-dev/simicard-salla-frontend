@@ -222,18 +222,15 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
         <div className="flex items-center gap-2">
           <Truck size={15} className="text-gray-500 shrink-0" />
           <div>
-            <p className="text-[11px] sm:text-xs text-gray-400 font-medium">عنوان التوصيل</p>
-            <p className="text-xs sm:text-sm font-bold text-[#1A2E44] mt-0.5 flex items-center gap-1">
+            <p className="text-[11px] sm:text-xs font-medium text-gray-400">عنوان التوصيل</p>
+            <p className="text-xs sm:text-sm font-bold mt-0.5 flex items-center gap-1 text-[#1A2E44]">
               <MapPin size={11} className="text-[#47A557]" />
               {saved ? (shortAddress ?? "تم تحديد العنوان") : "لم يتم تحديد عنوان"}
             </p>
           </div>
         </div>
         {saved && !locked && (
-          <button
-            onClick={handleEdit}
-            className="text-[11px] sm:text-xs font-bold text-gray-400 hover:text-[#1A2E44] transition"
-          >
+          <button onClick={handleEdit} className="text-[11px] sm:text-xs font-bold text-gray-400 hover:text-[#1A2E44] transition">
             تعديل
           </button>
         )}

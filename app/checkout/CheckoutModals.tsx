@@ -11,13 +11,13 @@ export function MField({ label, icon, value, error, placeholder, maxLength, dir,
   return (
     <div>
       <label className="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-gray-500 mb-1">
-        <span className="text-[#47A557]">{icon}</span>{label}
+        <span className="text-[#63D3A8]">{icon}</span>{label}
         {error && <span className="text-red-500 mr-auto text-[10px] sm:text-[11px]">⚠ {error}</span>}
       </label>
       <input value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
         maxLength={maxLength} dir={dir} inputMode={inputMode}
         className={`w-full px-3 py-2 sm:py-2.5 text-xs sm:text-sm border transition focus:outline-none placeholder:text-gray-200 ${
-          error ? "border-red-300 bg-red-50" : "border-gray-200 focus:border-[#47A557]"
+          error ? "border-red-300 bg-red-50" : "border-gray-200 focus:border-[#63D3A8]"
         }`} />
     </div>
   );
@@ -48,16 +48,16 @@ export function SuccessModal({ show, onClose }: SuccessModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.55)" }} onClick={onClose}>
       <div className="w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl bg-white" onClick={e => e.stopPropagation()}>
-        <div className="h-1" style={{ background: "linear-gradient(90deg,#47A557,#80C78D,#47A557)" }} />
+        <div className="h-1" style={{ background: "linear-gradient(90deg,#63D3A8,#9CE3C8,#63D3A8)" }} />
         <div className="p-7 text-center">
-          <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "#DCEFE8" }}>
-            <BadgeCheck className="w-7 h-7 text-[#47A557]" />
+          <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "#e8f9f4" }}>
+            <BadgeCheck className="w-7 h-7 text-[#63D3A8]" />
           </div>
           <h2 className="text-xl font-black text-[#1A2E44] mb-1">تم استلام طلبك! 🎉</h2>
-          <p className="text-[#47A557] font-bold text-sm mb-5">سيتم التواصل معك قريباً على واتساب</p>
+          <p className="text-[#63D3A8] font-bold text-sm mb-5">سيتم التواصل معك قريباً على واتساب</p>
           <button onClick={onClose}
             className="w-full py-3 rounded-xl text-white font-black text-sm hover:opacity-90 transition"
-            style={{ background: "linear-gradient(135deg,#47A557,#129928)" }}>
+            style={{ background: "linear-gradient(135deg,#63D3A8,#56CFA1)" }}>
             حسناً، شكراً! ✓
           </button>
         </div>
@@ -81,7 +81,7 @@ export function OrderModal({ show, onClose, name, nationalId, whatsapp, address,
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.55)" }} onClick={onClose}>
       <div className="w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl bg-white" onClick={e => e.stopPropagation()}>
-        <div className="h-1" style={{ background: "linear-gradient(90deg,#47A557,#80C78D,#47A557)" }} />
+        <div className="h-1" style={{ background: "linear-gradient(90deg,#63D3A8,#9CE3C8,#63D3A8)" }} />
         <div className="px-5 py-4 border-b border-gray-100">
           <h3 className="text-sm font-black text-[#1A2E44]">بيانات التوصيل</h3>
         </div>
@@ -109,7 +109,7 @@ export function OrderModal({ show, onClose, name, nationalId, whatsapp, address,
             onChange={v => { setAddress(v); setErrors(p => ({ ...p, address: "" })); }} />
           <button onClick={onSubmit} disabled={loading}
             className="w-full py-3 rounded-xl text-white font-black text-sm flex items-center justify-center gap-2 disabled:opacity-70 hover:opacity-90 transition"
-            style={{ background: "linear-gradient(135deg,#47A557,#129928)" }}>
+            style={{ background: "linear-gradient(135deg,#63D3A8,#56CFA1)" }}>
             {loading ? "جاري..." : <><span>تأكيد الطلب</span><ArrowLeft size={15} /></>}
           </button>
           <p className="text-center text-[10px] text-gray-300 flex items-center justify-center gap-1">

@@ -104,7 +104,7 @@ export default function ReviewsPage() {
   }
 
   const filtered = reviews.filter(
-    (r) => r.name.toLowerCase().includes(search.toLowerCase()) || r.comment.includes(search)
+    (r) => (r.name ?? "").toLowerCase().includes(search.toLowerCase()) || (r.comment ?? "").includes(search)
   );
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));

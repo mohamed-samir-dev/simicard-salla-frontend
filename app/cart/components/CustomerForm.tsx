@@ -78,14 +78,14 @@ export default function CustomerForm({ initialData, total, onSubmit }: CustomerF
             style={{ background: "#ffffff" }}
             onClick={e => e.stopPropagation()}
           >
-            <div className="h-1.5 w-full" style={{ background: "linear-gradient(90deg, #47A557, #80C78D, #47A557)" }} />
+            <div className="h-1.5 w-full" style={{ background: "linear-gradient(90deg, #63D3A8, #9CE3C8, #63D3A8)" }} />
             <div className="p-6 sm:p-8 text-center" dir="rtl">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "linear-gradient(135deg, #DCEFE8, #c8e8d4)" }}>
-                <BadgeCheck className="w-8 h-8 text-[#47A557]" />
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "linear-gradient(135deg, #e8f9f4, #c8f0e4)" }}>
+                <BadgeCheck className="w-8 h-8 text-[#63D3A8]" />
               </div>
               <h2 className="text-xl font-black text-[#1A2E44] mb-1">تم استلام طلبك! 🎉</h2>
-              <p className="text-[#47A557] font-bold text-sm mb-4">سيتم التواصل معك قريباً</p>
-              <div className="rounded-2xl border border-[#80C78D]/40 p-4 mb-4 text-right space-y-2" style={{ background: "#f0f8f2" }}>
+              <p className="text-[#63D3A8] font-bold text-sm mb-4">سيتم التواصل معك قريباً</p>
+              <div className="rounded-2xl border border-[#9CE3C8]/40 p-4 mb-4 text-right space-y-2" style={{ background: "#f0fdf9" }}>
                 <div className="flex justify-between text-xs">
                   <span className="text-[#1A2E44]/50">الاسم</span>
                   <span className="font-bold text-[#1A2E44]">{name}</span>
@@ -98,20 +98,20 @@ export default function CustomerForm({ initialData, total, onSubmit }: CustomerF
                   <span className="text-[#1A2E44]/50">العنوان</span>
                   <span className="font-bold text-[#1A2E44] text-left max-w-[60%]">{address}</span>
                 </div>
-                <div className="border-t border-[#80C78D]/30 pt-2 flex justify-between items-center">
+                <div className="border-t border-[#9CE3C8]/30 pt-2 flex justify-between items-center">
                   <span className="text-[#1A2E44]/50 text-xs">الإجمالي</span>
-                  <span className="text-lg font-black text-[#47A557]">{fmt(total)} <span className="text-xs font-medium text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" /></span></span>
+                  <span className="text-lg font-black text-[#63D3A8]">>{fmt(total)} <span className="text-xs font-medium text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" /></span></span>
                 </div>
               </div>
-              <div className="flex items-center justify-center gap-2 rounded-xl border border-[#80C78D]/40 px-4 py-3 mb-4" style={{ background: "#DCEFE8" }}>
-                <Truck className="w-4 h-4 text-[#47A557]" />
+              <div className="flex items-center justify-center gap-2 rounded-xl border border-[#9CE3C8]/40 px-4 py-3 mb-4" style={{ background: "#e8f9f4" }}>
+                <Truck className="w-4 h-4 text-[#63D3A8]" />
                 <span className="text-sm font-bold text-[#1A2E44]">الدفع عند الاستلام</span>
               </div>
               <p className="text-[#1A2E44]/50 text-xs mb-5">سيتصل بك فريقنا على رقم واتساب المسجل لتأكيد الطلب وتحديد موعد التوصيل</p>
               <button
                 onClick={() => { setShowPopup(false); clear(); }}
                 className="w-full py-3.5 rounded-xl text-white font-black text-sm transition-all hover:opacity-90"
-                style={{ background: "linear-gradient(135deg, #47A557 0%, #129928 100%)" }}
+                style={{ background: "linear-gradient(135deg, #63D3A8 0%, #56CFA1 100%)" }}
               >
                 حسناً، شكراً! ✓
               </button>
@@ -121,11 +121,11 @@ export default function CustomerForm({ initialData, total, onSubmit }: CustomerF
       )}
 
       {/* ===== FORM ===== */}
-      <div ref={formRef} className="rounded-2xl border border-[#80C78D]/40 overflow-hidden" style={{ background: "#ffffff" }}>
+      <div ref={formRef} className="rounded-2xl border border-[#9CE3C8]/40 overflow-hidden" style={{ background: "#ffffff" }}>
 
         {/* Header */}
-        <div className="px-5 py-4 border-b border-[#80C78D]/30 flex items-center gap-3" style={{ background: "#DCEFE8" }}>
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-all ${allDone ? "bg-[#47A557]" : "bg-[#5B6187]"}`}>
+        <div className="px-5 py-4 border-b border-[#9CE3C8]/30 flex items-center gap-3" style={{ background: "#e8f9f4" }}>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-all ${allDone ? "bg-[#63D3A8]" : "bg-[#5B6187]"}`}>
             {allDone
               ? <CheckCircle2 size={16} className="text-white" />
               : <span className="text-white text-xs font-black">1</span>
@@ -191,7 +191,7 @@ export default function CustomerForm({ initialData, total, onSubmit }: CustomerF
             onClick={handleSubmit}
             disabled={loading}
             className="w-full py-4 rounded-xl text-white font-black text-sm transition-all hover:opacity-90 active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-70"
-            style={{ background: "linear-gradient(135deg, #47A557 0%, #129928 100%)" }}
+            style={{ background: "linear-gradient(135deg, #63D3A8 0%, #56CFA1 100%)" }}
           >
             {loading ? "جاري المعالجة..." : "تأكيد الدفع عند الاستلام"}
             {!loading && <ArrowLeft size={16} />}
@@ -214,7 +214,7 @@ function Field({ label, icon, value, error, placeholder, maxLength, dir, inputMo
   return (
     <div data-field={fieldName}>
       <label className="flex items-center gap-1.5 text-xs font-bold text-[#1A2E44]/70 mb-1.5">
-        <span className="text-[#47A557]">{icon}</span>
+        <span className="text-[#63D3A8]">{icon}</span>
         {label}
       </label>
       <input
@@ -227,26 +227,26 @@ function Field({ label, icon, value, error, placeholder, maxLength, dir, inputMo
         className={`w-full px-4 py-3 rounded-xl text-sm font-medium text-[#1A2E44] border-2 transition-all focus:outline-none placeholder:text-[#1A2E44]/25 ${
           error
             ? "border-red-400/50 bg-red-50 focus:border-red-400"
-            : "border-[#80C78D]/40 bg-[#DCEFE8]/40 focus:border-[#47A557] focus:bg-white"
+            : "border-[#9CE3C8]/40 bg-[#e8f9f4]/40 focus:border-[#63D3A8] focus:bg-white"
         }`}
       />
       {hint && !error && (
         <div className="flex items-center gap-1.5 mt-1.5">
           <svg width="12" height="12" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="2" y="2" width="10" height="10" rx="1.5" stroke="#47A557" strokeWidth="2" fill="none"/>
-            <rect x="4.5" y="4.5" width="5" height="5" rx="0.5" fill="#47A557"/>
-            <rect x="22" y="2" width="10" height="10" rx="1.5" stroke="#47A557" strokeWidth="2" fill="none"/>
-            <rect x="24.5" y="4.5" width="5" height="5" rx="0.5" fill="#47A557"/>
-            <rect x="2" y="22" width="10" height="10" rx="1.5" stroke="#47A557" strokeWidth="2" fill="none"/>
-            <rect x="4.5" y="24.5" width="5" height="5" rx="0.5" fill="#47A557"/>
-            <rect x="15" y="2" width="2" height="5" rx="0.5" fill="#47A557"/>
-            <rect x="15" y="15" width="3" height="2" rx="0.5" fill="#47A557"/>
-            <rect x="20" y="15" width="2" height="3" rx="0.5" fill="#47A557"/>
-            <rect x="15" y="20" width="2" height="4" rx="0.5" fill="#47A557"/>
-            <rect x="19" y="19" width="3" height="2" rx="0.5" fill="#47A557"/>
-            <rect x="24" y="20" width="2" height="5" rx="0.5" fill="#47A557"/>
+            <rect x="2" y="2" width="10" height="10" rx="1.5" stroke="#63D3A8" strokeWidth="2" fill="none"/>
+            <rect x="4.5" y="4.5" width="5" height="5" rx="0.5" fill="#63D3A8"/>
+            <rect x="22" y="2" width="10" height="10" rx="1.5" stroke="#63D3A8" strokeWidth="2" fill="none"/>
+            <rect x="24.5" y="4.5" width="5" height="5" rx="0.5" fill="#63D3A8"/>
+            <rect x="2" y="22" width="10" height="10" rx="1.5" stroke="#63D3A8" strokeWidth="2" fill="none"/>
+            <rect x="4.5" y="24.5" width="5" height="5" rx="0.5" fill="#63D3A8"/>
+            <rect x="15" y="2" width="2" height="5" rx="0.5" fill="#63D3A8"/>
+            <rect x="15" y="15" width="3" height="2" rx="0.5" fill="#63D3A8"/>
+            <rect x="20" y="15" width="2" height="3" rx="0.5" fill="#63D3A8"/>
+            <rect x="15" y="20" width="2" height="4" rx="0.5" fill="#63D3A8"/>
+            <rect x="19" y="19" width="3" height="2" rx="0.5" fill="#63D3A8"/>
+            <rect x="24" y="20" width="2" height="5" rx="0.5" fill="#63D3A8"/>
           </svg>
-          <p className="text-[#47A557] text-[10px] font-bold">{hint}</p>
+          <p className="text-[#63D3A8] text-[10px] font-bold">{hint}</p>
         </div>
       )}
       {error && <p className="text-red-500 text-[10px] font-bold mt-1">⚠ {error}</p>}

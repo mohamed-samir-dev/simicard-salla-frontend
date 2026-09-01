@@ -79,7 +79,7 @@ export default function CartPage() {
           <button
             onClick={() => router.push("/")}
             className="px-8 py-2.5 rounded-xl text-white text-sm font-bold transition hover:opacity-90"
-            style={{ background: "#47A557" }}
+            style={{ background: "#63D3A8" }}
           >
             تصفح المنتجات
           </button>
@@ -88,7 +88,7 @@ export default function CartPage() {
     );
 
   return (
-    <div className="min-h-[100dvh] bg-[#f0f8f2]" dir="rtl">
+    <div className="min-h-[100dvh] bg-[#f0fdf9]" dir="rtl">
       <AnimatedBackground />
 
       {/* Redirect Loading Overlay */}
@@ -119,14 +119,14 @@ export default function CartPage() {
             style={{ background: "#ffffff" }}
             onClick={e => e.stopPropagation()}
           >
-            <div className="h-1.5 w-full" style={{ background: "linear-gradient(90deg, #47A557, #80C78D, #47A557)" }} />
+            <div className="h-1.5 w-full" style={{ background: "linear-gradient(90deg, #63D3A8, #9CE3C8, #63D3A8)" }} />
             <div className="p-6 sm:p-8 text-center" dir="rtl">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "linear-gradient(135deg, #DCEFE8, #c8e8d4)" }}>
-                <BadgeCheck className="w-8 h-8 text-[#47A557]" />
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "linear-gradient(135deg, #e8f9f4, #c8f0e4)" }}>
+                <BadgeCheck className="w-8 h-8 text-[#63D3A8]" />
               </div>
               <h2 className="text-xl font-black text-[#1A2E44] mb-1">تم استلام طلبك! 🎉</h2>
-              <p className="text-[#47A557] font-bold text-sm mb-4">سيتم التواصل معك قريباً</p>
-              <div className="rounded-2xl border border-[#80C78D]/40 p-4 mb-4 text-right space-y-2" style={{ background: "#f0f8f2" }}>
+              <p className="text-[#63D3A8] font-bold text-sm mb-4">سيتم التواصل معك قريباً</p>
+              <div className="rounded-2xl border border-[#9CE3C8]/40 p-4 mb-4 text-right space-y-2" style={{ background: "#f0fdf9" }}>
                 <div className="flex justify-between text-xs">
                   <span className="text-[#1A2E44]/50">الاسم</span>
                   <span className="font-bold text-[#1A2E44]">{name}</span>
@@ -139,20 +139,20 @@ export default function CartPage() {
                   <span className="text-[#1A2E44]/50">العنوان</span>
                   <span className="font-bold text-[#1A2E44] text-left max-w-[60%]">{address}</span>
                 </div>
-                <div className="border-t border-[#80C78D]/30 pt-2 flex justify-between items-center">
+                <div className="border-t border-[#9CE3C8]/30 pt-2 flex justify-between items-center">
                   <span className="text-[#1A2E44]/50 text-xs">الإجمالي</span>
-                  <span className="text-lg font-black text-[#47A557]">{fmt(total)} <span className="text-xs font-medium text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" /></span></span>
+                  <span className="text-lg font-black text-[#63D3A8]">{fmt(total)} <span className="text-xs font-medium text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" /></span></span>
                 </div>
               </div>
-              <div className="flex items-center justify-center gap-2 rounded-xl border border-[#80C78D]/40 px-4 py-3 mb-4" style={{ background: "#DCEFE8" }}>
-                <Truck className="w-4 h-4 text-[#47A557]" />
+              <div className="flex items-center justify-center gap-2 rounded-xl border border-[#9CE3C8]/40 px-4 py-3 mb-4" style={{ background: "#e8f9f4" }}>
+                <Truck className="w-4 h-4 text-[#63D3A8]" />
                 <span className="text-sm font-bold text-[#1A2E44]">الدفع عند الاستلام</span>
               </div>
               <p className="text-[#1A2E44]/50 text-xs mb-5">سيتصل بك فريقنا على رقم واتساب المسجل لتأكيد الطلب وتحديد موعد التوصيل</p>
               <button
                 onClick={() => { setShowPopup(false); clear(); }}
                 className="w-full py-3.5 rounded-xl text-white font-black text-sm transition-all hover:opacity-90"
-                style={{ background: "linear-gradient(135deg, #47A557 0%, #129928 100%)" }}
+                style={{ background: "linear-gradient(135deg, #63D3A8 0%, #56CFA1 100%)" }}
               >
                 حسناً، شكراً! ✓
               </button>
@@ -173,9 +173,9 @@ export default function CartPage() {
             style={{ background: "#ffffff" }}
             onClick={e => e.stopPropagation()}
           >
-            <div className="h-1.5 w-full" style={{ background: "linear-gradient(90deg, #47A557, #80C78D, #47A557)" }} />
-            <div className="px-5 py-4 border-b border-[#80C78D]/30 flex items-center gap-3" style={{ background: "#DCEFE8" }}>
-              <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-[#47A557]">
+            <div className="h-1.5 w-full" style={{ background: "linear-gradient(90deg, #63D3A8, #9CE3C8, #63D3A8)" }} />
+            <div className="px-5 py-4 border-b border-[#9CE3C8]/30 flex items-center gap-3" style={{ background: "#e8f9f4" }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-[#63D3A8]">
                 <CheckCircle2 size={16} className="text-white" />
               </div>
               <div>
@@ -198,7 +198,7 @@ export default function CartPage() {
                 onClick={handleOrder}
                 disabled={loading}
                 className="w-full py-4 rounded-xl text-white font-black text-sm transition-all hover:opacity-90 active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-70"
-                style={{ background: "linear-gradient(135deg, #47A557 0%, #129928 100%)" }}
+                style={{ background: "linear-gradient(135deg, #63D3A8 0%, #56CFA1 100%)" }}
               >
                 {loading ? "جاري المعالجة..." : "تأكيد الدفع عند الاستلام"}
                 {!loading && <ArrowLeft size={16} />}
@@ -212,7 +212,7 @@ export default function CartPage() {
       )}
 
       {/* HEADER */}
-      <header className="sticky top-0 z-30 backdrop-blur-xl border-b border-[#80C78D]/30" style={{ background: "rgba(255,255,255,0.95)" }}>
+      <header className="sticky top-0 z-30 backdrop-blur-xl border-b border-[#9CE3C8]/30" style={{ background: "rgba(255,255,255,0.95)" }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <button onClick={() => router.back()} className="flex items-center gap-1.5 text-[#1A2E44]/60 hover:text-[#1A2E44] transition text-sm font-bold">
             <ChevronRight className="w-4 h-4" />
@@ -221,30 +221,30 @@ export default function CartPage() {
 
           <div className="flex items-center gap-2.5">
             <div className="relative">
-              <ShoppingBag className="w-5 h-5 text-[#47A557]" />
-              <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#47A557] text-white text-[9px] font-black rounded-full flex items-center justify-center">
+              <ShoppingBag className="w-5 h-5 text-[#63D3A8]" />
+              <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#63D3A8] text-white text-[9px] font-black rounded-full flex items-center justify-center">
                 {count}
               </span>
             </div>
             <span className="text-base font-black text-[#1A2E44]">السلة</span>
           </div>
 
-          <Link href="/" className="w-9 h-9 rounded-xl border border-[#80C78D]/40 hover:border-[#47A557] flex items-center justify-center transition" style={{ background: "#DCEFE8" }}>
-            <Home className="w-4 h-4 text-[#47A557]" />
+          <Link href="/" className="w-9 h-9 rounded-xl border border-[#9CE3C8]/40 hover:border-[#63D3A8] flex items-center justify-center transition" style={{ background: "#e8f9f4" }}>
+            <Home className="w-4 h-4 text-[#63D3A8]" />
           </Link>
         </div>
       </header>
 
       {/* BODY */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 bg-[#f0f8f2]">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 bg-[#f0fdf9]">
 
         {/* Summary Bar */}
-        <div className="rounded-2xl p-4 sm:p-5 mb-6 sm:mb-8 relative overflow-hidden border border-[#80C78D]/40" style={{ background: "linear-gradient(135deg, #DCEFE8 0%, #c8e8d4 100%)" }}>
-          <div className="absolute inset-0 opacity-[0.15]" style={{ backgroundImage: "radial-gradient(circle, #47A557 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
+        <div className="rounded-2xl p-4 sm:p-5 mb-6 sm:mb-8 relative overflow-hidden border border-[#9CE3C8]/40" style={{ background: "linear-gradient(135deg, #e8f9f4 0%, #c8f0e4 100%)" }}>
+          <div className="absolute inset-0 opacity-[0.15]" style={{ backgroundImage: "radial-gradient(circle, #63D3A8 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
           <div className="relative flex flex-row items-center justify-between gap-2">
             <div>
               <p className="text-[#1A2E44]/50 text-xs mb-1">إجمالي الطلب</p>
-              <p className="text-3xl sm:text-4xl font-black text-[#47A557]">
+              <p className="text-3xl sm:text-4xl font-black text-[#63D3A8]">
                 {fmt(total)} <span className="text-sm font-medium text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" /></span>
               </p>
             </div>
@@ -287,7 +287,7 @@ export default function CartPage() {
               }}
               disabled={redirecting}
               className="w-full py-4 rounded-xl text-white font-black text-base transition-all hover:opacity-90 active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-90"
-              style={{ background: "linear-gradient(135deg, #47A557 0%, #129928 100%)" }}
+              style={{ background: "linear-gradient(135deg, #63D3A8 0%, #56CFA1 100%)" }}
             >
               {redirecting ? (
                 <>
@@ -309,8 +309,8 @@ export default function CartPage() {
           {/* LEFT: Sticky Summary (desktop) */}
           <aside className="hidden lg:block lg:col-span-4">
             <div className="lg:sticky lg:top-24 space-y-4">
-              <div className="rounded-2xl border border-[#80C78D]/40 overflow-hidden" style={{ background: "#ffffff" }}>
-                <div className="px-5 py-4 border-b border-[#80C78D]/30" style={{ background: "#DCEFE8" }}>
+              <div className="rounded-2xl border border-[#9CE3C8]/40 overflow-hidden" style={{ background: "#ffffff" }}>
+                <div className="px-5 py-4 border-b border-[#9CE3C8]/30" style={{ background: "#e8f9f4" }}>
                   <h3 className="text-sm font-black text-[#1A2E44]">ملخص الطلب</h3>
                 </div>
                 <div className="p-5 space-y-3">
@@ -323,19 +323,19 @@ export default function CartPage() {
                       </div>
                     );
                   })}
-                  <div className="border-t border-dashed border-[#80C78D]/40 pt-3 flex justify-between text-xs">
+                  <div className="border-t border-dashed border-[#9CE3C8]/40 pt-3 flex justify-between text-xs">
                     <span className="text-[#1A2E44]/50 flex items-center gap-1.5"><Truck size={12} /> التوصيل</span>
-                    <span className="font-bold text-[#47A557]">مجاني ✓</span>
+                    <span className="font-bold text-[#63D3A8]">مجاني ✓</span>
                   </div>
-                  <div className="border-t border-[#80C78D]/30 pt-3 flex justify-between items-center">
+                  <div className="border-t border-[#9CE3C8]/30 pt-3 flex justify-between items-center">
                     <span className="text-sm font-bold text-[#1A2E44]/60">الإجمالي</span>
-                    <span className="text-2xl font-black text-[#47A557]">{fmt(total)} <span className="text-xs font-medium text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" /></span></span>
+                    <span className="text-2xl font-black text-[#63D3A8]">{fmt(total)} <span className="text-xs font-medium text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" /></span></span>
                   </div>
                 </div>
               </div>
 
               {/* Trust */}
-              <div className="rounded-2xl border border-[#80C78D]/40 p-4 grid grid-cols-2 gap-2" style={{ background: "#ffffff" }}>
+              <div className="rounded-2xl border border-[#9CE3C8]/40 p-4 grid grid-cols-2 gap-2" style={{ background: "#ffffff" }}>
                 <TrustBadge icon={<Lock size={13} />} text="دفع آمن" />
                 <TrustBadge icon={<Truck size={13} />} text="شحن سريع" />
                 <TrustBadge icon={<BadgeCheck size={13} />} text="ضمان رسمي" />
@@ -352,9 +352,9 @@ export default function CartPage() {
 function SectionHeader({ title, badge }: { title: string; badge?: string }) {
   return (
     <div className="flex items-center gap-2.5">
-      <div className="w-1 h-5 rounded-full bg-[#47A557]" />
+      <div className="w-1 h-5 rounded-full bg-[#63D3A8]" />
       <h2 className="text-sm sm:text-base font-black text-[#1A2E44]">{title}</h2>
-      {badge && <span className="text-[10px] font-bold text-[#47A557] bg-[#47A557]/10 border border-[#47A557]/20 px-2 py-0.5 rounded-full">{badge}</span>}
+      {badge && <span className="text-[10px] font-bold text-[#63D3A8] bg-[#63D3A8]/10 border border-[#63D3A8]/20 px-2 py-0.5 rounded-full">{badge}</span>}
     </div>
   );
 }
@@ -362,7 +362,7 @@ function SectionHeader({ title, badge }: { title: string; badge?: string }) {
 function MiniStat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div className="text-center">
-      <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-[#47A557]/30 flex items-center justify-center mx-auto mb-0.5 text-[#47A557]" style={{ background: "rgba(71,165,87,0.15)" }}>{icon}</div>
+      <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-[#63D3A8]/30 flex items-center justify-center mx-auto mb-0.5 text-[#63D3A8]" style={{ background: "rgba(99,211,168,0.15)" }}>{icon}</div>
       <p className="text-[#1A2E44]/50 text-[8px] sm:text-[9px]">{label}</p>
       <p className="text-[#1A2E44] text-[10px] sm:text-[11px] font-bold">{value}</p>
     </div>
@@ -371,8 +371,8 @@ function MiniStat({ icon, label, value }: { icon: React.ReactNode; label: string
 
 function TrustBadge({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-xl border border-[#80C78D]/40 px-3 py-2.5" style={{ background: "#DCEFE8" }}>
-      <span className="text-[#47A557]">{icon}</span>
+    <div className="flex items-center gap-2 rounded-xl border border-[#9CE3C8]/40 px-3 py-2.5" style={{ background: "#e8f9f4" }}>
+      <span className="text-[#63D3A8]">{icon}</span>
       <span className="text-[11px] font-bold text-[#1A2E44]/70">{text}</span>
     </div>
   );
@@ -390,13 +390,13 @@ function OrderSummaryMobile({ items, total }: { items: { product: { _id: string;
           </div>
         );
       })}
-      <div className="border-t border-dashed border-[#80C78D]/40 pt-2.5 flex justify-between text-xs">
+      <div className="border-t border-dashed border-[#9CE3C8]/40 pt-2.5 flex justify-between text-xs">
         <span className="text-[#1A2E44]/50 flex items-center gap-1"><Truck size={11} /> التوصيل</span>
-        <span className="font-bold text-[#47A557]">مجاني</span>
+        <span className="font-bold text-[#63D3A8]">مجاني</span>
       </div>
-      <div className="border-t border-[#80C78D]/30 pt-2.5 flex justify-between items-center">
+      <div className="border-t border-[#9CE3C8]/30 pt-2.5 flex justify-between items-center">
         <span className="text-sm font-bold text-[#1A2E44]/60">الإجمالي</span>
-        <span className="text-xl font-black text-[#47A557]">{fmt(total)} <span className="text-xs text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" /></span></span>
+        <span className="text-xl font-black text-[#63D3A8]">{fmt(total)} <span className="text-xs text-[#1A2E44]/40"><img src="/money-icon.webp" alt="ر.س" className="inline w-7 h-7 object-contain align-middle" /></span></span>
       </div>
     </div>
   );
@@ -411,7 +411,7 @@ function Field({ label, icon, value, error, placeholder, maxLength, dir, inputMo
   return (
     <div data-field={fieldName}>
       <label className="flex items-center gap-1.5 text-xs font-bold text-[#1A2E44]/70 mb-1.5">
-        <span className="text-[#47A557]">{icon}</span>
+        <span className="text-[#63D3A8]">{icon}</span>
         {label}
       </label>
       <input
@@ -424,7 +424,7 @@ function Field({ label, icon, value, error, placeholder, maxLength, dir, inputMo
         className={`w-full px-4 py-3 rounded-xl text-sm font-medium text-[#1A2E44] border-2 transition-all focus:outline-none placeholder:text-[#1A2E44]/25 ${
           error
             ? "border-red-400/50 bg-red-50 focus:border-red-400"
-            : "border-[#80C78D]/40 bg-[#DCEFE8]/40 focus:border-[#47A557] focus:bg-white"
+            : "border-[#9CE3C8]/40 bg-[#e8f9f4]/40 focus:border-[#63D3A8] focus:bg-white"
         }`}
       />
       {error && <p className="text-red-500 text-[10px] font-bold mt-1">⚠ {error}</p>}

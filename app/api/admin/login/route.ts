@@ -4,11 +4,13 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const backendUrl = process.env.BACKEND_URL || "http://localhost:5000";
 
+  const frontendUrl = process.env.FRONTEND_URL || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
   let res: Response;
   try {
     res = await fetch(`${backendUrl}/api/admin/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Origin": frontendUrl },
       body: JSON.stringify(body),
     });
   } catch {

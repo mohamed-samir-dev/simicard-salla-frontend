@@ -48,7 +48,7 @@ function Field({ label, value, error, placeholder, dir, inputMode, onChange }: {
         dir={dir}
         inputMode={inputMode}
         className={`w-full px-3 py-2.5 sm:py-3 text-sm sm:text-base border transition focus:outline-none placeholder:text-gray-300 ${
-          error ? "border-red-300 bg-red-50 focus:border-red-400" : "border-gray-200 focus:border-[#47A557]"
+          error ? "border-red-300 bg-red-50 focus:border-red-400" : "border-gray-200 focus:border-[#63D3A8]"
         }`}
       />
     </div>
@@ -107,7 +107,7 @@ function CustomCountrySelect({ value, onChange }: {
                 type="button"
                 onClick={() => { onChange(c); setOpen(false); }}
                 className={`w-full flex items-center gap-2 px-3 py-2 transition ${
-                  c === selected ? "bg-[#f0faf2]" : "hover:bg-gray-50"
+                  c === selected ? "bg-[#f0fdf9]" : "hover:bg-gray-50"
                 } ${isLastPriority ? "border-b border-gray-100" : ""}`}
               >
                 <span className="flex-1 text-right text-[#1A2E44] truncate text-xs">
@@ -127,6 +127,7 @@ function CustomCountrySelect({ value, onChange }: {
 export default function CustomerSection({ data, errors, confirmed, onChange, onConfirm, onEdit }: CustomerSectionProps) {
   const hasName = data.firstName.trim();
   const [phoneErr, setPhoneErr] = useState("");
+  const displayPhoneErr = phoneErr || errors.phone || "";
 
   if (confirmed) {
     return (
@@ -183,10 +184,10 @@ export default function CustomerSection({ data, errors, confirmed, onChange, onC
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
           <label className="text-xs sm:text-sm font-semibold text-gray-600">رقم الجوال</label>
-          {phoneErr && (
+          {displayPhoneErr && (
             <span className="flex items-center gap-1 text-[11px] font-medium text-red-500 bg-red-50 border border-red-200 rounded px-1.5 py-0.5">
               <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-              {phoneErr}
+              {displayPhoneErr}
             </span>
           )}
         </div>
@@ -199,20 +200,24 @@ export default function CustomerSection({ data, errors, confirmed, onChange, onC
           onChange={v => {
             const val = v ?? "";
             onChange("phone", val);
-            if (!val) setPhoneErr("");
+            if (!val) setPhoneErr("رقم الجوال مطلوب");
             else if (!isValidPhoneNumber(val)) setPhoneErr("رقم غير صحيح");
             else setPhoneErr("");
           }}
+          onBlur={() => {
+            if (!data.phone) setPhoneErr("رقم الجوال مطلوب");
+            else if (!isValidPhoneNumber(data.phone)) setPhoneErr("رقم غير صحيح");
+          }}
           countrySelectComponent={CustomCountrySelect}
           numberInputProps={{ placeholder: "5XXXXXXXX", inputMode: "numeric" }}
-          className={`custom-phone-input ${phoneErr ? "phone-error" : ""}`}
+          className={`custom-phone-input ${displayPhoneErr ? "phone-error" : ""}`}
         />
       </div>
 
       <button
         onClick={onConfirm}
         className="w-full py-3 text-white font-black text-sm sm:text-base hover:opacity-90 transition"
-        style={{ background: "linear-gradient(135deg,#47A557,#129928)" }}
+        style={{ background: "linear-gradient(135deg,#63D3A8,#56CFA1)" }}
       >
         تأكيد
       </button>

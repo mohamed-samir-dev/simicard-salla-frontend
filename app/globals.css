@@ -3,11 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #1A2E44;
-  --color-1: #DCEFE8;
+  --color-1: #e8f9f4;
   --color-2: #5B6187;
-  --color-3: #80C78D;
-  --color-4: #47A557;
-  --color-5: #129928;
+  --color-3: #9CE3C8;
+  --color-4: #63D3A8;
+  --color-5: #56CFA1;
 }
 
 @theme inline {
@@ -39,7 +39,7 @@ input, textarea, select {
   direction: ltr;
 }
 .custom-phone-input:focus-within {
-  border-color: #47A557;
+  border-color: #63D3A8;
 }
 .custom-phone-input.phone-error {
   border-color: #fca5a5;
@@ -94,61 +94,36 @@ input, textarea, select {
 /* ── Cart Button ── */
 .cart-btn {
   position: relative;
-  overflow: hidden;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 7px;
-  background: linear-gradient(135deg, var(--color-4) 0%, var(--color-5) 50%, #0d7a1f 100%);
-  color: #FFFFFF;
+  background: #ffffff;
+  color: #56CFA1;
   font-weight: 800;
   font-size: 0.78rem;
   letter-spacing: 0.025em;
   padding: 11px 0;
   border-radius: 14px;
-  box-shadow:
-    0 4px 16px rgba(71,165,87,0.30),
-    0 1px 4px rgba(71,165,87,0.15),
-    inset 0 1px 0 rgba(255,255,255,0.13);
-  transition: box-shadow 0.22s ease, background 0.22s ease;
+  border: 1.5px solid #63D3A8;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 @media (min-width: 640px) {
   .cart-btn { font-size: 0.82rem; padding: 12px 0; }
 }
-.cart-btn::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(175deg, rgba(255,255,255,0.11) 0%, transparent 50%);
-  pointer-events: none;
-  border-radius: inherit;
-}
-.cart-btn::before {
-  content: "";
-  position: absolute;
-  top: -50%; left: -60%;
-  width: 32%; height: 200%;
-  background: rgba(255,255,255,0.16);
-  transform: skewX(-22deg) translateX(-100%);
-  animation: shimmer 4.5s infinite 1s;
-}
-@keyframes shimmer {
-  0%   { transform: skewX(-22deg) translateX(-100%); }
-  100% { transform: skewX(-22deg) translateX(700%); }
-}
 .cart-btn:hover {
-  box-shadow:
-    0 6px 22px rgba(71,165,87,0.45),
-    0 2px 6px rgba(71,165,87,0.22),
-    inset 0 1px 0 rgba(255,255,255,0.13);
+  background: #63D3A8;
+  color: #ffffff;
+}
+.cart-btn:active {
+  background: #63D3A8;
+  color: #ffffff;
 }
 .cart-btn.added {
-  background: linear-gradient(135deg, var(--color-5) 0%, var(--color-4) 100%);
-  box-shadow: 0 4px 18px rgba(71,165,87,0.42), inset 0 1px 0 rgba(255,255,255,0.13);
-}
-@media (prefers-reduced-motion: reduce) {
-  .cart-btn::before { animation: none; }
+  background: #63D3A8;
+  color: #ffffff;
+  border-color: #63D3A8;
 }
 
 @keyframes fade-in-down {
@@ -165,7 +140,7 @@ input, textarea, select {
   height: 8px;
 }
 .swiper-pagination-bullet-active {
-  background: var(--color-5);
+  background: var(--color-4);
   width: 22px;
   border-radius: 4px;
   transition: width 0.3s ease;

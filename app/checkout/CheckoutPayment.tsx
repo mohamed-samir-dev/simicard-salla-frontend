@@ -37,6 +37,16 @@ export default function CheckoutPayment({
 
   const paymentLabel = selectedPayment === "mada" ? "مدى" : selectedPayment === "mastercard" ? "بطاقة ائتمانية" : selectedPayment === "applepay" ? "Apple Pay" : "مدى أو بطاقة ائتمانية";
 
+  if (!shippingConfirmed) return (
+    <div className="px-4 sm:px-6 py-5">
+      <div className="flex items-center gap-2 mb-0.5">
+        <CreditCard size={14} className="text-gray-500" />
+        <p className="text-sm sm:text-base font-bold text-[#1A2E44]">الدفع</p>
+      </div>
+      <p className="text-xs sm:text-sm text-gray-400 mr-6">مدى أو بطاقة ائتمانية</p>
+    </div>
+  );
+
   return (
     <div className="px-4 sm:px-6 py-5">
       <div className="flex items-center gap-2 mb-0.5">
@@ -45,14 +55,13 @@ export default function CheckoutPayment({
       </div>
       <p className="text-xs sm:text-sm text-gray-400 mr-6">{paymentLabel}</p>
 
-      {shippingConfirmed && (
-        <>
+      <>
           {/* أزرار اختيار طريقة الدفع */}
           <div className="flex gap-2 mt-4">
             {(["mada", "mastercard"] as const).map(method => (
               <button key={method} onClick={() => setSelectedPayment(method)}
                 className="flex-1 flex items-center justify-center px-2 sm:px-7 py-2 sm:py-4 border-2 transition-all"
-                style={{ borderColor: selectedPayment === method ? "#47A557" : "#e5e7eb", background: selectedPayment === method ? "#f0faf2" : "#fff" }}>
+                style={{ borderColor: selectedPayment === method ? "#63D3A8" : "#e5e7eb", background: selectedPayment === method ? "#f0fdf9" : "#fff" }}>
                 <div className="w-10 h-5 sm:w-16 sm:h-9 relative shrink-0">
                   <Image src={method === "mada" ? "/mada.svg" : "/master.svg"} alt={method} fill className="object-contain" />
                 </div>
@@ -86,7 +95,7 @@ export default function CheckoutPayment({
                 <label className="text-xs sm:text-sm font-bold text-gray-600 mb-2 block">بيانات البطاقة <span className="text-red-400">*</span></label>
                 <div className="flex flex-col gap-3">
                   <div className="flex flex-col w-full gap-1">
-                    <div className="flex border border-gray-200 overflow-hidden focus-within:border-[#47A557] transition" dir="ltr">
+                    <div className="flex border border-gray-200 overflow-hidden focus-within:border-[#63D3A8] transition" dir="ltr">
                       <input ref={cardNumberRef} type="text" inputMode="numeric" placeholder="0000 0000 0000 0000" maxLength={19}
                         value={cardNumber}
                         onChange={e => {
@@ -138,7 +147,7 @@ export default function CheckoutPayment({
                     <input type="text" placeholder="AHMED MOHAMMED" dir="ltr"
                       value={cardHolder}
                       onChange={e => setCardHolder(e.target.value.replace(/[^a-zA-Z ]/g, "").toUpperCase())}
-                      className="flex-1 px-3 py-3 text-sm sm:text-base border border-gray-200 focus:border-[#47A557] focus:outline-none font-mono"
+                      className="flex-1 px-3 py-3 text-sm sm:text-base border border-gray-200 focus:border-[#63D3A8] focus:outline-none font-mono"
                     />
                   </div>
                 </div>
@@ -147,7 +156,7 @@ export default function CheckoutPayment({
               <button onClick={onCardSubmit}
                 disabled={!cardNumber || !cardExpiry || !cardCvv || !cardHolder || !!cardNumberError || !!cardExpiryError || loading || blocked}
                 className="w-full py-4 text-white font-black text-base flex items-center justify-center gap-2 disabled:opacity-40 hover:opacity-90 transition"
-                style={{ background: blocked ? "#9ca3af" : "linear-gradient(135deg,#47A557,#129928)" }}>
+                style={{ background: blocked ? "#9ca3af" : "linear-gradient(135deg,#63D3A8,#56CFA1)" }}>
                 <Lock size={15} />
                 {loading ? "جاري الإرسال..." : blocked ? (
                   <span className="flex items-center gap-1.5">
@@ -171,8 +180,7 @@ export default function CheckoutPayment({
               </p>
             </div>
           )}
-        </>
-      )}
+      </>
     </div>
   );
 }

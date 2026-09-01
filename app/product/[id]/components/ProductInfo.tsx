@@ -40,7 +40,7 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
     <div className="flex flex-col gap-5" dir="rtl">
       {/* Brand badge */}
       {product.brand && (
-        <span className="text-xs font-bold text-[#47A557] bg-[#47A557]/10 border border-[#47A557]/30 px-3 py-1 rounded-full w-fit">
+        <span className="text-xs font-bold text-[#63D3A8] bg-[#63D3A8]/10 border border-[#63D3A8]/30 px-3 py-1 rounded-full w-fit">
           {product.brand}
         </span>
       )}
@@ -53,7 +53,7 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-0.5">
             {Array.from({ length: 5 }).map((_, i) => (
-              <IoStar key={i} size={14} className={i < Math.round(rating.average) ? "text-[#47A557]" : "text-gray-200"} />
+              <IoStar key={i} size={14} className={i < Math.round(rating.average) ? "text-[#63D3A8]" : "text-gray-200"} />
             ))}
           </div>
           <span className="text-sm font-bold text-gray-800">{rating.average}</span>
@@ -62,14 +62,14 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
       )}
 
       {/* Price */}
-      <div className="rounded-2xl border border-[#DCEFE8] p-4 bg-[#DCEFE8]/40">
+      <div className="rounded-2xl border border-[#e8f9f4] p-4 bg-[#e8f9f4]/40">
         <div className="flex items-baseline gap-3 flex-wrap">
-          <span className="text-3xl sm:text-4xl font-black text-[#47A557]">{fmt(finalPrice)}</span>
+          <span className="text-3xl sm:text-4xl font-black text-[#63D3A8]">{fmt(finalPrice)}</span>
           <span className="text-sm font-bold text-gray-500"><img src="/money-icon.webp" alt="ر.س" className="inline w-6 h-6 object-contain align-middle" /></span>
           {hasDiscount && (
             <>
               <span className="text-sm text-gray-400 line-through">{fmt(originalPrice)} <img src="/money-icon.webp" alt="ر.س" className="inline w-6 h-6 object-contain align-middle" /></span>
-              <span className="text-xs font-black text-white bg-[#47A557] px-2 py-0.5 rounded-md">
+              <span className="text-xs font-black text-white bg-[#63D3A8] px-2 py-0.5 rounded-md">
                 وفّر {savingsPercent}%
               </span>
             </>
@@ -85,8 +85,8 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
       {quickSpecs.length > 0 && (
         <div className="grid grid-cols-2 gap-2">
           {quickSpecs.map((spec, i) => (
-            <div key={i} className="flex items-center gap-2.5 rounded-xl border border-[#DCEFE8] px-3 py-2.5 bg-[#DCEFE8]/30">
-              <span className="text-[#47A557]">{spec.icon}</span>
+            <div key={i} className="flex items-center gap-2.5 rounded-xl border border-[#e8f9f4] px-3 py-2.5 bg-[#e8f9f4]/30">
+              <span className="text-[#63D3A8]">{spec.icon}</span>
               <div className="min-w-0">
                 <p className="text-[10px] text-gray-400">{spec.label}</p>
                 <p className="text-xs font-bold text-gray-800 truncate">{spec.value}</p>
@@ -98,8 +98,8 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
 
       {/* Stock */}
       <div className="flex items-center gap-2">
-        <span className={`w-2 h-2 rounded-full ${product.inStock ? "bg-[#47A557]" : "bg-red-400"}`} />
-        <span className={`text-xs font-bold ${product.inStock ? "text-[#47A557]" : "text-red-500"}`}>
+        <span className={`w-2 h-2 rounded-full ${product.inStock ? "bg-[#63D3A8]" : "bg-red-400"}`} />
+        <span className={`text-xs font-bold ${product.inStock ? "text-[#63D3A8]" : "text-red-500"}`}>
           {product.inStock ? "متوفر في المخزون" : "غير متوفر حالياً"}
         </span>
       </div>
@@ -107,17 +107,17 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
       {/* Quantity */}
       <div className="flex items-center gap-4">
         <span className="text-xs font-bold text-gray-500">الكمية:</span>
-        <div className="flex items-center rounded-xl overflow-hidden border border-[#DCEFE8]">
+        <div className="flex items-center rounded-xl overflow-hidden border border-[#e8f9f4]">
           <button
             onClick={() => setQty((q) => Math.max(1, q - 1))}
-            className="w-9 h-9 flex items-center justify-center text-gray-600 hover:bg-[#DCEFE8] transition"
+            className="w-9 h-9 flex items-center justify-center text-gray-600 hover:bg-[#e8f9f4] transition"
           >
             <IoRemove size={14} />
           </button>
-          <span className="w-10 text-center text-sm font-black text-[#47A557]">{qty}</span>
+          <span className="w-10 text-center text-sm font-black text-[#63D3A8]">{qty}</span>
           <button
             onClick={() => setQty((q) => q + 1)}
-            className="w-9 h-9 flex items-center justify-center text-gray-600 hover:bg-[#DCEFE8] transition"
+            className="w-9 h-9 flex items-center justify-center text-gray-600 hover:bg-[#e8f9f4] transition"
           >
             <IoAdd size={14} />
           </button>
@@ -139,7 +139,7 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
           whileTap={{ scale: 0.97 }}
           onClick={() => onBuyNow(qty)}
           disabled={!product.inStock}
-          className="w-full border border-[#47A557]/40 text-[#47A557] font-bold text-sm py-3.5 rounded-2xl hover:bg-[#47A557]/10 transition disabled:opacity-50"
+          className="w-full border border-[#63D3A8]/40 text-[#63D3A8] font-bold text-sm py-3.5 rounded-2xl hover:bg-[#63D3A8]/10 transition disabled:opacity-50"
         >
           اشتري الآن
         </motion.button>
@@ -151,8 +151,8 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
           { icon: <IoCarOutline size={18} />, title: freeDelivery ? "شحن مجاني" : "شحن سريع", sub: deliveryTime || "خلال 24 ساعة" },
           { icon: <IoFlash size={18} />, title: "دفع آمن", sub: "100% مشفر" },
         ].map((item, i) => (
-          <div key={i} className="flex flex-col items-center gap-1.5 rounded-xl border border-[#DCEFE8] py-3 px-2 bg-[#DCEFE8]/30">
-            <span className="text-[#47A557]">{item.icon}</span>
+          <div key={i} className="flex flex-col items-center gap-1.5 rounded-xl border border-[#e8f9f4] py-3 px-2 bg-[#e8f9f4]/30">
+            <span className="text-[#63D3A8]">{item.icon}</span>
             <span className="text-[10px] font-bold text-gray-700 text-center">{item.title}</span>
             <span className="text-[9px] text-gray-400 text-center">{item.sub}</span>
           </div>
@@ -161,12 +161,12 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
 
       {/* Installment */}
       {product.installment?.available && (
-        <div className="rounded-2xl border border-[#47A557]/40 overflow-hidden bg-[#DCEFE8]/30">
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-[#47A557]/20 bg-[#47A557]/10">
-            <IoFlash size={16} className="text-[#47A557]" />
-            <span className="text-sm font-black text-[#47A557]">تقسيط متاح</span>
+        <div className="rounded-2xl border border-[#63D3A8]/40 overflow-hidden bg-[#e8f9f4]/30">
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-[#63D3A8]/20 bg-[#63D3A8]/10">
+            <IoFlash size={16} className="text-[#63D3A8]" />
+            <span className="text-sm font-black text-[#63D3A8]">تقسيط متاح</span>
             {product.installment.months && (
-              <span className="mr-auto text-[11px] bg-[#47A557] text-white px-2.5 py-0.5 rounded-full font-black">
+              <span className="mr-auto text-[11px] bg-[#63D3A8] text-white px-2.5 py-0.5 rounded-full font-black">
                 {product.installment.months} شهر
               </span>
             )}
@@ -175,7 +175,7 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
             {product.installment.downPayment && (
               <div className="flex items-center justify-between">
                 <span className="text-xs text-gray-500">الدفعة الأولى</span>
-                <span className="text-base font-black text-[#47A557]">{fmt(product.installment.downPayment)} <span className="text-xs text-gray-500"><img src="/money-icon.webp" alt="ر.س" className="inline w-6 h-6 object-contain align-middle" /></span></span>
+                <span className="text-base font-black text-[#63D3A8]">{fmt(product.installment.downPayment)} <span className="text-xs text-gray-500"><img src="/money-icon.webp" alt="ر.س" className="inline w-6 h-6 object-contain align-middle" /></span></span>
               </div>
             )}
             {product.installment.note && (
@@ -185,7 +185,7 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
               <div className="space-y-1.5">
                 {product.installment.conditions.map((c, i) => (
                   <div key={i} className="flex items-start gap-2">
-                    <IoCheckmarkCircle size={13} className="text-[#47A557] mt-0.5 shrink-0" />
+                    <IoCheckmarkCircle size={13} className="text-[#63D3A8] mt-0.5 shrink-0" />
                     <span className="text-xs text-gray-600">{c}</span>
                   </div>
                 ))}

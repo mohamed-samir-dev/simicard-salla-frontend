@@ -18,7 +18,7 @@ function Stars({ rating, interactive = false, onRate }: { rating: number; intera
         <button key={s} type="button" disabled={!interactive} onClick={() => onRate?.(s)}
           className={interactive ? "transition-transform hover:scale-110" : "cursor-default"}>
           {s <= rating
-            ? <IoStar size={interactive ? 20 : 13} className="text-[#47A557]" />
+            ? <IoStar size={interactive ? 20 : 13} className="text-[#63D3A8]" />
             : <IoStarOutline size={interactive ? 20 : 13} className="text-gray-300" />}
         </button>
       ))}
@@ -75,13 +75,13 @@ export default function CustomerReviews() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div>
-            <p className="text-[#47A557] text-xs font-bold tracking-widest mb-2">آراء العملاء</p>
+            <p className="text-[#63D3A8] text-xs font-bold tracking-widest mb-2">آراء العملاء</p>
             <h2 className="text-2xl sm:text-3xl font-black text-gray-800">ماذا يقولون عنّا؟</h2>
           </div>
 
           {reviews.length > 0 && (
             <div className="flex items-center gap-3 shrink-0">
-              <span className="text-3xl font-black text-[#47A557]">{avg}</span>
+              <span className="text-3xl font-black text-[#63D3A8]">{avg}</span>
               <div>
                 <Stars rating={Math.round(avg)} />
                 <p className="text-gray-400 text-[11px] mt-0.5">{reviews.length} تقييم</p>
@@ -96,10 +96,10 @@ export default function CustomerReviews() {
             {/* Desktop */}
             <div className="hidden sm:grid grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
               {reviews.map((r) => (
-                <div key={r._id} className="rounded-2xl border border-gray-200 p-4 flex flex-col gap-3 hover:border-[#47A557]/40 transition-colors duration-200 bg-white shadow-sm">
+                <div key={r._id} className="rounded-2xl border border-gray-200 p-4 flex flex-col gap-3 hover:border-[#63D3A8]/40 transition-colors duration-200 bg-white shadow-sm">
                   <div className="flex items-start justify-between gap-2">
                     <Stars rating={r.rating} />
-                    <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-black text-xs shrink-0 bg-[#47A557]">
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-black text-xs shrink-0 bg-[#63D3A8]">
                       {r.name.trim().charAt(0).toUpperCase()}
                     </div>
                   </div>
@@ -121,7 +121,7 @@ export default function CustomerReviews() {
                       <div className="border border-gray-200 p-4 flex flex-col gap-3 rounded-2xl bg-white shadow-sm">
                         <div className="flex items-start justify-between gap-2">
                           <Stars rating={r.rating} />
-                          <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-black text-xs shrink-0 bg-[#47A557]">
+                          <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-black text-xs shrink-0 bg-[#63D3A8]">
                             {r.name.trim().charAt(0).toUpperCase()}
                           </div>
                         </div>
@@ -135,7 +135,7 @@ export default function CustomerReviews() {
               <div className="flex justify-center gap-1.5 mt-3">
                 {reviews.map((_, i) => (
                   <button key={i} onClick={() => setActiveIdx(i)}
-                    className={`rounded-full transition-all duration-300 ${i === activeIdx ? "w-5 h-1.5 bg-[#47A557]" : "w-1.5 h-1.5 bg-gray-300"}`} />
+                    className={`rounded-full transition-all duration-300 ${i === activeIdx ? "w-5 h-1.5 bg-[#63D3A8]" : "w-1.5 h-1.5 bg-gray-300"}`} />
                 ))}
               </div>
             </div>
@@ -147,13 +147,13 @@ export default function CustomerReviews() {
         {/* CTA */}
         <div className="flex flex-col items-center gap-3 mt-2">
           {submitted ? (
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#47A557]">
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#63D3A8]">
               <IoCheckmarkCircle size={15} />
               تم إرسال تعليقك وسيظهر بعد المراجعة
             </div>
           ) : (
             <button onClick={() => setShowForm((v) => !v)}
-              className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-[#47A557] hover:bg-[#3d9149] transition-colors">
+              className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-[#63D3A8] hover:bg-[#56CFA1] transition-colors">
               <IoAdd size={14} />
               {showForm ? "إلغاء" : "شارك تجربتك"}
             </button>
@@ -164,19 +164,19 @@ export default function CustomerReviews() {
               className="w-full max-w-sm rounded-2xl border border-gray-200 p-4 flex flex-col gap-3 bg-white shadow-sm">
               <input type="text" placeholder="اسمك" value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs text-gray-800 placeholder-gray-400 outline-none focus:border-[#47A557]/60 transition-colors"
+                className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs text-gray-800 placeholder-gray-400 outline-none focus:border-[#63D3A8]/60 transition-colors"
                 required />
               <textarea placeholder="اكتب تجربتك..." value={form.comment}
                 onChange={(e) => setForm({ ...form, comment: e.target.value })}
                 rows={3}
-                className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs text-gray-800 placeholder-gray-400 outline-none focus:border-[#47A557]/60 transition-colors resize-none"
+                className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs text-gray-800 placeholder-gray-400 outline-none focus:border-[#63D3A8]/60 transition-colors resize-none"
                 required />
               <div className="flex items-center gap-2">
                 <span className="text-gray-500 text-xs">تقييمك:</span>
                 <Stars rating={form.rating} interactive onRate={(s) => setForm({ ...form, rating: s })} />
               </div>
               <button type="submit" disabled={submitting}
-                className="bg-[#47A557] text-white font-bold py-2.5 rounded-xl text-xs hover:bg-[#3d9149] transition-colors disabled:opacity-50">
+                className="bg-[#63D3A8] text-white font-bold py-2.5 rounded-xl text-xs hover:bg-[#56CFA1] transition-colors disabled:opacity-50">
                 {submitting ? "جاري الإرسال..." : "إرسال"}
               </button>
             </form>

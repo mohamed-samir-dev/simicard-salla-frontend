@@ -89,21 +89,14 @@ export default function ProductCard({
         <Link
           href={`/product/${product._id}`}
           dir="rtl"
-          className="group relative flex flex-col h-full rounded-[20px] overflow-hidden transition-transform duration-300 hover:-translate-y-1"
+          className="group relative flex flex-col h-full rounded-[20px] overflow-hidden"
           style={{
             background: "#ffffff",
             border: "1px solid rgba(0,0,0,0.08)",
-            boxShadow:
-              "0 2px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05)",
           }}
         >
           {/* Glow on hover */}
-          <div
-            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-[20px]"
-            style={{
-              boxShadow: "0 0 0 1px rgba(71,165,87,0.3), 0 8px 32px rgba(71,165,87,0.1)",
-            }}
-          />
+
 
           {/* ══ IMAGE ZONE ══ */}
           <div className="relative w-full overflow-hidden">
@@ -114,14 +107,14 @@ export default function ProductCard({
                 style={
                   rank === 1
                     ? {
-                        background: "linear-gradient(135deg, #47A557 0%, #129928 100%)",
+                        background: "linear-gradient(135deg, #63D3A8 0%, #56CFA1 100%)",
                         color: "#ffffff",
-                        boxShadow: "0 2px 10px rgba(71,165,87,0.4)",
+                        boxShadow: "0 2px 10px rgba(99,211,168,0.4)",
                       }
                     : {
-                        background: "rgba(71,165,87,0.1)",
-                        color: "#47A557",
-                        border: "1px solid rgba(71,165,87,0.3)",
+                        background: "rgba(99,211,168,0.1)",
+                        color: "#56CFA1",
+                        border: "1px solid rgba(99,211,168,0.35)",
                       }
                 }
               >
@@ -136,7 +129,7 @@ export default function ProductCard({
                 alt={name}
                 width={600}
                 height={600}
-                className="w-full h-auto object-cover block max-h-32 sm:max-h-48 transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-auto object-contain block transition-transform duration-500"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 priority={priority}
                 loading={priority ? "eager" : "lazy"}
@@ -155,9 +148,9 @@ export default function ProductCard({
                 <span
                   className="text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider leading-none"
                   style={{
-                    background: "rgba(71,165,87,0.1)",
-                    border: "1px solid rgba(71,165,87,0.25)",
-                    color: "#47A557",
+                    background: "rgba(99,211,168,0.1)",
+                    border: "1px solid rgba(99,211,168,0.3)",
+                    color: "#56CFA1",
                   }}
                 >
                   {brand}
@@ -167,9 +160,9 @@ export default function ProductCard({
                 <span
                   className="flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-md leading-none"
                   style={{
-                    background: "rgba(71,165,87,0.08)",
-                    border: "1px solid rgba(71,165,87,0.2)",
-                    color: "#47A557",
+                    background: "rgba(99,211,168,0.08)",
+                    border: "1px solid rgba(99,211,168,0.2)",
+                    color: "#56CFA1",
                   }}
                 >
                   <IoWifiOutline size={8} />
@@ -188,7 +181,7 @@ export default function ProductCard({
               className="h-px"
               style={{
                 background:
-                  "linear-gradient(90deg, rgba(71,165,87,0.2), rgba(71,165,87,0.05) 60%, transparent)",
+                  "linear-gradient(90deg, rgba(99,211,168,0.25), rgba(99,211,168,0.06) 60%, transparent)",
               }}
             />
 
@@ -203,7 +196,7 @@ export default function ProductCard({
                 <div className="flex items-baseline gap-1">
                   <span
                     className="text-[16px] sm:text-[26px] font-black leading-none tracking-tight"
-                    style={{ color: hasDiscount ? "#129928" : "#111827" }}
+                    style={{ color: hasDiscount ? "#56CFA1" : "#111827" }}
                   >
                     {fmt(displayPrice!)}
                   </span>

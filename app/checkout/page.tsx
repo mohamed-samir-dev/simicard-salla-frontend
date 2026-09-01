@@ -244,18 +244,16 @@ export default function CheckoutPage() {
           onEdit={() => setCustomerConfirmed(false)}
         />
 
-        <div className="border-t border-gray-100" />
-
         {/* ADDRESS + SHIPPING */}
+        <div className="border-t border-gray-100" />
         <AddressSection
           locked={!customerConfirmed}
           onChange={addr => { setSelectedAddress(addr); setAddress(addr.address ?? ""); }}
           onShippingSelect={opt => { setSelectedShipping(opt); setShippingConfirmed(!!opt); }}
         />
 
-        <div className="border-t border-gray-100" />
-
         {/* PAYMENT */}
+        <div className="border-t border-gray-100" />
         <CheckoutPayment
           shippingConfirmed={shippingConfirmed}
           selectedPayment={selectedPayment} setSelectedPayment={setSelectedPayment}
