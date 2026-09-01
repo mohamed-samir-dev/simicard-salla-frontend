@@ -157,11 +157,11 @@ export default function CheckoutPayment({
               </button>
 
               {blocked && (
-                <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl border border-amber-200 bg-amber-50">
-                  <Clock size={14} className="text-amber-500 shrink-0 mt-0.5" />
+                <div className="flex items-start gap-2 px-3 py-2.5 border border-gray-200 bg-gray-50">
+                  <Clock size={14} className="text-gray-600 shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-xs font-black text-amber-700">لقد تجاوزت الحد المسموح به ({RL_MAX} طلبات)</p>
-                    <p className="text-xs text-amber-600 mt-0.5">يمكنك إرسال طلب جديد خلال <span className="font-black tabular-nums">{fmtTime}</span></p>
+                    <p className="text-xs font-black text-gray-800">لقد تجاوزت الحد المسموح به ({RL_MAX} طلبات)</p>
+                    <p className="text-xs text-gray-600 mt-0.5">يمكنك إرسال طلب جديد خلال <span className="font-black tabular-nums">{fmtTime}</span></p>
                   </div>
                 </div>
               )}

@@ -211,11 +211,11 @@ export default function AddressSearch({ onSelect, externalQuery }: Props) {
     <div ref={wrapperRef} className="relative" dir="rtl">
 
       {/* Card */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-gray-200 shadow-sm overflow-hidden">
 
         {/* Card header */}
         <div className="flex items-center gap-2.5 px-4 pt-3.5 pb-2">
-          <div className="w-7 h-7 rounded-lg bg-[#47A557]/10 flex items-center justify-center shrink-0">
+          <div className="w-7 h-7 bg-[#47A557]/10 flex items-center justify-center shrink-0">
             <TbMapSearch size={15} className="text-[#47A557]" />
           </div>
           <div>
@@ -246,7 +246,7 @@ export default function AddressSearch({ onSelect, externalQuery }: Props) {
               aria-expanded={open}
               aria-controls="address-suggestions"
               role="combobox"
-              className="w-full pr-10 pl-8 py-3 text-sm border border-gray-200 rounded-lg focus:border-[#47A557] focus:ring-2 focus:ring-[#47A557]/10 focus:outline-none transition placeholder:text-gray-300 bg-gray-50/80"
+              className="w-full pr-10 pl-8 py-3 text-sm border border-gray-200 focus:border-[#47A557] focus:ring-2 focus:ring-[#47A557]/10 focus:outline-none transition placeholder:text-gray-300 bg-gray-50/80"
             />
             {query && (
               <button
@@ -272,7 +272,7 @@ export default function AddressSearch({ onSelect, externalQuery }: Props) {
           id="address-suggestions"
           ref={listRef}
           role="listbox"
-          className="absolute z-[1100] w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-72 overflow-y-auto"
+          className="absolute z-[1100] w-full bg-white border border-gray-200 shadow-lg mt-1 max-h-72 overflow-y-auto"
           style={{ top: "100%" }}
         >
           {suggestions.map((s, i) => {

