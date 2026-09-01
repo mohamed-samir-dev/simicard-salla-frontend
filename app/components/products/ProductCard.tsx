@@ -212,7 +212,7 @@ export default function ProductCard({
                   >
                     {fmt(displayPrice!)}
                   </span>
-                  <img src="/money-icon.webp" alt="ر.س" className="w-4 sm:w-5 h-4 sm:h-5 object-contain mb-0.5" />
+                  <img src="/money-icon.webp" alt="ر.س" className="w-6 sm:w-8 h-6 sm:h-8 object-contain mb-0.5" />
                 </div>
               </div>
 
