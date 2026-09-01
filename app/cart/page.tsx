@@ -89,6 +89,22 @@ export default function CartPage() {
     <div className="min-h-[100dvh] bg-[#f0f8f2]" dir="rtl">
       <AnimatedBackground />
 
+      {/* Redirect Loading Overlay */}
+      {redirecting && (
+        <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-7 px-4 bg-white">
+          <div className="relative w-16 h-16">
+            <div className="absolute inset-0 rounded-full border-4 border-gray-100" />
+            <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#1A2E44]" style={{ animation: "spin 0.85s linear infinite" }} />
+          </div>
+          <div className="text-center space-y-1.5">
+            <p className="text-[#1A2E44] font-black text-sm sm:text-base">جاري الانتقال للطلب</p>
+            <p className="text-gray-400 text-xs sm:text-sm">يرجى الانتظار...</p>
+          </div>
+          <p className="text-[10px] text-gray-300 flex items-center gap-1"><Lock size={9} /> اتصال مشفّر وآمن · PCI DSS</p>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
+      )}
+
       {/* Success Popup */}
       {showPopup && (
         <div
@@ -265,7 +281,7 @@ export default function CartPage() {
             <button
               onClick={() => {
                 setRedirecting(true);
-                setTimeout(() => router.push("/checkout"), 1800);
+                setTimeout(() => router.push("/checkout"), 3000);
               }}
               disabled={redirecting}
               className="w-full py-4 rounded-xl text-white font-black text-base transition-all hover:opacity-90 active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-90"

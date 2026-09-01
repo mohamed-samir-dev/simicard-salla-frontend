@@ -47,111 +47,72 @@ export default async function Footer() {
   const hasImages = qrSrc || footerItems.length > 0 || img1 || img2;
 
   return (
-    <footer dir="rtl" className="text-white mt-16 relative overflow-hidden"
-      style={{ background: "linear-gradient(180deg, #0d2e14 0%, #0a2410 40%, #071a0c 100%)" }}>
+    <footer dir="rtl" className="mt-16 border-t border-gray-200" style={{ background: "#F3F4F6" }}>
 
-      {/* Top green accent line */}
-      <div className="h-0.5 w-full" style={{ background: "linear-gradient(90deg, transparent, #47A557 30%, #80C78D 70%, transparent)" }} />
-
-      {/* Decorative circles */}
-      <div className="absolute rounded-full opacity-20 pointer-events-none"
-        style={{ width: "400px", height: "400px", background: "radial-gradient(circle,#47A557,transparent 70%)", top: "-20%", left: "-5%" }} />
-      <div className="absolute rounded-full border border-[#80C78D]/15 pointer-events-none"
-        style={{ width: "300px", height: "300px", bottom: "-10%", right: "-5%" }} />
-
-      <div className="relative max-w-6xl mx-auto px-5 pt-12 pb-8">
+      <div className="max-w-6xl mx-auto px-5 pt-12 pb-8">
 
         {/* Main grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
 
           {/* Brand */}
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-1 h-8 rounded-full bg-[#80C78D]" />
-              <h2 className="text-2xl font-black text-white">سهلناها</h2>
-            </div>
-            <p className="text-sm leading-7 max-w-sm text-white/55">
-              {c.details || "منصتك الأولى لشراء شرائح الاتصال بكل سهولة وأمان، خدمة موثوقة وتوصيل سريع لباب بيتك."}
+            <h2 className="text-lg font-bold text-black">مسار الجوال</h2>
+            <p className="text-sm leading-7 text-gray-600">
+              شرائح اتصال وإنترنت بأسعار منافسة، مع خدمة سريعة وآمنة ودعم عملاء مميز. ثقتكم غايتنا وخدمتكم أولويتنا
             </p>
-            <div className="flex gap-3 mt-1">
-              {c.whatsapp && (
-                <a href={`https://wa.me/${c.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noreferrer"
-                  className="flex items-center justify-center w-10 h-10 rounded-xl transition-all hover:scale-110"
-                  style={{ background: "rgba(128,199,141,0.12)", border: "1px solid rgba(128,199,141,0.3)" }}>
-                  <FaWhatsapp size={17} className="text-[#80C78D]" />
-                </a>
-              )}
-              {c.phone && (
-                <a href={`tel:${c.phone}`}
-                  className="flex items-center justify-center w-10 h-10 rounded-xl transition-all hover:scale-110"
-                  style={{ background: "rgba(128,199,141,0.12)", border: "1px solid rgba(128,199,141,0.3)" }}>
-                  <FaMobileAlt size={17} className="text-[#80C78D]" />
-                </a>
-              )}
-              {c.email && (
-                <a href={`mailto:${c.email}`}
-                  className="flex items-center justify-center w-10 h-10 rounded-xl transition-all hover:scale-110"
-                  style={{ background: "rgba(128,199,141,0.12)", border: "1px solid rgba(128,199,141,0.3)" }}>
-                  <FaEnvelope size={17} className="text-[#80C78D]" />
-                </a>
-              )}
-            </div>
-          </div>
-
-          {/* Commercial Register */}
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-1 h-8 rounded-full bg-[#80C78D]" />
-              <h3 className="text-base font-bold text-white">السجل التجاري</h3>
-            </div>
-            <div className="flex flex-col gap-2 p-5 rounded-2xl"
-              style={{ background: "rgba(128,199,141,0.07)", border: "1px solid rgba(128,199,141,0.2)" }}>
-              <span className="text-xs text-white/45">رقم السجل التجاري</span>
-              <span className="text-base font-black text-[#80C78D] tracking-wider">314781690600003</span>
-              <span className="text-xs text-white/35">المملكة العربية السعودية</span>
-            </div>
+            {/* Commercial Register */}
+            <a href="https://qr.saudibusiness.gov.sa/viewcr?nCrNumber=qjCeot5eoqF+DgXufLJovw==" target="_blank" rel="noreferrer" className="flex items-center gap-3">
+              <Image src="/commerce.webp" alt="سجل تجاري" width={48} height={48} className="object-contain" />
+              <div className="flex flex-col">
+                <span className="text-base font-semibold text-black">السجل التجاري</span>
+                <span className="text-sm text-gray-600">314781690600003</span>
+              </div>
+            </a>
+            <a href="https://eauthenticate.saudibusiness.gov.sa/inquiry" target="_blank" rel="noreferrer" className="flex items-center gap-3">
+              <Image src="/work.webp" alt="شهادة توثيق" width={48} height={48} className="object-contain" />
+              <div className="flex flex-col">
+                <span className="text-base font-semibold text-black">شهادة توثيق</span>
+                <span className="text-sm text-gray-600">مركز الاعمال</span>
+                <span className="text-sm text-gray-600">0000322450</span>
+              </div>
+            </a>
+           
           </div>
 
           {/* Contact details */}
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-1 h-8 rounded-full bg-[#80C78D]" />
-              <h3 className="text-base font-bold text-white">تواصل معنا</h3>
-            </div>
+            <h3 className="text-base font-bold text-black">تواصل معنا</h3>
             <ul className="flex flex-col gap-3">
               {c.whatsapp && (
                 <li>
                   <a href={`https://wa.me/${c.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noreferrer"
-                    className="flex items-center gap-3 text-sm text-white/60 hover:text-white transition-colors" dir="ltr">
-                    <span className="flex items-center justify-center w-8 h-8 rounded-xl shrink-0"
-                      style={{ background: "rgba(128,199,141,0.12)", border: "1px solid rgba(128,199,141,0.2)" }}>
-                      <FaWhatsapp size={14} className="text-[#80C78D]" />
+                    className="flex items-center gap-3 text-sm text-gray-600 hover:text-black transition-colors">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-xl border border-gray-200 shrink-0">
+                      <FaWhatsapp size={14} className="text-black" />
                     </span>
-                    {c.whatsapp}
+                    <span dir="ltr">{c.whatsapp}</span>
                   </a>
                 </li>
               )}
               {c.phone && (
                 <li>
                   <a href={`tel:${c.phone}`}
-                    className="flex items-center gap-3 text-sm text-white/60 hover:text-white transition-colors" dir="ltr">
-                    <span className="flex items-center justify-center w-8 h-8 rounded-xl shrink-0"
-                      style={{ background: "rgba(128,199,141,0.12)", border: "1px solid rgba(128,199,141,0.2)" }}>
-                      <FaMobileAlt size={14} className="text-[#80C78D]" />
+                    className="flex items-center gap-3 text-sm text-gray-600 hover:text-black transition-colors">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-xl border border-gray-200 shrink-0">
+                      <FaMobileAlt size={14} className="text-black" />
                     </span>
-                    {c.phone}
+                    <span dir="ltr">{c.phone}</span>
                   </a>
                 </li>
               )}
               {c.email && (
                 <li>
                   <a href={`mailto:${c.email}`}
-                    className="flex items-center gap-3 text-sm text-white/60 hover:text-white transition-colors" dir="ltr">
-                    <span className="flex items-center justify-center w-8 h-8 rounded-xl shrink-0"
-                      style={{ background: "rgba(128,199,141,0.12)", border: "1px solid rgba(128,199,141,0.2)" }}>
-                      <FaEnvelope size={14} className="text-[#80C78D]" />
+                    className="flex items-center gap-3 text-sm text-gray-600 hover:text-black transition-colors">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-xl border border-gray-200 shrink-0">
+                      <FaEnvelope size={14} className="text-black" />
                     </span>
-                    {c.email}
+                    <span dir="ltr">{c.email}</span>
                   </a>
                 </li>
               )}
@@ -162,9 +123,9 @@ export default async function Footer() {
                 {qrSrc && (
                   qrLink
                     ? <a href={qrLink} target="_blank" rel="noreferrer" className="shrink-0">
-                        <Image src={qrSrc} alt="qr" width={200} height={200} className="rounded-lg bg-white p-1 h-auto w-auto max-h-14" style={{ border: "1px solid rgba(128,199,141,0.3)" }} />
+                        <Image src={qrSrc} alt="qr" width={200} height={200} className="rounded-lg bg-white p-1 h-auto w-auto max-h-14 border border-gray-200" />
                       </a>
-                    : <Image src={qrSrc} alt="qr" width={200} height={200} className="rounded-lg bg-white p-1 shrink-0 h-auto w-auto max-h-14" style={{ border: "1px solid rgba(128,199,141,0.3)" }} />
+                    : <Image src={qrSrc} alt="qr" width={200} height={200} className="rounded-lg bg-white p-1 shrink-0 h-auto w-auto max-h-14 border border-gray-200" />
                 )}
                 {footerItems.map((item, i) => {
                   const href = getHref(item);
@@ -187,18 +148,21 @@ export default async function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="h-px w-full mb-6" style={{ background: "linear-gradient(90deg, transparent, rgba(128,199,141,0.35), transparent)" }} />
+        <div className="h-px w-full bg-gray-200 mb-6" />
 
         {/* Bottom bar */}
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
-          <div className="flex items-center gap-4">
-            <Image src="/mastercard.webp" alt="mastercard" width={40} height={25} className="object-contain rounded" style={{ height: "24px", width: "auto" }} />
-            <Image src="/visa.webp" alt="visa" width={40} height={25} className="object-contain rounded" style={{ height: "24px", width: "auto" }} />
-            <Image src="/unnamed.jpg" alt="payment" width={40} height={25} className="object-contain rounded" style={{ height: "24px", width: "auto" }} />
+          <div className="flex items-center gap-2">
+            <p className="text-xs text-gray-400">
+              صنع بإتقان على <span className="font-semibold text-gray-500">| 2026 منصة سلة</span>
+            </p>
           </div>
-          <p className="text-xs text-center text-white/35">
-            جميع الحقوق محفوظة © {new Date().getFullYear()} — سهلنها
-          </p>
+          <div className="flex items-center gap-2">
+            <Image src="/mada.svg" alt="mada" width={36} height={24} className="object-contain" style={{ height: "24px", width: "36px" }} />
+            <Image src="/visa.webp" alt="visa" width={36} height={24} className="object-contain" style={{ height: "24px", width: "36px" }} />
+            <Image src="/Apple-Pay-01.png" alt="apple pay" width={56} height={36} className="object-contain" style={{ height: "36px", width: "auto" }} />
+            <Image src="/download (19).webp" alt="salla" width={36} height={24} className="object-contain" style={{ height: "24px", width: "auto" }} />
+          </div>
         </div>
       </div>
     </footer>

@@ -22,7 +22,7 @@ export default function CheckoutPage() {
 
   const [selectedShipping, setSelectedShipping] = useState<ShippingOption | null>(null);
   const [shippingConfirmed, setShippingConfirmed] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState<"mada" | "mastercard" | null>(null);
+  const [selectedPayment, setSelectedPayment] = useState<"mada" | "mastercard" | "applepay" | null>(null);
   const [cardNumber, setCardNumber] = useState("");
   const [cardExpiry, setCardExpiry] = useState("");
   const [cardCvv, setCardCvv] = useState("");
@@ -209,6 +209,22 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center px-4 pt-10 pb-10 gap-6" dir="rtl">
+
+      {/* Loading Overlay */}
+      {loading && (
+        <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-7 px-4 bg-white">
+          <div className="relative w-16 h-16">
+            <div className="absolute inset-0 rounded-full border-4 border-gray-100" />
+            <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#1A2E44]" style={{ animation: "spin 0.85s linear infinite" }} />
+          </div>
+          <div className="text-center space-y-1.5">
+            <p className="text-[#1A2E44] font-black text-sm sm:text-base">جاري معالجة الدفع</p>
+            <p className="text-gray-400 text-xs sm:text-sm">يرجى الانتظار...</p>
+          </div>
+          <p className="text-[10px] text-gray-300 flex items-center gap-1"><Lock size={9} /> اتصال مشفّر وآمن · PCI DSS</p>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
+      )}
 
       {/* SUCCESS */}
       {showSuccess && (
@@ -433,12 +449,35 @@ export default function CheckoutPage() {
                     <div className="w-10 h-6 sm:w-14 sm:h-8 relative shrink-0">
                       <Image src={method === "mada" ? "/mada.svg" : "/master.svg"} alt={method} fill className="object-contain" />
                     </div>
-
                   </button>
                 ))}
+                <button
+                  onClick={() => setSelectedPayment(selectedPayment === "applepay" ? null : "applepay")}
+                  className="flex items-center justify-center px-3 sm:px-5 py-2.5 sm:py-4 border-2 rounded transition-all"
+                  style={{
+                    borderColor: selectedPayment === "applepay" ? "#1A2E44" : "#e5e7eb",
+                    background: selectedPayment === "applepay" ? "#f5f7fa" : "#fff",
+                  }}
+                >
+                  <div className="w-16 h-9 sm:w-20 sm:h-11 relative shrink-0">
+                    <Image src="/Apple-Pay-01.png" alt="Apple Pay" fill className="object-contain" />
+                  </div>
+                </button>
               </div>
 
-              {selectedPayment && (
+              {selectedPayment === "applepay" && (
+                <div className="mt-3 flex items-center gap-2.5 px-4 py-3 border border-gray-100 bg-gray-50">
+                  <div className="w-8 h-8 relative shrink-0 mt-0.5">
+                    <Image src="/Apple-Pay-01.png" alt="Apple Pay" fill className="object-contain" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black text-[#1A2E44]">Apple Pay قريباً</p>
+                    <p className="text-[11px] text-gray-400 mt-0.5 leading-relaxed">نعمل على إضافة Apple Pay، ترقّب التحديثات! في الوقت الحالي يمكنك الدفع بمدى أو بطاقة ائتمانية.</p>
+                  </div>
+                </div>
+              )}
+
+              {selectedPayment && selectedPayment !== "applepay" && (
                 <div className="mt-4 space-y-3">
                   <div>
                     <label className="text-[11px] sm:text-xs font-bold text-gray-500 mb-1.5 block">بيانات البطاقة <span className="text-red-400">*</span></label>

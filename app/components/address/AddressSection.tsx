@@ -13,11 +13,11 @@ import {
 } from "lucide-react";
 import { AddressData } from "../../lib/geocoding";
 import type { PendingAddr } from "./AddressMap";
-import { SAUDI_REGIONS } from "../../lib/saudiRegions";
+import { regions, citiesInRegion, districtsInCity } from "saudi-national-address";
 import ShippingCompanyPicker from "./ShippingCompanyPicker";
 
 const AddressMap = dynamic(() => import("./AddressMap"), { ssr: false });
-const AddressSearch = dynamic(() => import("./AddressSearch"), { ssr: false });
+import AddressSearch from "./AddressSearch";
 
 export interface ShippingOption {
   companyId: string;
@@ -74,7 +74,15 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
   const [selectedCompany, setSelectedCompany] = useState<ShippingOption | null>(null);
   const [mapQuery, setMapQuery] = useState("");
 
-  const manualCities = SAUDI_REGIONS.find((r) => r.region === manualRegion)?.cities ?? [];
+  const allRegions = regions as { region_id: number; name_ar: string }[];
+  const selectedRegionObj = allRegions.find((r) => r.name_ar === manualRegion);
+  const manualCities = selectedRegionObj
+    ? (citiesInRegion(selectedRegionObj.region_id) as { city_id: number; name_ar: string }[])
+    : [];
+  const selectedCityObj = manualCities.find((c) => c.name_ar === manualCity);
+  const manualDistricts = selectedCityObj
+    ? (districtsInCity(selectedCityObj.city_id) as { district_id: number; name_ar: string }[])
+    : [];
   const saved = !!savedAddr;
   const shortAddress = savedAddr
     ? savedAddr.formattedAddress ||
@@ -360,14 +368,15 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
                   onChange={(e) => {
                     setManualRegion(e.target.value);
                     setManualCity("");
+                    setManualDistrict("");
                     setManualErrors((p) => ({ ...p, region: "" }));
                   }}
                   className={sel(manualErrors.region)}
                 >
                   <option value="">اختر المنطقة</option>
-                  {SAUDI_REGIONS.map((r) => (
-                    <option key={r.region} value={r.region}>
-                      {r.region}
+                  {allRegions.map((r) => (
+                    <option key={r.region_id} value={r.name_ar}>
+                      {r.name_ar}
                     </option>
                   ))}
                 </select>
@@ -378,6 +387,7 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
                   value={manualCity}
                   onChange={(e) => {
                     setManualCity(e.target.value);
+                    setManualDistrict("");
                     setManualErrors((p) => ({ ...p, city: "" }));
                   }}
                   disabled={!manualRegion}
@@ -385,20 +395,35 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
                 >
                   <option value="">اختر المدينة</option>
                   {manualCities.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
+                    <option key={c.city_id} value={c.name_ar}>
+                      {c.name_ar}
                     </option>
                   ))}
                 </select>
               </MField>
 
               <MField label="الحي" error="">
-                <input
-                  value={manualDistrict}
-                  onChange={(e) => setManualDistrict(e.target.value)}
-                  placeholder="مثال: حي النزهة"
-                  className={inp("")}
-                />
+                {manualDistricts.length > 0 ? (
+                  <select
+                    value={manualDistrict}
+                    onChange={(e) => setManualDistrict(e.target.value)}
+                    className={sel("")}
+                  >
+                    <option value="">اختر الحي (اختياري)</option>
+                    {manualDistricts.map((d) => (
+                      <option key={d.district_id} value={d.name_ar}>
+                        {d.name_ar}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    value={manualDistrict}
+                    onChange={(e) => setManualDistrict(e.target.value)}
+                    placeholder="مثال: حي النزهة"
+                    className={inp("")}
+                  />
+                )}
               </MField>
 
               <MField label="العنوان بالتفصيل" error={manualErrors.street} required>

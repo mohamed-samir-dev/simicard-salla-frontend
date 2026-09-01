@@ -16,8 +16,11 @@ import { useCartStore } from "../../store/cartStore";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-const resolveImg = (src: string) =>
-  src.startsWith("http") ? src : `${API}${src.startsWith("/") ? src : "/" + src}`;
+const resolveImg = (src: string) => {
+  if (src.startsWith("http")) return encodeURI(decodeURI(src));
+  const path = src.startsWith("/") ? src : "/" + src;
+  return `${API}${encodeURI(decodeURI(path))}`;
+};
 
 export default function ProductCard({
   product,
