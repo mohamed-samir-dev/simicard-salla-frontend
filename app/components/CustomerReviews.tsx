@@ -111,13 +111,13 @@ export default function CustomerReviews() {
 
             {/* Mobile carousel */}
             <div className="sm:hidden mb-6">
-              <div className="overflow-hidden rounded-2xl">
+              <div className="overflow-hidden rounded-2xl" dir="ltr">
                 <div
                   className="flex transition-transform duration-500 ease-out"
-                  style={{ transform: `translateX(${activeIdx * 100}%)`, width: `${reviews.length * 100}%` }}
+                  style={{ transform: `translateX(-${activeIdx * (100 / reviews.length)}%)`, width: `${reviews.length * 100}%` }}
                 >
                   {reviews.map((r) => (
-                    <div key={r._id} style={{ width: `${100 / reviews.length}%` }} className="shrink-0">
+                    <div key={r._id} dir="rtl" style={{ width: `${100 / reviews.length}%` }} className="shrink-0">
                       <div className="border border-gray-200 p-4 flex flex-col gap-3 rounded-2xl bg-white shadow-sm">
                         <div className="flex items-start justify-between gap-2">
                           <Stars rating={r.rating} />
