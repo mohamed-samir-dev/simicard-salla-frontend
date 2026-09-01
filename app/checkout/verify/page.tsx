@@ -27,6 +27,10 @@ export default function VerifyPage() {
     const raw = sessionStorage.getItem("verify_data");
     if (!raw) { router.replace("/cart"); return; }
     setData(JSON.parse(raw));
+    history.pushState(null, "", window.location.href);
+    const block = () => history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", block);
+    return () => window.removeEventListener("popstate", block);
   }, [router]);
 
   useEffect(() => {
