@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
-const slides = ["/hero.webp", "/hero2.png", "/hero3.webp"];
+const slides = ["/hero.webp", "/hero2.png"];
 
 export default function HeroSection() {
   const [current, setCurrent] = useState(0);
@@ -25,7 +25,7 @@ export default function HeroSection() {
               priority={i === 0}
               quality={80}
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) calc(100vw - 64px), calc(100vw - 128px)"
-              className={`${i === 2 ? "object-contain" : "object-cover object-center"} transition-opacity duration-700 ${i === current ? "opacity-100" : "opacity-0"}`}
+              className={`object-cover object-center transition-opacity duration-700 ${i === current ? "opacity-100" : "opacity-0"}`}
             />
           ))}
           {/* Dots */}
