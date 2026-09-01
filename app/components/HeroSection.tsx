@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
-const slides = ["/hero.webp", "/hero2.png"];
+const slides = ["/hero2.png","/hero.webp"];
 
 export default function HeroSection() {
   const [current, setCurrent] = useState(0);
