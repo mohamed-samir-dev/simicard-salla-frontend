@@ -11,29 +11,6 @@ import { useCartStore } from "../../store/cartStore";
 import { useCompanyStore } from "../../store/companyStore";
 import MobileMenu from "./MobileMenu";
 
-// const announcements = [
-//   "📡 شرائح SIM بأفضل الأسعار",
-//   "🛰️ راوترات 5G وبورتابل بجودة عالية",
-//   "🌐 باقات إنترنت غير محدودة",
-//   "⭐ تغطية شبكة فائقة في كل مكان",
-//   "🛡️ eSIM متاحة لجميع الأجهزة",
-// ];
-
-// function RotatingAnnouncements() {
-//   const [index, setIndex] = useState(0);
-//   // useEffect(() => {
-//   //   // const timer = setInterval(() => setIndex((i) => (i + 1) % announcements.length), 3000);
-//   //   return () => clearInterval(timer);
-//   // }, []);
-//   return (
-//     // <span className="text-white font-semibold text-center leading-tight relative h-5 overflow-hidden flex items-center justify-center min-w-0 flex-1">
-//     //   <span key={index} className="animate-fade-in-out text-[10px] sm:text-xs truncate max-w-full px-1">
-//     //     {announcements[index]}
-//     //   </span>
-//     // </span>
-//   );
-// }
-
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -63,88 +40,86 @@ export default function Navbar() {
   }, [mobileOpen]);
 
   return (
-    <nav className={`sticky top-0 z-50 transition-shadow duration-300 ${scrolled ? "shadow-lg" : ""}`} dir="rtl">
+    <nav
+      dir="rtl"
+      className={`sticky top-0 z-[9997] w-full bg-white/95 backdrop-blur-md border-b border-gray-100 transition-shadow duration-300 ${
+        scrolled ? "shadow-lg" : "shadow-sm"
+      }`}
+    >
+      <div className="w-full px-4 sm:px-6 lg:px-10">
+        <div className="flex items-center justify-between h-16 sm:h-18 lg:h-20 gap-4">
 
-      {/* ── Row 1: Top bar ── */}
-      {/* <div style={{ background: "linear-gradient(135deg,#000,#001F44,#003160)" }} className="border-b border-[#001F44]">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 h-9 flex items-center justify-between text-xs gap-1 sm:gap-3">
-          <a
-            href="https://wa.me/966592014922"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 sm:gap-1.5 text-green-300 font-bold hover:text-green-200 transition-colors shrink-0"
-          >
-            <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
-            <span className="hidden sm:inline">+966 59 201 4922</span>
-          </a>
-          <RotatingAnnouncements />
-          <span className="flex items-center gap-1 sm:gap-1.5 text-gray-200 shrink-0">
-            <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#FC0] shrink-0" />
-            <span className="text-[10px] sm:text-xs">السعودية</span>
-          </span>
-        </div>
-      </div> */}
-
-      {/* ── Row 2: Logo + Search + Icons ── */}
-      <div
-        className="border-b border-gray-100 backdrop-blur-md"
-        style={{ background: "rgba(255,255,255,0.95)" }}
-      >
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
-
-          {/* Hamburger + Logo */}
+          {/* ── Right: Hamburger + Logo ── */}
           <div className="flex items-center gap-3 shrink-0">
             <button
               aria-label="القائمة"
-              className="lg:hidden p-2 rounded-xl text-gray-500 hover:text-[#63D3A8] hover:bg-[#e8f9f4] transition-colors"
               onClick={() => setMobileOpen(!mobileOpen)}
+              className="lg:hidden p-2 rounded-xl text-gray-500 hover:text-[#63D3A8] hover:bg-[#e8f9f4] transition-colors"
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            <Link href="/" className="flex items-center gap-3 group">
+            <Link href="/" className="flex items-center gap-2 shrink-0">
               {logo ? (
-                <Image src={logo} alt={nameAr || "logo"} width={180} height={72}
-                  className="object-contain h-10 w-auto sm:h-12 lg:h-16" unoptimized />
+                <Image
+                  src={logo}
+                  alt={nameAr || "logo"}
+                  width={180}
+                  height={72}
+                  className="object-contain h-10 w-auto sm:h-12 lg:h-14"
+                  unoptimized
+                />
               ) : (
-                <div className="w-11 h-11 rounded-2xl border-2 border-[#63D3A8] flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-2xl border-2 border-[#63D3A8] flex items-center justify-center">
                   <Wifi className="w-5 h-5 text-[#63D3A8]" />
                 </div>
               )}
             </Link>
           </div>
 
-          {/* Desktop nav links — center */}
-          <div className="hidden lg:flex items-center gap-1">
+          {/* ── Center: Desktop Nav ── */}
+          <div className="hidden lg:flex items-center gap-1 flex-1 justify-center">
             {navItems.map((item) => {
               const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
               return (
-                <div key={item.label} className="relative">
-                  <Link
-                    href={item.href}
-                    className={`flex items-center px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200
-                      ${isActive ? "text-[#63D3A8] bg-[#e8f9f4]" : "text-gray-600 hover:text-[#63D3A8] hover:bg-[#e8f9f4]"}`}
-                  >
-                    {item.label}
-                    {isActive && (
-                      <span className="absolute bottom-0 right-3 left-3 h-0.5 bg-[#63D3A8] rounded-full" />
-                    )}
-                  </Link>
-                </div>
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={`relative px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 group ${
+                    isActive
+                      ? "text-[#63D3A8] bg-[#e8f9f4]"
+                      : "text-gray-600 hover:text-[#63D3A8] hover:bg-[#e8f9f4]"
+                  }`}
+                >
+                  {item.label}
+                  <span
+                    className={`absolute bottom-1 right-4 left-4 h-0.5 rounded-full bg-[#63D3A8] transition-all duration-200 ${
+                      isActive ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0 group-hover:opacity-60 group-hover:scale-x-100"
+                    }`}
+                  />
+                </Link>
               );
             })}
           </div>
 
-          {/* Icons */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          {/* ── Left: Icons ── */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
 
             {/* User */}
-            <Link href="/account" aria-label="حسابي" className="flex items-center gap-2 p-2 text-gray-500 hover:text-[#63D3A8] transition-colors shrink-0">
+            <Link
+              href="/account"
+              aria-label="حسابي"
+              className="p-2 rounded-xl text-gray-500 hover:text-[#63D3A8] hover:bg-[#e8f9f4] transition-colors"
+            >
               <User className="w-6 h-6 sm:w-7 sm:h-7" />
             </Link>
 
             {/* Cart */}
-            <Link href="/cart" aria-label="السلة" className="relative flex items-center gap-3 p-2 text-gray-500 hover:text-[#63D3A8] transition-colors shrink-0">
+            <Link
+              href="/cart"
+              aria-label="السلة"
+              className="relative flex items-center gap-2 px-3 py-2 rounded-xl text-gray-500 hover:text-[#63D3A8] hover:bg-[#e8f9f4] transition-colors"
+            >
               <div className="relative">
                 <IoBagHandleOutline className="w-6 h-6 sm:w-7 sm:h-7" />
                 {mounted && itemCount > 0 && (
@@ -163,7 +138,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      <MobileMenu items={navItems} isOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <MobileMenu items={navItems} isOpen={mobileOpen} onClose={() => setMobileOpen(false)} pathname={pathname} />
     </nav>
   );
 }
