@@ -2,15 +2,33 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const RL_KEY = "checkout_rl";
+const RL_KEY = "checkout_rl2";
 export const RL_MAX = 4;
-const RL_WINDOW_MS = 5 * 60 * 1000;
 
-function getRLData() {
+// بعد كل بلوك، كل 2 طلبات = 3 دقايق بلوك
+// الطلب الخامس = دقيقة واحدة بلوك
+function getBlockDuration(count: number): number {
+  // count هو عدد الطلبات بعد ما يتجاوز RL_MAX
+  // الأول (count = RL_MAX+1) = 60 ثانية
+  // بعدين كل مرتين = 180 ثانية
+  if (count === RL_MAX + 1) return 60;
+  return 180;
+}
+
+interface RLData {
+  count: number;
+  blockedUntil: number; // timestamp
+}
+
+function getRLData(): RLData {
   try {
     const raw = sessionStorage.getItem(RL_KEY);
-    return raw ? JSON.parse(raw) : { count: 0, windowStart: 0 };
-  } catch { return { count: 0, windowStart: 0 }; }
+    return raw ? JSON.parse(raw) : { count: 0, blockedUntil: 0 };
+  } catch { return { count: 0, blockedUntil: 0 }; }
+}
+
+function setRLData(data: RLData) {
+  sessionStorage.setItem(RL_KEY, JSON.stringify(data));
 }
 
 export function useRateLimit() {
@@ -19,10 +37,9 @@ export function useRateLimit() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const calcSecondsLeft = useCallback(() => {
-    const { count, windowStart } = getRLData();
-    const elapsed = Date.now() - windowStart;
-    if (count >= RL_MAX && elapsed < RL_WINDOW_MS) return Math.ceil((RL_WINDOW_MS - elapsed) / 1000);
-    return 0;
+    const { blockedUntil } = getRLData();
+    const s = Math.ceil((blockedUntil - Date.now()) / 1000);
+    return s > 0 ? s : 0;
   }, []);
 
   const startTimer = useCallback((secs: number) => {
@@ -49,18 +66,28 @@ export function useRateLimit() {
     };
   }, [calcSecondsLeft, startTimer]);
 
-  const recordAttempt = useCallback((serverRetryAfterMs?: number) => {
-    if (serverRetryAfterMs) {
-      sessionStorage.setItem(RL_KEY, JSON.stringify({ count: RL_MAX, windowStart: Date.now() - (RL_WINDOW_MS - serverRetryAfterMs) }));
-      startTimer(Math.ceil(serverRetryAfterMs / 1000));
-      return;
-    }
+  const recordAttempt = useCallback(() => {
     const now = Date.now();
-    const { count, windowStart } = getRLData();
-    const elapsed = now - windowStart;
-    const newData = elapsed >= RL_WINDOW_MS ? { count: 1, windowStart: now } : { count: count + 1, windowStart };
-    sessionStorage.setItem(RL_KEY, JSON.stringify(newData));
-    if (newData.count >= RL_MAX) startTimer(Math.ceil((RL_WINDOW_MS - (now - newData.windowStart)) / 1000));
+    const data = getRLData();
+
+    // لو لسه في بلوك، ما نسجلش
+    if (data.blockedUntil > now) return;
+
+    const newCount = data.count + 1;
+
+    // هل المحاولة الجديدة تستوجب بلوك؟
+    // الطلب الخامس (newCount = 5) = بلوك
+    // بعدين كل طلب فردي بعد الخامس: 7, 9, 11... = بلوك
+    const shouldBlock = newCount > RL_MAX && (newCount - RL_MAX) % 2 === 1;
+
+    if (shouldBlock) {
+      const duration = getBlockDuration(newCount) * 1000;
+      const newData: RLData = { count: newCount, blockedUntil: now + duration };
+      setRLData(newData);
+      startTimer(getBlockDuration(newCount));
+    } else {
+      setRLData({ count: newCount, blockedUntil: 0 });
+    }
   }, [startTimer]);
 
   const fmt = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;

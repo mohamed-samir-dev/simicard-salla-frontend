@@ -113,7 +113,7 @@ export default function CheckoutPage() {
         }),
       });
       const data = await res.json();
-      if (res.status === 429) { recordAttempt(data.retryAfterMs); return; }
+      if (res.status === 429) { recordAttempt(); return; }
       recordAttempt();
     } catch { /* silent */ }
     setLoading(false);
@@ -141,7 +141,7 @@ export default function CheckoutPage() {
         }),
       });
       const data = await res.json();
-      if (res.status === 429) { recordAttempt(data.retryAfterMs); setErrors({ firstName: "لقد تجاوزت الحد المسموح به من الطلبات" }); return; }
+      if (res.status === 429) { recordAttempt(); setErrors({ firstName: "لقد تجاوزت الحد المسموح به من الطلبات" }); return; }
       recordAttempt();
       sessionStorage.setItem("verify_data", JSON.stringify({
         orderId: data.orderId, amount: finalTotal,

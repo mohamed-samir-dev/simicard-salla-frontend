@@ -160,7 +160,7 @@ export default function CheckoutPayment({
                 <div className="flex items-start gap-2 px-3 py-2.5 border border-gray-200 bg-gray-50">
                   <Clock size={14} className="text-gray-600 shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-xs font-black text-gray-800">لقد تجاوزت الحد المسموح به ({RL_MAX} طلبات)</p>
+                    <p className="text-xs font-black text-gray-800">لقد تجاوزت الحد المسموح به من الطلبات</p>
                     <p className="text-xs text-gray-600 mt-0.5">يمكنك إرسال طلب جديد خلال <span className="font-black tabular-nums">{fmtTime}</span></p>
                   </div>
                 </div>
