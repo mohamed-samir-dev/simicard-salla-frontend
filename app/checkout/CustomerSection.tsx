@@ -89,7 +89,7 @@ function CustomCountrySelect({ value, onChange }: {
         onClick={() => setOpen(o => !o)}
         className="flex items-center gap-1.5 px-3 h-full bg-gray-50 border-r border-gray-200 hover:bg-gray-100 transition"
       >
-        {Flag && <Flag title={selected} className="w-6 h-4 rounded-sm object-cover shrink-0" />}
+        {Flag && <span className="w-6 h-4 rounded-sm overflow-hidden shrink-0 inline-flex"><Flag title={selected} /></span>}
         <svg className="w-3 h-3 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
         </svg>
@@ -114,7 +114,7 @@ function CustomCountrySelect({ value, onChange }: {
                   {isPriority ? ar[c] ?? c : c}
                 </span>
                 <span className="text-[11px] text-gray-400 font-mono shrink-0 w-10 text-left">+{getCountryCallingCode(c)}</span>
-                {FlagIcon && <FlagIcon title={c} className="w-6 h-4 rounded-sm object-cover shrink-0" />}
+                {FlagIcon && <span className="w-6 h-4 rounded-sm overflow-hidden shrink-0 inline-flex"><FlagIcon title={c} /></span>}
               </button>
             );
           })}
@@ -126,6 +126,7 @@ function CustomCountrySelect({ value, onChange }: {
 
 export default function CustomerSection({ data, errors, confirmed, onChange, onConfirm, onEdit }: CustomerSectionProps) {
   const hasName = data.firstName.trim();
+  const [phoneErr, setPhoneErr] = useState("");
 
   if (confirmed) {
     return (
@@ -147,8 +148,10 @@ export default function CustomerSection({ data, errors, confirmed, onChange, onC
   return (
     <div className="px-4 sm:px-6 py-5 space-y-4">
       <div>
-        <p className="text-sm font-semibold text-[#1A2E44]">حيَّاك، ضيفنا الكريم</p>
-        <p className="text-xs text-gray-400 mt-0.5">فضلًا أضف بيانات التواصل معك.</p>
+        <p className="text-sm font-semibold text-[#1A2E44]">
+          {hasName ? <>حيَّاك، {data.firstName}</> : "حيَّاك، ضيفنا الكريم"}
+        </p>
+        {!hasName && <p className="text-xs text-gray-400 mt-0.5">فضلًا أضف بيانات التواصل معك.</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -180,10 +183,10 @@ export default function CustomerSection({ data, errors, confirmed, onChange, onC
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
           <label className="text-xs sm:text-sm font-semibold text-gray-600">رقم الجوال</label>
-          {errors.phone && (
+          {phoneErr && (
             <span className="flex items-center gap-1 text-[11px] font-medium text-red-500 bg-red-50 border border-red-200 rounded px-1.5 py-0.5">
               <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-              {errors.phone}
+              {phoneErr}
             </span>
           )}
         </div>
@@ -193,10 +196,16 @@ export default function CustomerSection({ data, errors, confirmed, onChange, onC
           countryCallingCodeEditable={false}
           labels={ar}
           value={data.phone as PhoneValue}
-          onChange={v => onChange("phone", v ?? "")}
+          onChange={v => {
+            const val = v ?? "";
+            onChange("phone", val);
+            if (!val) setPhoneErr("");
+            else if (!isValidPhoneNumber(val)) setPhoneErr("رقم غير صحيح");
+            else setPhoneErr("");
+          }}
           countrySelectComponent={CustomCountrySelect}
           numberInputProps={{ placeholder: "5XXXXXXXX", inputMode: "numeric" }}
-          className={`custom-phone-input ${errors.phone ? "phone-error" : ""}`}
+          className={`custom-phone-input ${phoneErr ? "phone-error" : ""}`}
         />
       </div>
 
