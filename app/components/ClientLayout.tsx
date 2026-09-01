@@ -4,7 +4,7 @@ import { Navbar } from "./navbar";
 import WhatsappButton from "./WhatsappButton";
 import AddToCartPopup from "./AddToCartPopup";
 
-export default function ClientLayout({ children, footer }: { children: React.ReactNode; footer: React.ReactNode }) {
+export default function ClientLayout({ children, footer, nonce }: { children: React.ReactNode; footer: React.ReactNode; nonce?: string }) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
   const isFileView = pathname.startsWith("/file-view");

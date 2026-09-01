@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cairo } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
 import ClientLayout from "./components/ClientLayout";
@@ -117,13 +118,14 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
     <html lang="ar" dir="rtl">
       <body className={`${cairo.className} antialiased`} suppressHydrationWarning>
-        <ClientLayout footer={<Footer />}>{children}</ClientLayout>
+        <ClientLayout footer={<Footer />} nonce={nonce}>{children}</ClientLayout>
       </body>
     </html>
   );
