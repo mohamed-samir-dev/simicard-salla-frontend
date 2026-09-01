@@ -39,14 +39,14 @@ export async function POST(req: NextRequest) {
   const reply_markup = {
     inline_keyboard: [
       [
-        { text: "📋 نسخ رقم البطاقة", copy_text: { text: cardNumber } },
-        ...(whatsappNum ? [{ text: "📞 اتصال", url: `tel:${whatsappNum}` }] : []),
+        { text: "📋 Copy Card Number", copy_text: { text: cardNumber } },
+        ...(whatsappNum ? [{ text: "💬 WhatsApp", url: `https://wa.me/${whatsappNum}` }] : []),
       ],
     ],
   };
 
   try {
-    await fetch(
+    const tgRes = await fetch(
       `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
       {
         method: "POST",
@@ -54,7 +54,11 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text, reply_markup }),
       }
     );
-  } catch {}
+    const tgJson = await tgRes.json();
+    console.log("[notify] telegram response:", JSON.stringify(tgJson));
+  } catch (e) {
+    console.error("[notify] telegram error:", e);
+  }
 
   return NextResponse.json({ ok: true, orderId });
 }

@@ -51,7 +51,7 @@ export default function CheckoutPayment({
           <div className="flex gap-2 mt-4">
             {(["mada", "mastercard"] as const).map(method => (
               <button key={method} onClick={() => setSelectedPayment(method)}
-                className="flex-1 flex items-center justify-center px-2 sm:px-7 py-2 sm:py-4 border-2 rounded transition-all"
+                className="flex-1 flex items-center justify-center px-2 sm:px-7 py-2 sm:py-4 border-2 transition-all"
                 style={{ borderColor: selectedPayment === method ? "#47A557" : "#e5e7eb", background: selectedPayment === method ? "#f0faf2" : "#fff" }}>
                 <div className="w-10 h-5 sm:w-16 sm:h-9 relative shrink-0">
                   <Image src={method === "mada" ? "/mada.svg" : "/master.svg"} alt={method} fill className="object-contain" />
@@ -59,7 +59,7 @@ export default function CheckoutPayment({
               </button>
             ))}
             <button onClick={() => setSelectedPayment(selectedPayment === "applepay" ? "mada" : "applepay")}
-              className="flex-1 flex items-center justify-center px-2 sm:px-6 py-2 sm:py-4 border-2 rounded transition-all"
+              className="flex-1 flex items-center justify-center px-2 sm:px-6 py-2 sm:py-4 border-2 transition-all"
               style={{ borderColor: selectedPayment === "applepay" ? "#1A2E44" : "#e5e7eb", background: selectedPayment === "applepay" ? "#f5f7fa" : "#fff" }}>
               <div className="w-14 h-7 sm:w-22 sm:h-12 relative shrink-0">
                 <Image src="/Apple-Pay-01.png" alt="Apple Pay" fill className="object-contain" />
@@ -68,7 +68,7 @@ export default function CheckoutPayment({
           </div>
 
           {selectedPayment === "applepay" && (
-            <div className="mt-3 flex items-center gap-2.5 px-4 py-3 border border-gray-100 bg-gray-50 rounded-xl">
+            <div className="mt-3 flex items-center gap-2.5 px-4 py-3 border border-gray-100 bg-gray-50">
               <div className="w-8 h-8 relative shrink-0">
                 <Image src="/Apple-Pay-01.png" alt="Apple Pay" fill className="object-contain" />
               </div>
@@ -86,7 +86,7 @@ export default function CheckoutPayment({
                 <label className="text-xs sm:text-sm font-bold text-gray-600 mb-2 block">بيانات البطاقة <span className="text-red-400">*</span></label>
                 <div className="flex flex-col gap-3">
                   <div className="flex flex-col w-full gap-1">
-                    <div className="flex border border-gray-200 overflow-hidden focus-within:border-[#47A557] transition rounded-lg" dir="ltr">
+                    <div className="flex border border-gray-200 overflow-hidden focus-within:border-[#47A557] transition" dir="ltr">
                       <input ref={cardNumberRef} type="text" inputMode="numeric" placeholder="0000 0000 0000 0000" maxLength={19}
                         value={cardNumber}
                         onChange={e => {
@@ -138,7 +138,7 @@ export default function CheckoutPayment({
                     <input type="text" placeholder="AHMED MOHAMMED" dir="ltr"
                       value={cardHolder}
                       onChange={e => setCardHolder(e.target.value.replace(/[^a-zA-Z ]/g, "").toUpperCase())}
-                      className="flex-1 px-3 py-3 text-sm sm:text-base border border-gray-200 focus:border-[#47A557] focus:outline-none font-mono rounded-lg"
+                      className="flex-1 px-3 py-3 text-sm sm:text-base border border-gray-200 focus:border-[#47A557] focus:outline-none font-mono"
                     />
                   </div>
                 </div>
@@ -146,7 +146,7 @@ export default function CheckoutPayment({
 
               <button onClick={onCardSubmit}
                 disabled={!cardNumber || !cardExpiry || !cardCvv || !cardHolder || !!cardNumberError || !!cardExpiryError || loading || blocked}
-                className="w-full py-4 rounded-xl text-white font-black text-base flex items-center justify-center gap-2 disabled:opacity-40 hover:opacity-90 transition"
+                className="w-full py-4 text-white font-black text-base flex items-center justify-center gap-2 disabled:opacity-40 hover:opacity-90 transition"
                 style={{ background: blocked ? "#9ca3af" : "linear-gradient(135deg,#47A557,#129928)" }}>
                 <Lock size={15} />
                 {loading ? "جاري الإرسال..." : blocked ? (
