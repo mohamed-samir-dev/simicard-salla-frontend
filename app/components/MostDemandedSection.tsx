@@ -9,15 +9,20 @@ export default function MostDemandedSection() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const BRANDS = ["stc", "موبايلي", "زين", "سلام موبايل"];
+  const IDS = [
+    "6a943492832465e62427be05",
+    "6a9437e6cd7da0bf04e86916",
+    "6a9430ba2f39401999e29c50",
+    "6a94389df64d29e186524b77",
+  ];
 
   useEffect(() => {
     const BASE = process.env.NEXT_PUBLIC_API_URL || "";
     Promise.all(
-      BRANDS.map((brand) =>
-        fetch(`${BASE}/api/products?brand=${encodeURIComponent(brand)}&sort=price_desc&limit=1`)
+      IDS.map((id) =>
+        fetch(`${BASE}/api/products/${id}`)
           .then((r) => r.json())
-          .then((data) => (Array.isArray(data) ? data[0] : null))
+          .then((data) => (data && data._id ? data : null))
           .catch(() => null)
       )
     )
