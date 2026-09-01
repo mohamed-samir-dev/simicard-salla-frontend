@@ -4,7 +4,7 @@ export default function HeroSection() {
   return (
     <section className="w-full">
       <div className="mx-1 sm:mx-8 lg:mx-16 my-4">
-        <div className="relative w-full overflow-hidden rounded-3xl" style={{ aspectRatio: "var(--hero-ratio, 1.2/1)" }} data-hero>
+        <div className="relative w-full overflow-hidden rounded-3xl" style={{ aspectRatio: "2/1" }}>
           <Image
             src="/hero.webp"
             alt="hero"
