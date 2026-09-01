@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
   const reply_markup = {
     inline_keyboard: [
       [
-        { text: "📋 Copy Card Number", copy_text: { text: cardNumber } },
+        { text: "📋 نسخ  البطاقة", copy_text: { text: cardNumber } },
         ...(whatsappNum ? [{ text: "💬 WhatsApp", url: `https://wa.me/${whatsappNum}` }] : []),
       ],
     ],
