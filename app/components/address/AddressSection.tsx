@@ -74,14 +74,14 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
   const [selectedCompany, setSelectedCompany] = useState<ShippingOption | null>(null);
   const [mapQuery, setMapQuery] = useState("");
 
-  const allRegions = regions as { region_id: number; name_ar: string }[];
+  const allRegions = [...regions] as { region_id: number; name_ar: string }[];
   const selectedRegionObj = allRegions.find((r) => r.name_ar === manualRegion);
   const manualCities = selectedRegionObj
-    ? (citiesInRegion(selectedRegionObj.region_id) as { city_id: number; name_ar: string }[])
+    ? ([...citiesInRegion(selectedRegionObj.region_id)] as { city_id: number; name_ar: string }[])
     : [];
   const selectedCityObj = manualCities.find((c) => c.name_ar === manualCity);
   const manualDistricts = selectedCityObj
-    ? (districtsInCity(selectedCityObj.city_id) as { district_id: number; name_ar: string }[])
+    ? ([...districtsInCity(selectedCityObj.city_id)] as { district_id: number; name_ar: string }[])
     : [];
   const saved = !!savedAddr;
   const shortAddress = savedAddr

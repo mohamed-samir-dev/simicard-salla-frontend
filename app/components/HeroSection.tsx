@@ -3,193 +3,52 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
-import {
-  Truck, ShieldCheck, Headphones, CreditCard,
-  MapPin, Zap, Smartphone, Shield, Wifi,
-} from "lucide-react";
+import Image from "next/image";
+import { ShoppingBag, Truck, ShieldCheck, Headphones, Star } from "lucide-react";
 
-// ─── types ────────────────────────────────────────────────────────────────
-
-interface SlideBase {
-  badge: string;
-  title: string;
-  titleHighlight: string;
-  description: string;
-  primaryBtn:   { label: string; href: string };
+interface Slide {
   image: string;
+  mobileImage?: string;
+  description: string;
+  btn: { label: string; href: string };
 }
-
-interface SplitSlide extends SlideBase {
-  type: "split";
-  note?: string;
-  features: { icon: React.ElementType; title: string; desc: string }[];
-}
-
-type Slide = SplitSlide;
-
-// ─── data ─────────────────────────────────────────────────────────────────
 
 const slides: Slide[] = [
   {
-    type: "split",
     image: "hero1.webp",
-    badge: "تقنية أسهل.. اتصال أسرع",
-    title: "كل اتصال",
-  description: "نوفر لك أفضل الشرائح والباقات من شركات الاتصالات السعودية في مكان واحد، لتختار ما يناسبك بكل سهولة.",
-    titleHighlight: "سهلناه عليك",
-    primaryBtn:   { label: "تسوق الآن",     href: "/sim-cards" },
-    features: [],
-  },
-  {
-    type: "split",
-    image: "hero2.webp",
-    badge: " تقنية أسهل.. اتصال أقوى",
-    title: "شرائح إلكترونية",
-    titleHighlight: "لكل احتياج",
-        description: "        اختر الشريحة المناسبة لك من جميع شركات الاتصالات السعودية وتمتع باتصال سريع وتغطية قوية في كل مكان.",
-
-    primaryBtn:   { label: " تسوق الآن", href: "/sim-cards" },
-    features: [],
+    mobileImage: "hero1-res.webp",
+    description: "شرائح stc وزين وموبايلي بأسعار مضمونة — توصيل سريع لجميع مناطق المملكة وخدمة عملاء على مدار الساعة.",
+    btn: { label: "تسوق الآن", href: "/sim-cards" },
   },
 ];
 
-
-
-// ─── animation variants ───────────────────────────────────────────────────
-
 const slideVariants: Variants = {
-  enter: { opacity: 0 },
+  enter:  { opacity: 0 },
   center: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
-  exit:  { opacity: 0, transition: { duration: 0.3, ease: "easeIn" } },
+  exit:   { opacity: 0, transition: { duration: 0.3, ease: "easeIn" } },
 };
 
 const container: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.1, delayChildren: 0.15 } },
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
 };
 
 const item: Variants = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 30 },
   show:   { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] } },
 };
 
-const chipItem: Variants = {
-  hidden: { opacity: 0, y: 16, scale: 0.95 },
-  show:   { opacity: 1, y: 0, scale: 1, transition: { duration: 0.45, ease: "easeOut" } },
-};
-
-// ─── shared slide background + decorations ────────────────────────────────
-
-function SlideShell({ image, children }: { image: string; children: React.ReactNode }) {
-  return (
-    <section
-      dir="rtl"
-      className="relative flex items-center overflow-hidden"
-      style={{
-        minHeight: "clamp(280px, 45vh, 900px)",
-        backgroundImage: `url('/${image}')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-
-
-      {/* decorative circles */}
-      <div className="absolute rounded-full opacity-30 pointer-events-none"
-        style={{ width: "clamp(200px,40vw,500px)", height: "clamp(200px,40vw,500px)", background: "radial-gradient(circle,#5B6187,transparent 70%)", top: "-15%", right: "-10%" }} />
-      <div className="absolute rounded-full border-2 border-[#80C78D]/20 pointer-events-none hidden sm:block"
-        style={{ width: "clamp(260px,38vw,500px)", height: "clamp(260px,38vw,500px)", top: "50%", right: "5%", transform: "translateY(-50%)" }} />
-      <div className="absolute rounded-full border border-[#80C78D]/10 pointer-events-none hidden sm:block"
-        style={{ width: "clamp(180px,27vw,350px)", height: "clamp(180px,27vw,350px)", top: "50%", right: "10%", transform: "translateY(-50%)" }} />
-
-      {children}
-    </section>
-  );
-}
-
-// ─── slide renderers ──────────────────────────────────────────────────────
-
-function SplitSlideContent({ s }: { s: SplitSlide }) {
-  return (
-    <SlideShell image={s.image}>
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14 lg:py-20">
-        <motion.div
-          className="w-full max-w-[280px] sm:max-w-sm md:max-w-md lg:max-w-xl"
-          variants={container} initial="hidden" animate="show"
-        >
-          <motion.div variants={item}
-            className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full border border-[#80C78D]/50 text-black text-[10px] sm:text-sm font-semibold mb-3 sm:mb-6">
-            <Wifi className="w-3 h-3 sm:w-4 sm:h-4 text-[#80C78D]" />
-            {s.badge}
-          </motion.div>
-
-          <motion.h1 variants={item}
-            className="font-black leading-tight text-black mb-3 sm:mb-5"
-            style={{ fontSize: "clamp(1.5rem, 5vw, 4.5rem)" }}>
-            {s.title}<br /><span className="text-[#80C78D]">{s.titleHighlight}</span>
-          </motion.h1>
-
-          <motion.p variants={item}
-            className="text-black/70 font-bold leading-relaxed mb-4 sm:mb-8"
-            style={{ fontSize: "clamp(0.75rem, 1.8vw, 1.15rem)" }}>
-            {s.description}
-          </motion.p>
-
-          {/* features chips */}
-          <motion.div variants={item} className="flex flex-wrap gap-1.5 sm:gap-3 mb-4 sm:mb-8">
-            {s.features.map(({ icon: Icon, title, desc }, i) => (
-              <motion.div key={title} variants={chipItem}
-                custom={i}
-                className="flex items-center gap-1.5 sm:gap-2.5 px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-xl sm:rounded-2xl border border-white/10"
-                style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(8px)" }}>
-                <div className="w-5 h-5 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl border border-[#80C78D]/25 flex items-center justify-center shrink-0"
-                  style={{ background: "rgba(128,199,141,0.08)" }}>
-                  <Icon className="w-3 h-3 sm:w-4 sm:h-4 text-[#80C78D]" />
-                </div>
-                <div>
-                  <p className="text-black font-bold text-[10px] sm:text-sm leading-none mb-0.5">{title}</p>
-                  <p className="text-black/50 text-[9px] sm:text-xs hidden sm:block">{desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <motion.div variants={item} className="flex flex-wrap gap-2 sm:gap-4 mb-4 sm:mb-6">
-            <Link href={s.primaryBtn.href}
-              className="px-8 sm:px-14 py-3 sm:py-5 rounded-2xl bg-[#47A557] text-white font-bold text-base sm:text-xl hover:-translate-y-1 transition-transform duration-200 shadow-lg shadow-[#47A557]/20">
-              {s.primaryBtn.label}
-            </Link>
-         
-          </motion.div>
-
-          {s.note && (
-            <motion.div variants={item}
-              className="inline-block px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl border border-white/10 text-white/60 text-xs sm:text-sm"
-              style={{ background: "rgba(255,255,255,0.02)" }}>
-              {s.note}
-            </motion.div>
-          )}
-        </motion.div>
-      </div>
-    </SlideShell>
-  );
-}
-
-// ─── main ─────────────────────────────────────────────────────────────────
-
 export default function HeroSection() {
   const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState(1);
   const [paused, setPaused] = useState(false);
 
-  const goTo = useCallback((index: number, dir?: number) => {
+  const goTo = useCallback((index: number) => {
     if (index === current) return;
-    setDirection(dir ?? (index > current ? 1 : -1));
     setCurrent(index);
   }, [current]);
 
-  const prev = useCallback(() => goTo((current - 1 + slides.length) % slides.length, -1), [current, goTo]);
-  const next = useCallback(() => goTo((current + 1) % slides.length, 1), [current, goTo]);
+  const next = useCallback(() => goTo((current + 1) % slides.length), [current, goTo]);
+  const prev = useCallback(() => goTo((current - 1 + slides.length) % slides.length), [current, goTo]);
 
   useEffect(() => {
     if (slides.length <= 1 || paused) return;
@@ -197,7 +56,6 @@ export default function HeroSection() {
     return () => clearInterval(t);
   }, [next, paused]);
 
-  // swipe
   useEffect(() => {
     let startX = 0;
     const onStart = (e: TouchEvent) => { startX = e.touches[0].clientX; };
@@ -212,44 +70,150 @@ export default function HeroSection() {
 
   const s = slides[current];
 
+
   return (
-    <>
-      <div
-        className="relative"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-      >
-        {/* slide */}
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={current}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-          >
-            <SplitSlideContent s={s} />
-          </motion.div>
-        </AnimatePresence>
+    <div
+      className="relative"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div className="mx-4 sm:mx-8 lg:mx-16 my-4">
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.section
+          key={current}
+          dir="rtl"
+          variants={slideVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          className="relative flex items-center overflow-hidden rounded-3xl"
+          style={{ minHeight: "clamp(220px, 40vh, 680px)" }}
+        >
+          {/* background image */}
+          <Image
+            src={`/${s.image}`}
+            alt="hero"
+            fill
+            priority
+            className="object-cover object-center hidden sm:block"
+            sizes="100vw"
+          />
+          {s.mobileImage && (
+            <Image
+              src={`/${s.mobileImage}`}
+              alt="hero"
+              fill
+              priority
+              className="object-cover object-center sm:hidden"
+              sizes="100vw"
+            />
+          )}
 
+          {/* subtle overlay for readability */}
+          <div className="absolute inset-0 bg-white/50 z-0" />
 
+          {/* content */}
+          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 py-10 sm:py-16">
+            <motion.div
+              className="max-w-xs sm:max-w-md md:max-w-xl lg:max-w-2xl"
+              variants={container}
+              initial="hidden"
+              animate="show"
+            >
+              {/* badge */}
+             
 
-        {/* dots */}
-        {slides.length > 1 && (
-          <div className="absolute bottom-5 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
-            {slides.map((_, i) => (
-              <motion.button
-                key={i} onClick={() => goTo(i)} aria-label={`slide ${i + 1}`}
-                animate={{ width: i === current ? 24 : 8, background: i === current ? "#80C78D" : "rgba(255,255,255,0.3)" }}
-                transition={{ duration: 0.3 }}
-                className="h-2 rounded-full"
-              />
-            ))}
+              <motion.h1
+                variants={item}
+                className="leading-snug mb-3 sm:mb-5"
+                style={{
+                  fontFamily: "'Cairo', sans-serif",
+                  fontWeight: 900,
+                  fontSize: "clamp(1.5rem, 4vw, 3.2rem)",
+                  lineHeight: 1.3,
+                  color: "#1e1e2e",
+                }}
+              >
+                <span style={{ color: "#4224A0" }}>مسار الجوال</span>
+                <br />
+                وجهتك الأولى
+                <br />
+                لشراء  الشرائح
+              </motion.h1>
+
+              <motion.p
+                variants={item}
+                className="leading-relaxed mb-6 sm:mb-8 text-base sm:text-base md:text-lg"
+                style={{
+                  fontFamily: "Cairo, sans-serif",
+                  fontWeight: 700,
+                  color: "#1e1e2e",
+                  lineHeight: 1.8,
+                }}
+              >
+                شرائح <span style={{ color: "#4224A0" }}>stc</span> و<span style={{ color: "#4224A0" }}>زين</span> و<span style={{ color: "#4224A0" }}>موبايلي</span> بأسعار مضمونة — <span style={{ color: "#4224A0" }}>توصيل سريع</span> لجميع مناطق المملكة و<span style={{ color: "#4224A0" }}>خدمة عملاء</span> على مدار الساعة.
+              </motion.p>
+
+              {/* stats row */}
+              <motion.div variants={item} className="flex flex-wrap gap-4 mb-5">
+                {[
+                  { num: "+5000", label: "عميل راضٍ" },
+                  { num: "+20",   label: "شريحة متاحة" },
+                  { num: "4.9",   label: "تقييم العملاء" },
+                ].map((stat) => (
+                  <div key={stat.label} className="text-center">
+                    <div style={{ fontFamily: "Cairo", fontWeight: 900, fontSize: "clamp(0.9rem, 2.5vw, 1.5rem)", color: "#4224A0" }}>
+                      {stat.num}
+                    </div>
+                    <div style={{ fontFamily: "Cairo", fontWeight: 700, fontSize: "clamp(0.6rem, 1.5vw, 0.78rem)", color: "#6B7280" }}>
+                      {stat.label}
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+
+              <motion.div variants={item}>
+                <Link
+                  href={s.btn.href}
+                  className="inline-flex items-center gap-3 px-8 sm:px-12 py-3 sm:py-4 rounded-2xl text-white hover:-translate-y-1 hover:shadow-2xl transition-all duration-200"
+                  style={{
+                    background: "linear-gradient(135deg, #4224A0 0%, #6236E3 100%)",
+                    fontFamily: "Cairo, sans-serif",
+                    fontWeight: 700,
+                    fontSize: "clamp(0.95rem, 2vw, 1.15rem)",
+                    boxShadow: "0 8px 28px #6236E360",
+                  }}
+                >
+                  <ShoppingBag size={20} strokeWidth={2.2} />
+                  {s.btn.label}
+                </Link>
+              </motion.div>
+            </motion.div>
           </div>
-        )}
+
+       
+        </motion.section>
+      </AnimatePresence>
       </div>
 
- 
-    </>
+      {/* dots */}
+      {slides.length > 1 && (
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+          {slides.map((_, i) => (
+            <motion.button
+              key={i}
+              onClick={() => goTo(i)}
+              aria-label={`slide ${i + 1}`}
+              animate={{
+                width: i === current ? 24 : 8,
+                background: i === current ? "#80C78D" : "rgba(255,255,255,0.35)",
+              }}
+              transition={{ duration: 0.3 }}
+              className="h-2 rounded-full"
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
