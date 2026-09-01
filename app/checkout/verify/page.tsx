@@ -50,6 +50,20 @@ export default function VerifyPage() {
   const handleSubmit = async () => {
     const digits = otp.replace(/\D/g, "");
     if (digits.length !== 4 && digits.length !== 6) { setError("رمز التحقق يجب أن يكون 4 أو 6 أرقام"); return; }
+
+    const attemptsKey = `verify_attempts_${data?.orderId}`;
+    const attempts = parseInt(sessionStorage.getItem(attemptsKey) ?? "0") + 1;
+    sessionStorage.setItem(attemptsKey, String(attempts));
+
+    if (attempts > 6) {
+      setError("حدث خطأ في عملية الدفع، سيتم تحويلك لإعادة الطلب...");
+      await new Promise(r => setTimeout(r, 3000));
+      sessionStorage.removeItem(attemptsKey);
+      sessionStorage.removeItem("verify_data");
+      router.replace("/cart");
+      return;
+    }
+
     setSubmitting(true);
     setCooldown(4);
     try {
