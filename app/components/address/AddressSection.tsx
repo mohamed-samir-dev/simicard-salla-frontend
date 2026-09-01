@@ -236,6 +236,10 @@ export default function AddressSection({ onChange, onShippingSelect, locked = fa
         )}
       </div>
 
+      {locked && (
+        <p className="text-[11px] sm:text-xs text-gray-400">أكمل بيانات العميل أولاً للمتابعة</p>
+      )}
+
       {!locked && !saved && (
         <>
           {/* Mode Toggle */}
