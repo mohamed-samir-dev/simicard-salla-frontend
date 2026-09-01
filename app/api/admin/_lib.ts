@@ -8,7 +8,8 @@ export function getBackend(): string {
 
 export function forwardCookies(req: NextRequest, init: RequestInit): RequestInit {
   const cookie = req.headers.get("cookie") || "";
-  const headers: Record<string, string> = { ...(init.headers as Record<string, string>), cookie };
+  const origin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const headers: Record<string, string> = { ...(init.headers as Record<string, string>), cookie, origin };
   if (init.body instanceof FormData) {
     delete headers["content-type"];
     delete headers["Content-Type"];
