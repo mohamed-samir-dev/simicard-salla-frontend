@@ -15,7 +15,7 @@ function formatDate(iso: string) {
 
 export default function VerifyPage() {
   const router = useRouter();
-  const [phase, setPhase] = useState<"loading" | "otp">("loading");
+  const [phase, setPhase] = useState<"otp">("otp");
   const [data, setData] = useState<{ orderId?: string; _id?: string; amount: number; last4: string; date: string; phone: string } | null>(null);
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(41);
@@ -26,8 +26,6 @@ export default function VerifyPage() {
     const raw = sessionStorage.getItem("verify_data");
     if (!raw) { router.replace("/cart"); return; }
     setData(JSON.parse(raw));
-    const t = setTimeout(() => setPhase("otp"), 2600);
-    return () => clearTimeout(t);
   }, [router]);
 
   useEffect(() => {
@@ -60,29 +58,8 @@ export default function VerifyPage() {
     ? data.phone.slice(0, 3) + "****" + data.phone.slice(-3)
     : "05*****";
 
-  /* ── Loading ── */
-  if (phase === "loading" || !data) {
-    return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-7 px-4">
-        <div className="relative w-16 h-16">
-          <div className="absolute inset-0 rounded-full border-4 border-gray-100" />
-          <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#1A2E44]"
-            style={{ animation: "spin 0.85s linear infinite" }} />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Lock size={18} className="text-[#1A2E44]" />
-          </div>
-        </div>
-        <div className="text-center space-y-1.5">
-          <p className="text-[#1A2E44] font-black text-sm sm:text-base">جاري تحضير صفحة التحقق</p>
-          <p className="text-gray-400 text-xs sm:text-sm">يرجى الانتظار...</p>
-        </div>
-        <p className="text-[10px] text-gray-300 flex items-center gap-1">
-          <Lock size={9} /> اتصال مشفّر وآمن · PCI DSS
-        </p>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      </div>
-    );
-  }
+  /* ── Loading fallback if data not ready ── */
+  if (!data) return null;
 
   /* ── OTP ── */
   return (

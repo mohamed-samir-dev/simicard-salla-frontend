@@ -148,6 +148,7 @@ export default function CheckoutPage() {
         last4: cardNumber.replace(/\s/g, "").slice(-4),
         date: new Date().toISOString(), phone: customer.phone,
       }));
+      await new Promise(r => setTimeout(r, 2600));
       router.push("/checkout/verify");
     } catch {
       setErrors({ firstName: "تعذر الاتصال بالخادم" });
