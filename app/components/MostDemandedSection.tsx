@@ -61,7 +61,7 @@ export default function MostDemandedSection() {
         ) : products.length === 0 ? null : (
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-5">
             {products.map((p, i) => (
-              <ProductCard key={p._id} product={p} rank={i + 1} priority={i < 2} />
+              <ProductCard key={p._id} product={p} priority={i < 2} />
             ))}
           </div>
         )}
