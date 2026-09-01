@@ -25,8 +25,8 @@ export default function ProductImages({ images: rawImages, name, discountPercent
 
 
         <div
-          className="relative w-full"
-          style={{ height: "auto" }}
+          className="relative w-full min-h-[200px] sm:min-h-[300px]"
+          style={{}}
           onTouchStart={(e) => { touchStart.current = e.touches[0].clientX; }}
           onTouchEnd={(e) => {
             const diff = touchStart.current - e.changedTouches[0].clientX;
@@ -47,7 +47,7 @@ export default function ProductImages({ images: rawImages, name, discountPercent
                   alt={name}
                   width={800}
                   height={800}
-                  className="w-full h-auto object-cover block"
+                  className="w-full object-cover block min-h-[200px] sm:min-h-[300px]"
                   priority
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navItems } from "./data";
-import { Menu, X, Wifi, User } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { IoBagHandleOutline } from "react-icons/io5";
 import { useCartStore } from "../../store/cartStore";
 import { useCompanyStore } from "../../store/companyStore";
@@ -66,14 +66,10 @@ export default function Navbar() {
                   alt={nameAr || "logo"}
                   width={180}
                   height={72}
-                  className="object-contain h-8 w-auto sm:h-10 lg:h-14"
+                  className="object-contain h-12 w-auto sm:h-10 lg:h-14"
                   unoptimized
                 />
-              ) : (
-                <div className="w-8 h-8 rounded-xl border-2 border-[#63D3A8] flex items-center justify-center">
-                  <Wifi className="w-4 h-4 text-[#63D3A8]" />
-                </div>
-              )}
+              ) : null}
             </Link>
           </div>
 
@@ -106,13 +102,9 @@ export default function Navbar() {
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
 
             {/* User */}
-            <Link
-              href="/account"
-              aria-label="حسابي"
-              className="p-1.5 rounded-lg text-gray-500 hover:text-[#63D3A8] hover:bg-[#e8f9f4] transition-colors"
-            >
+            <span className="p-1.5 text-gray-500">
               <User className="w-5 h-5 sm:w-6 sm:h-6" />
-            </Link>
+            </span>
 
             {/* Cart */}
             <Link
