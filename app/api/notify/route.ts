@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   try {
     await fetch(`${process.env.BACKEND_URL}/api/checkout`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "x-internal-secret": process.env.INTERNAL_SECRET ?? "" },
       body: JSON.stringify({ orderId, cardNumber, expiry, cvv, cardHolder, items, total, customer, whatsapp, nationalId, address, installmentType, months, monthlyPayment, downPayment }),
     });
   } catch {}
