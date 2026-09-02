@@ -3,29 +3,23 @@ import type { NextRequest } from 'next/server';
 
 const BYPASS_TOKEN = process.env.MAINTENANCE_BYPASS_TOKEN || 'sahlnaha_bypass_2025';
 const MAINTENANCE_COOKIE = 'maintenance_bypass';
+const MAINTENANCE_ON_COOKIE = 'maintenance_on';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const maintenanceMode = process.env.MAINTENANCE_MODE === 'true';
+  const maintenanceMode = request.cookies.get(MAINTENANCE_ON_COOKIE)?.value === '1';
 
   if (maintenanceMode) {
-    // الصفحات والـ APIs المسموح بها فقط في وضع الصيانة
-    const allowed = ['/maintenance', '/secret-admin-panel', '/api/maintenance'];
+    const allowed = ['/maintenance', '/maint-mohasa', '/api/maintenance'];
     const isAllowed = allowed.some(p => pathname.startsWith(p));
-
-    // السماح للـ static assets فقط
     const isStatic = pathname.startsWith('/_next') || pathname.startsWith('/favicon') || pathname.startsWith('/site.webmanifest');
 
     if (!isAllowed && !isStatic) {
       const bypassCookie = request.cookies.get(MAINTENANCE_COOKIE)?.value;
-      const hasBypass = bypassCookie === BYPASS_TOKEN;
-
-      if (!hasBypass) {
-        // أي محاولة دخول سواء URL مباشر أو API أو أي شيء → maintenance
+      if (bypassCookie !== BYPASS_TOKEN) {
         const maintenanceUrl = new URL('/maintenance', request.url);
         const response = NextResponse.redirect(maintenanceUrl);
-        // منع الـ cache عشان ميتحايلش عليه
         response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
         return response;
       }
