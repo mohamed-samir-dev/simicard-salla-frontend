@@ -8,7 +8,6 @@ import { navItems } from "./data";
 import { Menu, X, User } from "lucide-react";
 import { IoBagHandleOutline } from "react-icons/io5";
 import { useCartStore } from "../../store/cartStore";
-import { useCompanyStore } from "../../store/companyStore";
 import MobileMenu from "./MobileMenu";
 
 export default function Navbar() {
@@ -17,10 +16,7 @@ export default function Navbar() {
   const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
   const itemCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.qty, 0));
   const cartTotal = useCartStore((s) => s.totalPrice());
-  const { logo, nameAr, fetchCompany } = useCompanyStore();
   const pathname = usePathname();
-
-  useEffect(() => { fetchCompany(); }, [fetchCompany]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -60,16 +56,13 @@ export default function Navbar() {
             </button>
 
             <Link href="/" className="flex items-center gap-2 shrink-0">
-              {logo ? (
-                <Image
-                  src={logo}
-                  alt={nameAr || "logo"}
-                  width={180}
-                  height={72}
-                  className="object-contain h-12 w-auto sm:h-10 lg:h-14"
-                  unoptimized
-                />
-              ) : null}
+              <Image
+                src="/logo.webp"
+                alt="logo"
+                width={180}
+                height={72}
+                className="object-contain h-12 w-auto sm:h-10 lg:h-14"
+              />
             </Link>
           </div>
 
