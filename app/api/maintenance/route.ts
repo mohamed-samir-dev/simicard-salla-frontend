@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
 
   if (body.enabled) {
     res.cookies.set("maintenance_on", "1", cookieOpts);
+    res.cookies.set("maintenance_bypass", BYPASS_TOKEN, cookieOpts);
   } else {
     res.cookies.set("maintenance_on", "", { ...cookieOpts, maxAge: 0 });
     res.cookies.set("maintenance_bypass", BYPASS_TOKEN, cookieOpts);
