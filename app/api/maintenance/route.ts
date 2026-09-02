@@ -7,7 +7,6 @@ async function backendFetch(path: string, init?: RequestInit) {
   return fetch(`${BACKEND}${path}`, {
     ...init,
     headers: { "Content-Type": "application/json", ...init?.headers },
-    credentials: "include",
   });
 }
 
@@ -31,29 +30,25 @@ export async function POST(req: NextRequest) {
   if (!r.ok) return NextResponse.json(data, { status: r.status });
 
   const res = NextResponse.json(data);
-  if (!body.enabled) {
-    res.cookies.set("maintenance_bypass", BYPASS_TOKEN, {
-      httpOnly: true,
-      path: "/",
-      maxAge: 60 * 60 * 24 * 30,
-      sameSite: "strict",
-    });
+  const cookieOpts = { httpOnly: true, path: "/", maxAge: 60 * 60 * 24 * 30, sameSite: "strict" } as const;
+
+  if (body.enabled) {
+    res.cookies.set("maintenance_on", "1", cookieOpts);
+  } else {
+    res.cookies.set("maintenance_on", "", { ...cookieOpts, maxAge: 0 });
+    res.cookies.set("maintenance_bypass", BYPASS_TOKEN, cookieOpts);
   }
   return res;
 }
 
 export async function PUT(req: NextRequest) {
-  // Grant bypass cookie — no backend call needed, just validate via GET
   const cookie = req.headers.get("cookie") ?? "";
   const r = await backendFetch("/api/admin/maintenance", { headers: { cookie } });
   if (!r.ok) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const res = NextResponse.json({ success: true });
   res.cookies.set("maintenance_bypass", BYPASS_TOKEN, {
-    httpOnly: true,
-    path: "/",
-    maxAge: 60 * 60 * 24 * 30,
-    sameSite: "strict",
+    httpOnly: true, path: "/", maxAge: 60 * 60 * 24 * 30, sameSite: "strict",
   });
   return res;
 }
