@@ -9,7 +9,8 @@ export default function ClientLayout({ children, footer, nonce }: { children: Re
   const isAdmin = pathname.startsWith("/admin");
   const isFileView = pathname.startsWith("/file-view");
   const isVerify = pathname === "/checkout/verify";
-  const hideChrome = isAdmin || isFileView || isVerify;
+  const isMaintenance = pathname.startsWith("/maintenance");
+  const hideChrome = isAdmin || isFileView || isVerify || isMaintenance;
 
   return (
     <>
