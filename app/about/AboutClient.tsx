@@ -115,11 +115,11 @@ const sections = [
 
 export default function AboutClient() {
   const [heroVisible, setHeroVisible] = useState(false);
-  const [company, setCompany] = useState<{ whatsapp?: string; email?: string; addressAr?: string } | null>(null);
+  const [company, setCompany] = useState<{ phone?: string; whatsapp?: string; email?: string; addressAr?: string } | null>(null);
 
   useEffect(() => { const t = setTimeout(() => setHeroVisible(true), 60); return () => clearTimeout(t); }, []);
   useEffect(() => {
-    fetch("/api/admin/company").then((r) => r.json()).then((d) => setCompany(d)).catch(() => {});
+    fetch("/api/admin/company/public").then((r) => r.json()).then((d) => setCompany(d)).catch(() => {});
   }, []);
 
   const anim = (delay: number) => ({
@@ -222,7 +222,7 @@ export default function AboutClient() {
 
         <ContactSection
           title="وسائل التواصل"
-          phone={company?.whatsapp}
+          phone={company?.phone}
           whatsapp={company?.whatsapp}
           email={company?.email}
           fadeDelay={300}

@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { FaWhatsapp, FaMobileAlt, FaEnvelope } from "react-icons/fa";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 async function getCompany() {
   try {
-    const r = await fetch(`${API}/api/admin/company`, { next: { revalidate: 60 } });
+    const r = await fetch(`${API}/api/admin/company/public`, { next: { revalidate: 60 }, signal: AbortSignal.timeout(3000) });
     return r.ok ? r.json() : {};
   } catch {
     return {};
