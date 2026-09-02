@@ -24,7 +24,7 @@ export const viewport: Viewport = {
 
 async function getCompany() {
   try {
-    const r = await fetch(`${BACKEND}/api/admin/company`, { next: { revalidate: 60, tags: ["company"] } });
+    const r = await fetch(`${BACKEND}/api/admin/company/public`, { next: { revalidate: 60, tags: ["company"] } });
     return r.ok ? r.json() : {};
   } catch {
     return {};
