@@ -1,31 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getBackend, forwardCookies } from "../admin/_lib";
 
 const BYPASS_TOKEN = process.env.MAINTENANCE_BYPASS_TOKEN || "sahlnaha_bypass_2025";
-const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
-
-async function backendFetch(path: string, init?: RequestInit) {
-  return fetch(`${BACKEND}${path}`, {
-    ...init,
-    headers: { "Content-Type": "application/json", ...init?.headers },
-  });
-}
 
 export async function GET(req: NextRequest) {
-  const cookie = req.headers.get("cookie") ?? "";
-  const r = await backendFetch("/api/admin/maintenance", { headers: { cookie } });
+  const r = await fetch(`${getBackend()}/api/admin/maintenance`, forwardCookies(req, {}));
   const data = await r.json();
-  if (!r.ok) return NextResponse.json(data, { status: r.status });
-  return NextResponse.json(data);
+  return NextResponse.json(data, { status: r.status });
 }
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const cookie = req.headers.get("cookie") ?? "";
-  const r = await backendFetch("/api/admin/maintenance", {
-    method: "POST",
-    body: JSON.stringify({ enabled: body.enabled }),
-    headers: { cookie },
-  });
+  const r = await fetch(
+    `${getBackend()}/api/admin/maintenance`,
+    forwardCookies(req, { method: "POST", body: JSON.stringify({ enabled: body.enabled }), headers: { "Content-Type": "application/json" } })
+  );
   const data = await r.json();
   if (!r.ok) return NextResponse.json(data, { status: r.status });
 
@@ -42,8 +31,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const cookie = req.headers.get("cookie") ?? "";
-  const r = await backendFetch("/api/admin/maintenance", { headers: { cookie } });
+  const r = await fetch(`${getBackend()}/api/admin/maintenance`, forwardCookies(req, {}));
   if (!r.ok) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const res = NextResponse.json({ success: true });
