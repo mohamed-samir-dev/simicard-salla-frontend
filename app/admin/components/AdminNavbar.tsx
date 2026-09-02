@@ -3,20 +3,18 @@ import { useRouter } from "next/navigation";
 import { Bell, LogOut, Menu } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useCompanyStore } from "../../store/companyStore";
 
 export default function AdminNavbar({ onMenuClick }: { onMenuClick: () => void }) {
   const router = useRouter();
-  const { logo, fetchCompany } = useCompanyStore();
   const [ordersCount, setOrdersCount] = useState(0);
 
-  useEffect(() => { fetchCompany(); }, [fetchCompany]);
-
   useEffect(() => {
-    fetch("/api/admin/orders/count")
+    const controller = new AbortController();
+    fetch("/api/admin/orders/count", { signal: controller.signal })
       .then((r) => r.json())
       .then((d) => setOrdersCount(typeof d.count === "number" ? d.count : 0))
-      .catch(() => {});
+      .catch((err) => { if (err.name !== "AbortError") console.error(err); });
+    return () => controller.abort();
   }, []);
 
   const handleLogout = async () => {
@@ -30,18 +28,15 @@ export default function AdminNavbar({ onMenuClick }: { onMenuClick: () => void }
         <button onClick={onMenuClick} className="md:hidden p-2 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors">
           <Menu size={22} />
         </button>
-        {logo && logo.startsWith("http") && (
-          <Image
-            src={logo}
+        <Image
+            src="/logo.webp"
             alt="Logo"
             width={0}
             height={0}
             sizes="100vw"
             className="h-14 w-auto"
-            unoptimized
             priority
           />
-        )}
       </div>
 
       <div className="flex items-center gap-2">
@@ -63,7 +58,6 @@ export default function AdminNavbar({ onMenuClick }: { onMenuClick: () => void }
           <LogOut size={16} />
           <span className="hidden sm:inline">تسجيل خروج</span>
         </button>
-
       </div>
     </nav>
   );
