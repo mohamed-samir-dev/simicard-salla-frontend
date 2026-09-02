@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
   const maintenanceMode = request.cookies.get(MAINTENANCE_ON_COOKIE)?.value === '1';
 
   if (maintenanceMode) {
-    const allowed = ['/maintenance', '/maint-mohasa', '/api/maintenance'];
+    const allowed = ['/maintenance', '/maint-mohasa', '/api/maintenance', '/api/admin/login', '/api/admin/logout'];
     const isAllowed = allowed.some(p => pathname.startsWith(p));
     const isStatic = pathname.startsWith('/_next') || pathname.startsWith('/favicon') || pathname.startsWith('/site.webmanifest');
 
