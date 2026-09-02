@@ -1,45 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFileSync, readFileSync } from "fs";
-import path from "path";
 
-const ADMIN_SECRET = process.env.MAINTENANCE_ADMIN_SECRET || "sahlnaha_admin_secret_2025";
 const BYPASS_TOKEN = process.env.MAINTENANCE_BYPASS_TOKEN || "sahlnaha_bypass_2025";
-const ENV_PATH = path.join(process.cwd(), ".env.local");
+const BACKEND = process.env.BACKEND_URL || "http://localhost:5000";
 
-function getMaintenanceStatus(): boolean {
-  try {
-    const content = readFileSync(ENV_PATH, "utf-8");
-    return /^MAINTENANCE_MODE=true$/m.test(content);
-  } catch {
-    return false;
-  }
-}
-
-function setMaintenanceStatus(enabled: boolean) {
-  const content = readFileSync(ENV_PATH, "utf-8");
-  const updated = content.replace(
-    /^MAINTENANCE_MODE=.*/m,
-    `MAINTENANCE_MODE=${enabled}`
-  );
-  writeFileSync(ENV_PATH, updated, "utf-8");
+async function backendFetch(path: string, init?: RequestInit) {
+  return fetch(`${BACKEND}${path}`, {
+    ...init,
+    headers: { "Content-Type": "application/json", ...init?.headers },
+    credentials: "include",
+  });
 }
 
 export async function GET(req: NextRequest) {
-  const secret = req.nextUrl.searchParams.get("secret");
-  if (secret !== ADMIN_SECRET) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  return NextResponse.json({ maintenance: getMaintenanceStatus() });
+  const cookie = req.headers.get("cookie") ?? "";
+  const r = await backendFetch("/api/admin/maintenance", { headers: { cookie } });
+  const data = await r.json();
+  if (!r.ok) return NextResponse.json(data, { status: r.status });
+  return NextResponse.json(data);
 }
 
 export async function POST(req: NextRequest) {
-  const { secret, enabled } = await req.json();
-  if (secret !== ADMIN_SECRET) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const body = await req.json();
+  const cookie = req.headers.get("cookie") ?? "";
+  const r = await backendFetch("/api/admin/maintenance", {
+    method: "POST",
+    body: JSON.stringify({ enabled: body.enabled }),
+    headers: { cookie },
+  });
+  const data = await r.json();
+  if (!r.ok) return NextResponse.json(data, { status: r.status });
 
-  setMaintenanceStatus(enabled);
-
-  const res = NextResponse.json({ success: true, maintenance: enabled });
-
-  if (!enabled) {
-    // امسح الكوكي لو أوقف الصيانة (مش ضروري لكن نظافة)
+  const res = NextResponse.json(data);
+  if (!body.enabled) {
     res.cookies.set("maintenance_bypass", BYPASS_TOKEN, {
       httpOnly: true,
       path: "/",
@@ -47,14 +39,14 @@ export async function POST(req: NextRequest) {
       sameSite: "strict",
     });
   }
-
   return res;
 }
 
 export async function PUT(req: NextRequest) {
-  // منح الأدمن الكوكي للتجاوز
-  const { secret } = await req.json();
-  if (secret !== ADMIN_SECRET) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // Grant bypass cookie — no backend call needed, just validate via GET
+  const cookie = req.headers.get("cookie") ?? "";
+  const r = await backendFetch("/api/admin/maintenance", { headers: { cookie } });
+  if (!r.ok) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const res = NextResponse.json({ success: true });
   res.cookies.set("maintenance_bypass", BYPASS_TOKEN, {
