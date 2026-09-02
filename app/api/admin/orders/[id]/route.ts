@@ -18,7 +18,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const endpoint = body.financials ? "financials" : "status";
   const res = await fetch(`${getBackend()}/api/checkout/${id}/${endpoint}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json", cookie: req.headers.get("cookie") || "" },
+    headers: {
+      "Content-Type": "application/json",
+      cookie: req.headers.get("cookie") || "",
+      "x-internal-secret": process.env.INTERNAL_SECRET ?? "",
+    },
     body: JSON.stringify(body),
   });
   return NextResponse.json(await safeJson(res), { status: res.status });
@@ -28,7 +32,10 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const { id } = await params;
   const res = await fetch(`${getBackend()}/api/checkout/${id}`, {
     method: "DELETE",
-    headers: { cookie: req.headers.get("cookie") || "" },
+    headers: {
+      cookie: req.headers.get("cookie") || "",
+      "x-internal-secret": process.env.INTERNAL_SECRET ?? "",
+    },
   });
   return NextResponse.json(await safeJson(res), { status: res.status });
 }
