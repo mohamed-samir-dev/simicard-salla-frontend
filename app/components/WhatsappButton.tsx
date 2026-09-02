@@ -1,21 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+
+const WHATSAPP_NUMBER = "966583054073";
 
 export default function WhatsappButton() {
-  const [whatsapp, setWhatsapp] = useState("");
-
-  useEffect(() => {
-    fetch(`/api/company`)
-      .then((r) => r.json())
-      .then((d) => setWhatsapp(d.whatsapp || ""))
-      .catch(() => {});
-  }, []);
-
-  if (!whatsapp) return null;
-
   return (
     <a
-      href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`}
+      href={`https://wa.me/${WHATSAPP_NUMBER}`}
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 right-10 z-50 bg-green-500 hover:bg-green-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-colors"
